@@ -1,10 +1,43 @@
 services:
-  ffc-template-node:
+  ffc-ahwr-document-generator:
     build:
       context: .
       target: production
-    image: ffc-template-node
-    container_name: ffc-template-node
+    image: ffc-ahwr-document-generator
+    container_name: ffc-ahwr-document-generator
+    depends_on:
+      - ffc-ahwr-document-generator-postgres
     environment:
-      APPINSIGHTS_CLOUDROLE: ffc-template-node-local
+      APPINSIGHTS_CLOUDROLE: ffc-ahwr-document-generator-local
       APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
+      APPLICATIONDOCCREATIONREQUEST_QUEUE_ADDRESS: ${APPLICATIONDOCCREATIONREQUEST_QUEUE_ADDRESS:-ffc-ahwr-document-request}${MESSAGE_QUEUE_SUFFIX}
+      AZURE_STORAGE_CONNECTION_STRING: ${AZURE_STORAGE_CONNECTION_STRING:-AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;}
+      AZURE_STORAGE_ACCOUNT_NAME: ${AZURE_STORAGE_ACCOUNT_NAME:-devstoreaccount1}
+      AZURE_STORAGE_USE_CONNECTION_STRING: "true"
+      MESSAGE_QUEUE_HOST: ${MESSAGE_QUEUE_HOST}
+      MESSAGE_QUEUE_PASSWORD: ${MESSAGE_QUEUE_PASSWORD}
+      MESSAGE_QUEUE_USER: ${MESSAGE_QUEUE_USER}
+      NOTIFY_API_KEY: ${NOTIFY_API_KEY}
+      NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE: ${NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE}
+      POSTGRES_DB: ffc_ahwr_document_generator
+      POSTGRES_HOST: ${POSTGRES_HOST:-ffc-ahwr-document-generator-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_SCHEMA_PASSWORD:-ppp}
+      POSTGRES_PORT: 5432
+      POSTGRES_SCHEMA_NAME: ${POSTGRES_SCHEMA_NAME:-public}
+      POSTGRES_USERNAME: ${POSTGRES_SCHEMA_USERNAME:-postgres}
+
+  ffc-ahwr-document-generator-postgres:
+    image: postgres:11.4-alpine
+    environment:
+      POSTGRES_DB: ffc_ahwr_document_generator
+      POSTGRES_PASSWORD: ppp
+      POSTGRES_USERNAME: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  ffc-ahwr-document-generator-azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:3.17.1
+    command: "azurite-blob --loose --blobHost 0.0.0.0"
+
+volumes:
+  postgres_data: {}
