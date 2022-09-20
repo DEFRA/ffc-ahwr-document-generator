@@ -27,7 +27,7 @@
       <column name="fileName" type="VARCHAR(120)">
         <constraints nullable="false" />
       </column>
-      <column name="status" type="VARCHAR(12)">
+      <column name="status" type="VARCHAR(50)">
         <constraints nullable="false" />
       </column>
       <column name="completed" type="TIMESTAMP">

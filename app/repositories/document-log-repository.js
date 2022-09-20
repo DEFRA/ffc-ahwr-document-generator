@@ -1,7 +1,7 @@
 const { models } = require('../data')
 
-const checkEmailComplete = async () => {
-  return models.documentLog.findAll({ where: { completed: null, status: 'email-sent' } })
+const checkEmailDelivered = async () => {
+  return models.documentLog.findAll({ where: { completed: null } })
 }
 
 const set = async (data, fileName) => {
@@ -16,7 +16,7 @@ const update = async (reference, data) => {
 }
 
 module.exports = {
-  checkEmailComplete,
+  checkEmailDelivered,
   set,
   update
 }

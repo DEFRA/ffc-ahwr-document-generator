@@ -2,6 +2,7 @@ const notifyClient = require('./notify-client')
 const createFileName = require('../document/create-filename')
 const { documentContainer } = require('../config').storageConfig
 const { downloadBlob } = require('../storage')
+const { EMAIL_CREATED, SEND_FAILED } = require('../statuses')
 const { templateIdFarmerApplicationGeneration } = require('../config').notifyConfig
 const { update } = require('../repositories/document-log-repository')
 
@@ -14,10 +15,11 @@ const sendEmail = async (email, personalisation, reference, templateId) => {
       { personalisation, reference }
     )
     const emailReference = response.data?.id
-    update(reference, { emailReference, status: 'email-sent' })
+    console.log('Email sent', emailReference, reference)
+    update(reference, { emailReference, status: EMAIL_CREATED })
   } catch (e) {
     success = false
-    update(reference, { status: 'email-failed' })
+    update(reference, { status: SEND_FAILED })
     console.error('Error occurred during sending email', e.response.data)
   }
   return success

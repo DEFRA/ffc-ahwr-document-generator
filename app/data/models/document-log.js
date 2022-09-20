@@ -1,3 +1,5 @@
+const { DOCUMENT_CREATED } = require('../../statuses')
+
 module.exports = (sequelize, DataTypes) => {
   const documentLog = sequelize.define('documentLog', {
     id: {
@@ -11,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
     sbi: DataTypes.STRING,
     data: DataTypes.JSONB,
     fileName: DataTypes.STRING,
-    status: { type: DataTypes.STRING, defaultValue: 'created' },
+    completed: DataTypes.DATE,
+    status: { type: DataTypes.STRING, defaultValue: DOCUMENT_CREATED },
     createdAt: { type: DataTypes.DATE, defaultValue: Date.now() },
     updatedAt: { type: DataTypes.DATE, defaultValue: null }
   }, {

@@ -1,17 +1,19 @@
-const { checkEmailComplete, update } = require('../repositories/document-log-repository')
+const { checkEmailDelivered } = require('../repositories/document-log-repository')
 const { notfiyCheckInterval } = require('../config').notifyConfig
 const checkDeliveryStatus = require('./notify-status')
+const updateEmailStatus = require('./update_email_status')
 
 const start = async () => {
   try {
     console.log('Checking for messages')
-    const documentLogs = await checkEmailComplete()
+    const documentLogs = await checkEmailDelivered()
     console.log('found', documentLogs.length, 'messages')
 
     for (const documentLog of documentLogs) {
-      console.log('Checking message', documentLog.emailReference)
-      const status = await checkDeliveryStatus(documentLog.emailReference)
-      update(documentLog.reference, { status })
+      const emailReference = documentLog.emailReference
+      console.log('Checking message', emailReference)
+      const status = await checkDeliveryStatus(emailReference)
+      updateEmailStatus(documentLog, status)
     }
   } catch (err) {
     console.error(err)
