@@ -1,7 +1,7 @@
 const { checkEmailDelivered } = require('../repositories/document-log-repository')
 const { notfiyCheckInterval } = require('../config').notifyConfig
 const checkDeliveryStatus = require('./notify-status')
-const updateEmailStatus = require('./update_email_status')
+const updateEmailStatus = require('./update-email-status')
 
 const start = async () => {
   try {

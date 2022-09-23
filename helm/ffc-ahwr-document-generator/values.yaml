@@ -7,7 +7,7 @@ image: ffc-ahwr-document-generator
 labels: {}
 
 appInsights:
-  key:
+  connectionString:
 
 containerConfigMap:
   name: ffc-ahwr-document-generator-config-map

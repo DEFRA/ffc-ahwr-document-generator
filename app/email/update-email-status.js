@@ -21,6 +21,7 @@ const updateEmailStatus = async (documentLog, status) => {
       await sendFarmerApplicationEmail(documentLog.data)
       break
     default:
+      console.error('Unknown status')
       break
   }
 }

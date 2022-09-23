@@ -20,7 +20,7 @@ const sendEmail = async (email, personalisation, reference, templateId) => {
   } catch (e) {
     success = false
     update(reference, { status: SEND_FAILED })
-    console.error('Error occurred during sending email', e.response.data)
+    console.error('Error occurred during sending email', e.response?.data)
   }
   return success
 }
