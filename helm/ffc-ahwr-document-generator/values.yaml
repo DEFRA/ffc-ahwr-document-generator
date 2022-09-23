@@ -23,10 +23,14 @@ containerSecret:
   type: Opaque
 
 deployment:
-  restartPolicy: Always
-  priorityClassName: default
-  replicas: 1
+  cpuThreshold: 40
+  memoryThreshold: 80
   minReadySeconds: 0
+  minReplicas: 1
+  maxReplicas: 1
+  priorityClassName: default
+  restartPolicy: Always
+  replicas: 1
 
 container:
   messageQueueHost: namespace.servicebus.windows.net
@@ -39,8 +43,8 @@ container:
   notifyTemplateIdFarmerApplicationComplete:
   requestMemory: 10Mi
   requestCpu: 10m
-  limitMemory: 40Mi
-  limitCpu: 40m
+  limitMemory: 120Mi
+  limitCpu: 120m
   port: 3000
 
 postgresService:
