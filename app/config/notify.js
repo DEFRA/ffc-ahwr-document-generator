@@ -1,9 +1,11 @@
 const Joi = require('joi')
+const uuidRegex = '[0-9a-f]{8}\\b-[0-9a-f]{4}\\b-[0-9a-f]{4}\\b-[0-9a-f]{4}\\b-[0-9a-f]{12}'
+const notifyApiKeyRegex = new RegExp(`.*-${uuidRegex}-${uuidRegex}`)
 
 const schema = Joi.object({
-  notifyApiKey: Joi.string().required(),
+  notifyApiKey: Joi.string().pattern(notifyApiKeyRegex),
   notfiyCheckInterval: Joi.number().default(30000),
-  templateIdFarmerApplicationGeneration: Joi.string().required()
+  templateIdFarmerApplicationGeneration: Joi.string().uuid()
 })
 
 const config = {
