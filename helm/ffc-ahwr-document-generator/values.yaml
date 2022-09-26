@@ -1,0 +1,69 @@
+environment: development
+name: ffc-ahwr-document-generator
+namespace: ffc-ahwr
+workstream: ffc-ahwr
+image: ffc-ahwr-document-generator
+
+labels: {}
+
+aadPodIdentity: true
+
+appInsights:
+  connectionString:
+
+azureIdentity:
+  clientID:
+  resourceID:
+
+containerConfigMap:
+  name: ffc-ahwr-document-generator-config-map
+
+containerSecret:
+  name: ffc-ahwr-document-generator-container-secret
+  type: Opaque
+
+deployment:
+  cpuThreshold: 40
+  memoryThreshold: 80
+  minReadySeconds: 0
+  minReplicas: 1
+  maxReplicas: 1
+  priorityClassName: default
+  restartPolicy: Always
+  replicas: 1
+
+container:
+  messageQueueHost: namespace.servicebus.windows.net
+  applicationDocCreationRequest: ffc-ahwr-document-request
+  azureStorageConnectionString:
+  azureStorageUseConnectionString: true
+  azureStorageAccountName:
+  imagePullPolicy: IfNotPresent
+  notifyApiKey:
+  notifyTemplateIdFarmerApplicationComplete:
+  requestMemory: 10Mi
+  requestCpu: 10m
+  limitMemory: 120Mi
+  limitCpu: 120m
+  port: 3000
+
+postgresService:
+  postgresDb: ffc_ahwr_document_generator
+  postgresExternalName: namespace.postgres.database.azure.com
+  postgresPort: 5432
+  postgresSchema: public
+  postgresUser: postgres
+
+livenessProbe:
+  path: /healthz
+  port: 3000
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  path: /healthy
+  port: 3000
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  failureThreshold: 3

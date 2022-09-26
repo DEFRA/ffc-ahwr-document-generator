@@ -2,14 +2,30 @@
 # to provide dependencies and expose ports for local testing
 
 services:
-  ffc-template-node:
+  ffc-ahwr-document-generator:
     build:
       target: development
-    image: ffc-template-node-development
-    container_name: ffc-template-node-development
+    image: ffc-ahwr-document-generator-development
+    container_name: ffc-ahwr-document-generator-development
     ports:
-      - "3000:3000"
-      - "9229:9229"
+      - "3006:3000"
+      - "9236:9229"
     volumes:
       - ./app:/home/node/app
       - ./package.json:/home/node/package.json
+
+  ffc-ahwr-document-generator-postgres:
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  ffc-ahwr-document-generator-azurite:
+    volumes:
+      - azurite_data:/data
+    ports:
+      - "10006:10000"
+
+volumes:
+  azurite_data:
+  postgres_data:

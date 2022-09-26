@@ -2,11 +2,11 @@
 # that test output is saved to the host
 
 services:
-  ffc-template-node:
+  ffc-ahwr-document-generator:
     build:
       target: development
-    image: ffc-template-node-development
-    container_name: ffc-template-node-test
+    image: ffc-ahwr-document-generator-development
+    container_name: ffc-ahwr-document-generator-test
     command: npm run test
     volumes:
       - ./app:/home/node/app
@@ -14,3 +14,10 @@ services:
       - ./test-output:/home/node/test-output
       - ./jest.config.js:/home/node/jest.config.js
       - ./package.json:/home/node/package.json
+  
+  ffc-ahwr-document-generator-postgres:
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

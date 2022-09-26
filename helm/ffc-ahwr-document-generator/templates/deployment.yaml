@@ -1,0 +1,8 @@
+{{- include "ffc-helm-library.deployment" (list . "ffc-ahwr-document-generator.deployment") -}}
+{{- define "ffc-ahwr-document-generator.deployment" -}}
+spec:
+  template:
+    spec:
+      containers:
+      - {{ include "ffc-helm-library.container" (list . "ffc-ahwr-document-generator.container") }}
+{{- end -}}
