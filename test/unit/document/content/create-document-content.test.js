@@ -1,3 +1,4 @@
+const moment = require('moment')
 const createContent = require('../../../../app/document/content')
 const mockData = require('../../../mocks/data')
 
@@ -33,7 +34,7 @@ describe('generate document content', () => {
 
   test('includes Agreement end date', () => {
     const result = createContent(mockData)
-    expect(result[1].stack[3].text).toBe('Agreement end date: 23/03/2023 \n\n')
+    expect(result[1].stack[3].text).toBe(`Agreement end date: ${moment(mockData.startDate).add(6, 'M').format('DD/MM/yyyy')} \n\n`)
   })
 
   test('includes Species to be reviewed', () => {
