@@ -7,6 +7,7 @@ data:
   APPLICATIONDOCCREATIONREQUEST_QUEUE_ADDRESS: {{ quote .Values.container.applicationDocCreationRequest }}
   AZURE_STORAGE_USE_CONNECTION_STRING: {{ quote .Values.container.azureStorageUseConnectionString }}
   AZURE_STORAGE_ACCOUNT_NAME: {{ quote .Values.container.azureStorageAccountName }}
+  CARBON_COPY_EMAIL_ADDRESS: {{ quote .Values.container.carbonCopyEmailAddress }}
   MESSAGE_QUEUE_HOST: {{ quote .Values.container.messageQueueHost }}
   NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE: {{ quote .Values.container.notifyTemplateIdFarmerApplicationComplete }}
   POSTGRES_DB: {{ quote .Values.postgresService.postgresDb }}
