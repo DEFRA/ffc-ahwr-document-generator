@@ -38,6 +38,7 @@ container:
   azureStorageConnectionString:
   azureStorageUseConnectionString: true
   azureStorageAccountName:
+  carbonCopyEmailAddress:
   imagePullPolicy: IfNotPresent
   notifyApiKey:
   notifyTemplateIdFarmerApplicationComplete:
