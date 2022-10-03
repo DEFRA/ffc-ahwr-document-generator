@@ -34,7 +34,7 @@ deployment:
 
 container:
   messageQueueHost: namespace.servicebus.windows.net
-  applicationDocCreationRequest: ffc-ahwr-document-request
+  applicationDocCreationRequestQueueAddress: ffc-ahwr-document-request
   azureStorageConnectionString:
   azureStorageUseConnectionString: true
   azureStorageAccountName:

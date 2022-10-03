@@ -4,7 +4,7 @@ data:
   NODE_ENV: {{ quote .Values.environment }}
   PORT: {{ quote .Values.container.port }}
   APPINSIGHTS_CLOUDROLE: {{ quote .Values.name }}
-  APPLICATIONDOCCREATIONREQUEST_QUEUE_ADDRESS: {{ quote .Values.container.applicationDocCreationRequest }}
+  APPLICATIONDOCCREATIONREQUEST_QUEUE_ADDRESS: {{ quote .Values.container.applicationDocCreationRequestQueueAddress }}
   AZURE_STORAGE_USE_CONNECTION_STRING: {{ quote .Values.container.azureStorageUseConnectionString }}
   AZURE_STORAGE_ACCOUNT_NAME: {{ quote .Values.container.azureStorageAccountName }}
   CARBON_COPY_EMAIL_ADDRESS: {{ quote .Values.container.carbonCopyEmailAddress }}
