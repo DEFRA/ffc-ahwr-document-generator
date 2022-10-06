@@ -12,8 +12,7 @@ describe('generate document content', () => {
 
   test('includes terms and condition', () => {
     const result = createContent(mockData)
-    expect(result[1].stack[2].text).toBe('The agreement will be governed by the agreed terms and conditions. \n\n')
-    expect(result[1].stack[2].link).toBe('#')
+    expect(result[1].stack[2].text).toBe('The agreement will be governed by the agreed terms and conditions. \n\n\n')
   })
 
   test('includes Agreement summary', () => {
