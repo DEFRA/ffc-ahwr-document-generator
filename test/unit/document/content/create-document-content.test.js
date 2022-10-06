@@ -34,7 +34,7 @@ describe('generate document content', () => {
 
   test('includes start date', () => {
     const result = createContent(mockData)
-    expect(result[1].stack[6].text).toBe(`Agreement start date: ${mockData.startDate} \n\n`)
+    expect(result[1].stack[6].text).toBe(`Agreement start date: ${moment(mockData.startDate).format('DD/MM/yyyy')} \n\n`)
   })
 
   test('includes Agreement end date', () => {
@@ -49,6 +49,6 @@ describe('generate document content', () => {
 
   test('includes Eligibility', () => {
     const result = createContent(mockData)
-    expect(result[1].stack[9].text).toBe('You must have a minimum number of animals on the date the vet visits your farm to do the review. do the review. You must have 11 or more beef cattle\n\n')
+    expect(result[1].stack[9].text).toBe('You must have a minimum number of animals on the date the vet visits your farm to do the review. You must have 11 or more beef cattle\n\n')
   })
 })
