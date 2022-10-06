@@ -42,6 +42,7 @@ container:
   imagePullPolicy: IfNotPresent
   notifyApiKey:
   notifyTemplateIdFarmerApplicationComplete:
+  termsAndConditionsUrl:
   requestMemory: 10Mi
   requestCpu: 10m
   limitMemory: 120Mi
