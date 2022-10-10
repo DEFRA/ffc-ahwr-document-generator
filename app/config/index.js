@@ -19,7 +19,7 @@ const config = {
   isDev: process.env.NODE_ENV === 'development',
   termsAndConditionsUrl: process.env.TERMS_AND_CONDITIONS_URL,
   applyServiceUri: process.env.APPLY_SERVICE_URI,
-  claimServiceUri: process.env.CLAIM_SERVICE_URI,
+  claimServiceUri: process.env.CLAIM_SERVICE_URI
 }
 
 const { error, value } = schema.validate(config, { abortEarly: false })
