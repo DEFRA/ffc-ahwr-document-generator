@@ -8,14 +8,18 @@ const schema = Joi.object({
   port: Joi.number().default(3005),
   env: Joi.string().valid('development', 'test', 'production').default('development'),
   isDev: Joi.boolean().default(false),
-  termsAndConditionsUrl: Joi.string().default('#')
+  termsAndConditionsUrl: Joi.string().default('#'),
+  applyServiceUri: Joi.string().default('#'),
+  claimServiceUri: Joi.string().default('#')
 })
 
 const config = {
   port: process.env.PORT,
   env: process.env.NODE_ENV,
   isDev: process.env.NODE_ENV === 'development',
-  termsAndConditionsUrl: process.env.TERMS_AND_CONDITIONS_URL
+  termsAndConditionsUrl: process.env.TERMS_AND_CONDITIONS_URL,
+  applyServiceUri: process.env.APPLY_SERVICE_URI,
+  claimServiceUri: process.env.CLAIM_SERVICE_URI,
 }
 
 const { error, value } = schema.validate(config, { abortEarly: false })

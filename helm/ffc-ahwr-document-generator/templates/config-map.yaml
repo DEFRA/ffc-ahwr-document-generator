@@ -15,4 +15,6 @@ data:
   POSTGRES_PORT: {{ quote .Values.postgresService.postgresPort }}
   POSTGRES_SCHEMA_NAME: {{ quote .Values.postgresService.postgresSchema }}
   TERMS_AND_CONDITIONS_URL: {{ quote .Values.container.termsAndConditionsUrl }}
+  APPLY_SERVICE_URI: {{ quote .Values.container.applyServiceUri }}
+  CLAIM_SERVICE_URI: {{ quote .Values.container.claimServiceUri }}
 {{- end -}}
