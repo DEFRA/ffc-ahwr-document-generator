@@ -1,6 +1,7 @@
 const notifyClient = require('./notify-client')
 const createFileName = require('../document/create-filename')
 const { documentContainer } = require('../config').storageConfig
+const { applyServiceUri, claimServiceUri } = require('../config')
 const { downloadBlob } = require('../storage')
 const { EMAIL_CREATED, SEND_FAILED } = require('../statuses')
 const { templateIdFarmerApplicationGeneration, carbonCopyEmailAddress } = require('../config').notifyConfig
@@ -44,7 +45,13 @@ const sendCarbonCopy = async (templateId, personalisation) => {
 
 const sendFarmerApplicationEmail = async (data) => {
   const contents = await downloadBlob(documentContainer, createFileName(data))
-  const personalisation = { name: data.user.farmerName, reference: data.reference, link_to_file: notifyClient.prepareUpload(contents) }
+  const personalisation = {
+    name: data.user.farmerName,
+    reference: data.reference,
+    link_to_file: notifyClient.prepareUpload(contents),
+    guidance_uri: `${applyServiceUri}/guidance-for-farmers`,
+    claim_uri: claimServiceUri
+  }
   return sendEmail(data.user.email, personalisation, data.reference, templateIdFarmerApplicationGeneration)
 }
 

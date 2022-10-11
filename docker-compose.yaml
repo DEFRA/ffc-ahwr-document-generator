@@ -27,6 +27,8 @@ services:
       POSTGRES_SCHEMA_NAME: ${POSTGRES_SCHEMA_NAME:-public}
       POSTGRES_USERNAME: ${POSTGRES_SCHEMA_USERNAME:-postgres}
       TERMS_AND_CONDITIONS_URL: ${TERMS_AND_CONDITIONS_URL:-#}
+      APPLY_SERVICE_URI: http://localhost:3000
+      CLAIM_SERVICE_URI: http://localhost:3004
 
   ffc-ahwr-document-generator-postgres:
     image: postgres:11.4-alpine
