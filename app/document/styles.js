@@ -14,7 +14,7 @@ module.exports = {
     margin: [0, 10, 0, 10]
   },
   subheader: {
-    fontSize: 18,
+    fontSize: 18
   },
   logo: {
     margin: [0, 0, 0, millimetresToPoints(5)]
@@ -24,6 +24,6 @@ module.exports = {
   },
   footer: {
     alignment: 'center',
-    fontSize: 8,
+    fontSize: 8
   }
 }

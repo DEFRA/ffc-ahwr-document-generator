@@ -7,7 +7,7 @@ const createDocumentDefinition = (data) => {
   return {
     pageSize: A4,
     content: generateContent(data),
-    footer: footer(data.reference), 
+    footer: footer(data.reference),
     styles,
     defaultStyle: styles.default
   }

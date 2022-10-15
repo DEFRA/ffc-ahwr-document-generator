@@ -34,7 +34,7 @@ const applicationDetails = (data) => {
         ]
       },
       { text: `You must have a minimum number of animals on the date the vet visits your farm to do the review. You must have ${eligibility(data.whichSpecies)}.\n\n` },
-      { text: 'Terms and conditions \n\n'},
+      { text: 'Terms and conditions \n\n' },
       { text: `${config.termsAndConditionsUrl}\n\n`, link: config.termsAndConditionsUrl },
       { text: 'Guidance \n\n', link: config.applyServiceUri },
       { text: `${guidanceUri}\n\n`, link: guidanceUri }
