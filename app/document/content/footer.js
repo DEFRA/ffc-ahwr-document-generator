@@ -1,7 +1,9 @@
+const moment = require('moment')
+
 const footer = (reference) => {
   return {
     stack: [
-      { text: `Date Generated: ${new Date().toLocaleString().split(', ')[0]}    Application Reference: ${reference}    Application Status: Agreement Offered`, style: 'footer' }
+      { text: `Date Generated: ${moment(new Date()).format('DD/MM/YYYY')}    Application Reference: ${reference}    Application Status: Agreement Offered`, style: 'footer' }
     ]
   }
 }
