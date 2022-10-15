@@ -5,7 +5,7 @@ const footer = require('./footer')
 const createContent = (data) => {
   return [
     title(),
-    applicationDetails(data),
+    applicationDetails(data)
   ]
 }
 
