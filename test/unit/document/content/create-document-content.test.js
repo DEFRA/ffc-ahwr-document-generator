@@ -46,5 +46,4 @@ describe('generate document content', () => {
     expect(result[1].stack[8].text).toBe('Guidance \n\n')
     expect(result[1].stack[9].text).toBe(`${config.applyServiceUri}/guidance-for-farmers\n\n`)
   })
-
 })

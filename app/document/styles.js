@@ -1,6 +1,4 @@
-const millimetresToPoints = (millimetres) => {
-  return millimetres * 2.835
-}
+const { millimetresToPoints } = require('./conversion')
 
 module.exports = {
   default: {

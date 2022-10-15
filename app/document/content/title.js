@@ -1,10 +1,7 @@
 
 const path = require('path')
 const imagePath = path.join(__dirname, '../', 'images')
-
-const millimetresToPoints = (millimetres) => {
-  return millimetres * 2.835
-}
+const { millimetresToPoints } = require('../conversion')
 
 const title = () => {
   return {
