@@ -5,7 +5,7 @@ const mockData = require('../../../mocks/data')
 describe('generate document content', () => {
   test('includes header one', () => {
     const result = createContent(mockData)
-    expect(result[0].stack[0].text).toBe('Annual health and welfare review of livestock agreement summary')
+    expect(result[0].stack[0].text).toBe('Annual health and welfare review of livestock agreement')
     expect(result[0].stack[0].style).toBe('header')
     expect(result[0].stack[0].alignment).toBe('left')
   })
@@ -48,6 +48,6 @@ describe('generate document content', () => {
 
   test('includes Eligibility', () => {
     const result = createContent(mockData)
-    expect(result[1].stack[9].text).toBe('You must have a minimum number of animals on the date the vet visits your farm to do the review. You must have 11 or more beef cattle\n\n')
+    expect(result[1].stack[9].text).toBe('You must have a minimum number of animals on the date the vet visits your farm to do the review. You must have 11 or more beef cattle.\n\n')
   })
 })

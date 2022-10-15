@@ -26,9 +26,9 @@ services:
       POSTGRES_PORT: 5432
       POSTGRES_SCHEMA_NAME: ${POSTGRES_SCHEMA_NAME:-public}
       POSTGRES_USERNAME: ${POSTGRES_SCHEMA_USERNAME:-postgres}
-      TERMS_AND_CONDITIONS_URL: ${TERMS_AND_CONDITIONS_URL:-#}
-      APPLY_SERVICE_URI: http://localhost:3000
-      CLAIM_SERVICE_URI: http://localhost:3004
+      TERMS_AND_CONDITIONS_URL: ${TERMS_AND_CONDITIONS_URL:-http://localhost:3000/apply/terms}
+      APPLY_SERVICE_URI: http://localhost:3000/apply
+      CLAIM_SERVICE_URI: http://localhost:3004/claim
 
   ffc-ahwr-document-generator-postgres:
     image: postgres:11.4-alpine
