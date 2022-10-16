@@ -1,4 +1,3 @@
-
 const path = require('path')
 const imagePath = path.join(__dirname, '../', 'images')
 const { millimetresToPoints } = require('../conversion')
