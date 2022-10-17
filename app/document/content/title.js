@@ -7,7 +7,7 @@ const title = () => {
   return {
     stack: [
       { image: `${imagePath}/logo.jpg`, fit: [millimetresToPoints(200), millimetresToPoints(25)], style: 'logo', link: config.applyServiceUri },
-      { text: 'Annual health and welfare review of livestock agreement', style: 'header', alignment: 'left' }
+      { text: 'Annual Health and Welfare Review of livestock agreement', style: 'header', alignment: 'left' }
     ]
   }
 }
