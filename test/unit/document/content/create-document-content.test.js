@@ -41,9 +41,9 @@ describe('generate document content', () => {
 
   test('includes terms and condition, guidance', () => {
     const result = createContent(mockData)
-    expect(result[1].stack[6].text).toBe('Terms and conditions \n\n')
-    expect(result[1].stack[7].text).toBe(`${config.termsAndConditionsUrl}\n\n`)
-    expect(result[1].stack[8].text).toBe('Guidance \n\n')
-    expect(result[1].stack[9].text).toBe(`${config.applyServiceUri}/guidance-for-farmers\n\n`)
+    expect(result[1].stack[6].text).toBe('Terms and conditions\n\n')
+    expect(result[1].stack[6].link).toBe(config.termsAndConditionsUrl)
+    expect(result[1].stack[7].text).toBe('Guidance\n\n')
+    expect(result[1].stack[7].link).toBe(`${config.applyServiceUri}/guidance-for-farmers`)
   })
 })
