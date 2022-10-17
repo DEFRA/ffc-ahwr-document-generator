@@ -1,6 +1,5 @@
 const moment = require('moment')
 const config = require('../../config')
-const guidanceUri = `${config.applyServiceUri}/guidance-for-farmers`
 
 const calculateEndDate = (startDate, duration) => {
   return moment(startDate).add(duration, 'months').format('DD/MM/YYYY')
