@@ -5,7 +5,7 @@ const mockData = require('../../../mocks/data')
 describe('generate document content', () => {
   test('includes header one', () => {
     const result = createContent(mockData)
-    expect(result[0].stack[0].text).toBe('Annual health and welfare review of livestock agreement')
+    expect(result[0].stack[0].text).toBe('Annual Health and Welfare Review of livestock agreement')
     expect(result[0].stack[0].style).toBe('header')
     expect(result[0].stack[0].alignment).toBe('left')
   })
