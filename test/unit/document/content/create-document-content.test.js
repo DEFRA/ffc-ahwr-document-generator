@@ -7,7 +7,7 @@ describe('generate document content', () => {
   test('includes header and logo', () => {
     const result = createContent(mockData)
     expect(result[0].stack[0].style).toBe('logo')
-    expect(result[0].stack[1].text).toBe('Annual Health and Welfare Review of livestock agreement')
+    expect(result[0].stack[1].text).toBe('Annual Health and Welfare Review of livestock agreement summary')
     expect(result[0].stack[1].style).toBe('header')
     expect(result[0].stack[1].alignment).toBe('left')
   })
@@ -43,7 +43,5 @@ describe('generate document content', () => {
     const result = createContent(mockData)
     expect(result[1].stack[6].text).toBe('Terms and conditions\n\n')
     expect(result[1].stack[6].link).toBe(config.termsAndConditionsUrl)
-    expect(result[1].stack[7].text).toBe('Guidance\n\n')
-    expect(result[1].stack[7].link).toBe(`${config.applyServiceUri}/guidance-for-farmers`)
   })
 })
