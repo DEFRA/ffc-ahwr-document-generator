@@ -7,7 +7,6 @@ const processDocumentRequest = async (message, receiver) => {
     const messageBody = message.body
     if (validateDocumentRequest(messageBody)) {
       console.log('Received document generation request', messageBody)
-      console.log('User found', messageBody)
       await generateDocument(messageBody)
       await sendFarmerApplicationEmail(messageBody)
       await receiver.completeMessage(message)
