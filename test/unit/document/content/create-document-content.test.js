@@ -12,7 +12,7 @@ describe('generate document content', () => {
     expect(result[0].stack[1].alignment).toBe('left')
   })
 
-  test('includes aggreement text', () => {
+  test('includes agreement text', () => {
     const result = createContent(mockData)
     expect(result[1].stack[0].text).toBe('You have applied for funding for a review.\n\n')
     expect(result[1].stack[1].text).toBe('By applying for this funding you’ve entered into an agreement with the Rural Payments Agency (RPA). The agreement will be governed by the agreed terms and conditions.\n\n')
@@ -28,7 +28,7 @@ describe('generate document content', () => {
     const result = createContent(mockData)
     expect(result[1].stack[3].text).toBe('Here are the following details:\n\n')
     expect(result[1].stack[4].ul[0]).toBe(`Agreement number: ${mockData.reference} \n\n`)
-    expect(result[1].stack[4].ul[1]).toBe(`Agreement holder: ${mockData.user.farmerName} - ${mockData.user.sbi} \n\n`)
+    expect(result[1].stack[4].ul[1]).toBe(`Agreement holder: ${mockData.farmerName} - ${mockData.sbi} \n\n`)
     expect(result[1].stack[4].ul[2]).toBe(`Agreement start date: ${moment(mockData.startDate).format('DD/MM/yyyy')} \n\n`)
     expect(result[1].stack[4].ul[3]).toBe(`Agreement end date: ${moment(mockData.startDate).add(6, 'M').format('DD/MM/yyyy')} \n\n`)
     expect(result[1].stack[4].ul[4]).toBe(`Type of livestock review: ${mockData.whichSpecies} \n\n`)

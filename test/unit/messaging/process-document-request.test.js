@@ -12,12 +12,7 @@ jest.mock('../../../app/email/notify-send')
 const mockValidation = require('../../../app/messaging/document-request-schema')
 jest.mock('../../../app/messaging/document-request-schema')
 
-const mockUser = require('../../../app/user')
-jest.mock('../../../app/user')
-
 const mockDocumentRequest = require('../../mocks/document-request')
-const mockUserData = require('../../mocks/user')
-
 const processDocumentRequest = require('../../../app/messaging/process-document-request')
 
 let receiver
@@ -33,7 +28,6 @@ describe('process document request message', () => {
   })
 
   test('completes message on success', async () => {
-    mockUser.getBySbi.mockResolvedValue(mockUserData)
     mockValidation.validateDocumentRequest.mockReturnValue(true)
 
     const message = {
@@ -42,16 +36,6 @@ describe('process document request message', () => {
 
     await processDocumentRequest(message, receiver)
     expect(receiver.completeMessage).toHaveBeenCalledWith(message)
-  })
-
-  test('deadletters message on no user found', async () => {
-    mockValidation.validateDocumentRequest.mockReturnValue(true)
-    mockUser.getBySbi.mockResolvedValue(null)
-    const message = {
-      body: mockDocumentRequest
-    }
-    await processDocumentRequest(message, receiver)
-    expect(receiver.deadLetterMessage).toHaveBeenCalledWith(message)
   })
 
   test('deadletters message on error', async () => {
