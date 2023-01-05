@@ -31,6 +31,17 @@
     "pg-hstore": "2.3.4",
     "sequelize": "6.21.2"
   },
+  "overrides": {
+    "notifications-node-client": {
+      "jsonwebtoken": "9.0.0"
+    },
+    "@azure/identity": {
+      "jsonwebtoken": "9.0.0"
+    },
+    "standard" : {
+      "json5": "2.2.2"
+    }
+  },
   "devDependencies": {
     "jest": "^27.5.1",
     "jest-junit": "^13.0.0",
