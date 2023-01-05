@@ -17,11 +17,11 @@
   "contributors": [],
   "license": "OGL-UK-3.0",
   "dependencies": {
-    "@azure/identity": "2.0.5",
+    "@azure/identity": "^2.0.4",
     "@azure/storage-blob": "12.10.0",
     "@hapi/hapi": "^20.2.1",
     "applicationinsights": "^2.2.1",
-    "ffc-messaging": "2.5.1",
+    "ffc-messaging": "^2.3.4",
     "joi": "17.6.0",
     "log-timestamp": "0.3.0",
     "moment": "2.29.4",
