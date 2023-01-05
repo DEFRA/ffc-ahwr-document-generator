@@ -19,7 +19,7 @@
   "dependencies": {
     "@azure/identity": "^1.1.0",
     "@azure/storage-blob": "^12.11.0",
-    "@hapi/hapi": "^20.2.1",
+    "@hapi/hapi": "^21.1.0",
     "applicationinsights": "^2.1.6",
     "ffc-messaging": "^2.6.2",
     "joi": "17.6.0",
