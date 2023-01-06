@@ -3,5 +3,5 @@ const user = require('./user')
 
 module.exports = {
   ...documentRequest,
-  user
+  ...user
 }

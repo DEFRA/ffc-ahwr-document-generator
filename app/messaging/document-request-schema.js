@@ -4,7 +4,9 @@ const eventSchema = joi.object({
   reference: joi.string().required(),
   sbi: joi.string().required(),
   whichSpecies: joi.string().required(),
-  startDate: joi.date().required()
+  startDate: joi.date().required(),
+  email: joi.string().email().optional(),
+  farmerName: joi.string().optional()
 })
 
 const validateDocumentRequest = (event) => {

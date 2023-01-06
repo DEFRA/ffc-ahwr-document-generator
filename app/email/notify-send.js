@@ -46,13 +46,13 @@ const sendCarbonCopy = async (templateId, personalisation) => {
 const sendFarmerApplicationEmail = async (data) => {
   const contents = await downloadBlob(documentContainer, createFileName(data))
   const personalisation = {
-    name: data.user.farmerName,
+    name: data.farmerName,
     reference: data.reference,
     link_to_file: notifyClient.prepareUpload(contents),
     guidance_uri: `${applyServiceUri}/guidance-for-farmers`,
     claim_uri: claimServiceUri
   }
-  return sendEmail(data.user.email, personalisation, data.reference, templateIdFarmerApplicationGeneration)
+  return sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGeneration)
 }
 
 module.exports = {
