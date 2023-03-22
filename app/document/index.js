@@ -6,8 +6,11 @@ const publish = require('./publish-document')
 
 const generateDocument = async (data) => {
   const docDefinition = createDocumentDefinition(data)
+  console.log('Document definition created')
   const pdfDoc = printer.createPdfKitDocument(docDefinition)
+  console.log('Document PDF created')
   await publish(pdfDoc, data)
+  console.log('Document published')
 }
 
 module.exports = generateDocument
