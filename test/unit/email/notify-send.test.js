@@ -1,5 +1,7 @@
 
 const mockData = require('../../mocks/data')
+const mockUser = require('../../mocks/user')
+const mockDocumentRequest = require('../../mocks/document-request')
 
 const { downloadBlob } = require('../../../app/storage')
 jest.mock('../../../app/storage')
@@ -30,7 +32,9 @@ describe('notify send email messages', () => {
     notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
     downloadBlob.mockResolvedValue(mockData)
     const response = await sendFarmerApplicationEmail(mockData)
-    expect(consoleLog).toHaveBeenCalledWith('Email sent', '123456789', 'AHWR-1234-5678')
+    expect(consoleLog).toHaveBeenNthCalledWith(1, `File contents for ${mockDocumentRequest.whichSpecies}/${mockUser.sbi}/${mockDocumentRequest.reference}.pdf downloaded`)
+    expect(consoleLog).toHaveBeenNthCalledWith(2, `Received email to send to ${mockUser.email} for ${mockDocumentRequest.reference}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(3, `Email sent to ${mockUser.email} for ${mockDocumentRequest.reference}`)
     expect(response).toEqual(true)
   })
 
@@ -39,7 +43,7 @@ describe('notify send email messages', () => {
     notifyClient.sendEmail.mockImplementation(() => { throw new Error() })
     downloadBlob.mockResolvedValue(mockData)
     const response = await sendFarmerApplicationEmail(mockData)
-    expect(consoleError).toHaveBeenCalledWith('Error occurred during sending email', undefined)
+    expect(consoleError).toHaveBeenCalledWith(`Error occurred sending email to ${mockUser.email} for ${mockDocumentRequest.reference}. Error: undefined`)
     expect(response).toEqual(false)
   })
 })
