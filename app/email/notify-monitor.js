@@ -16,7 +16,7 @@ const start = async () => {
       updateEmailStatus(documentLog, status)
     }
   } catch (err) {
-    console.error(err)
+    console.error(err.message)
   } finally {
     setTimeout(start, notfiyCheckInterval)
   }
