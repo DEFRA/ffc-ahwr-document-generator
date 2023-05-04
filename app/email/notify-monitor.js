@@ -13,6 +13,7 @@ const start = async () => {
       const emailReference = documentLog.emailReference
       console.log(`Checking message: ${JSON.stringify({
         reference: documentLog.reference,
+        status: documentLog.status,
         emailReference
       })}`)
       if (emailReference) {
