@@ -27,7 +27,7 @@ const sendEmail = async (email, personalisation, reference, templateId) => {
     await sendCarbonCopy(templateId, { personalisation, reference })
   } catch (e) {
     success = false
-    update(reference, { status: SEND_FAILED })
+    update(reference, { status: SEND_FAILED, completed: new Date() })
     console.error(`Error occurred sending email to ${email} for ${reference}. Error: ${e.response?.data}`)
   }
   return success

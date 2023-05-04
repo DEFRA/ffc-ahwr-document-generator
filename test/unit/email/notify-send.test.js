@@ -2,15 +2,26 @@
 const mockData = require('../../mocks/data')
 const mockUser = require('../../mocks/user')
 const mockDocumentRequest = require('../../mocks/document-request')
+const { SEND_FAILED } = require('../../../app/email/notify-statuses')
 
 const { downloadBlob } = require('../../../app/storage')
 jest.mock('../../../app/storage')
 
+const MOCK_NOW = new Date(2022, 7, 5, 15, 30, 10, 120)
+const MOCK_UPDATE = jest.fn()
+
 jest.mock('../../../app/repositories/document-log-repository', () => {
   return {
-    update: jest.fn()
+    update: MOCK_UPDATE
   }
 })
+
+jest.mock('../../../app/config', () => ({
+  storageConfig: {},
+  notifyConfig: {
+    notifyApiKey: 'fake_api_key'
+  }
+}))
 
 const notifyClient = require('../../../app/email/notify-client')
 jest.mock('../../../app/email/notify-client')
@@ -23,6 +34,14 @@ const consoleError = jest.spyOn(console, 'error')
 const notifyResponseId = '123456789'
 
 describe('notify send email messages', () => {
+  beforeAll(() => {
+    jest.useFakeTimers().setSystemTime(MOCK_NOW)
+  })
+
+  afterAll(() => {
+    jest.useRealTimers()
+  })
+
   beforeEach(() => {
     jest.resetAllMocks()
   })
@@ -44,6 +63,10 @@ describe('notify send email messages', () => {
     downloadBlob.mockResolvedValue(mockData)
     const response = await sendFarmerApplicationEmail(mockData)
     expect(consoleError).toHaveBeenCalledWith(`Error occurred sending email to ${mockUser.email} for ${mockDocumentRequest.reference}. Error: undefined`)
+    expect(MOCK_UPDATE).toHaveBeenCalledWith('AHWR-1234-5678', {
+      status: SEND_FAILED,
+      completed: MOCK_NOW
+    })
     expect(response).toEqual(false)
   })
 })
