@@ -11,9 +11,14 @@ const start = async () => {
 
     for (const documentLog of documentLogs) {
       const emailReference = documentLog.emailReference
-      console.log('Checking message', emailReference)
-      const status = await checkDeliveryStatus(emailReference)
-      updateEmailStatus(documentLog, status)
+      console.log(`Checking message: ${JSON.stringify({
+        reference: documentLog.reference,
+        emailReference
+      })}`)
+      if (emailReference) {
+        const status = await checkDeliveryStatus(emailReference)
+        updateEmailStatus(documentLog, status)
+      }
     }
   } catch (err) {
     console.error(err.message)
