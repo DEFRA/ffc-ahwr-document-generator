@@ -42,6 +42,15 @@ describe('run notify monitor', () => {
     checkDeliveryStatus.mockResolvedValue(DELIVERED)
     await start()
     expect(consoleLog).toHaveBeenCalledWith(`Checking message: ${JSON.stringify({ emailReference })}`)
+    expect(checkDeliveryStatus).toHaveBeenCalledTimes(1)
+  })
+
+  test('check for messages and check status - emailReference null', async () => {
+    checkEmailDelivered.mockReturnValue([{ emailReference: null }])
+    checkDeliveryStatus.mockResolvedValue(DELIVERED)
+    await start()
+    expect(consoleLog).toHaveBeenCalledWith(`Checking message: ${JSON.stringify({ emailReference: null })}`)
+    expect(checkDeliveryStatus).toHaveBeenCalledTimes(0)
   })
 
   test('check for messages and check status - error', async () => {
@@ -49,5 +58,6 @@ describe('run notify monitor', () => {
     checkDeliveryStatus.mockResolvedValue(DELIVERED)
     await start()
     expect(consoleError).toHaveBeenCalledTimes(1)
+    expect(checkDeliveryStatus).toHaveBeenCalledTimes(0)
   })
 })
