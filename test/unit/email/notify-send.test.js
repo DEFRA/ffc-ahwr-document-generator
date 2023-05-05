@@ -19,7 +19,8 @@ jest.mock('../../../app/repositories/document-log-repository', () => {
 jest.mock('../../../app/config', () => ({
   storageConfig: {},
   notifyConfig: {
-    notifyApiKey: 'fake_api_key'
+    notifyApiKey: 'fake_api_key',
+    carbonCopyEmailAddress: 'mock_carbon_copy_email_address'
   }
 }))
 
@@ -58,6 +59,14 @@ describe('notify send email messages', () => {
     })}`)
     expect(consoleLog).toHaveBeenNthCalledWith(3, `Email sent to: ${JSON.stringify({
       email: mockUser.email,
+      reference: mockDocumentRequest.reference
+    })}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(4, `Sending email to: ${JSON.stringify({
+      email: 'mock_carbon_copy_email_address',
+      reference: mockDocumentRequest.reference
+    })}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(5, `Carbon copy sent to: ${JSON.stringify({
+      email: 'mock_carbon_copy_email_address',
       reference: mockDocumentRequest.reference
     })}`)
   })
