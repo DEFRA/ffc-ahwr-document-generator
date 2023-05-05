@@ -50,23 +50,30 @@ describe('notify send email messages', () => {
     notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
     notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
     downloadBlob.mockResolvedValue(mockData)
-    const response = await sendFarmerApplicationEmail(mockData)
+    await sendFarmerApplicationEmail(mockData)
     expect(consoleLog).toHaveBeenNthCalledWith(1, `File contents for ${mockDocumentRequest.whichSpecies}/${mockUser.sbi}/${mockDocumentRequest.reference}.pdf downloaded`)
-    expect(consoleLog).toHaveBeenNthCalledWith(2, `Received email to send to ${mockUser.email} for ${mockDocumentRequest.reference}`)
-    expect(consoleLog).toHaveBeenNthCalledWith(3, `Email sent to ${mockUser.email} for ${mockDocumentRequest.reference}`)
-    expect(response).toEqual(true)
+    expect(consoleLog).toHaveBeenNthCalledWith(2, `Sending email to: ${JSON.stringify({
+      email: mockUser.email,
+      reference: mockDocumentRequest.reference
+    })}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(3, `Email sent to: ${JSON.stringify({
+      email: mockUser.email,
+      reference: mockDocumentRequest.reference
+    })}`)
   })
 
   test('send farmer application email - error raised', async () => {
     notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
     notifyClient.sendEmail.mockImplementation(() => { throw new Error() })
     downloadBlob.mockResolvedValue(mockData)
-    const response = await sendFarmerApplicationEmail(mockData)
-    expect(consoleError).toHaveBeenCalledWith(`Error occurred sending email to ${mockUser.email} for ${mockDocumentRequest.reference}. Error: undefined`)
+    await sendFarmerApplicationEmail(mockData)
+    expect(consoleError).toHaveBeenCalledWith(`Error while sending email: ${JSON.stringify({
+      email: mockUser.email,
+      reference: mockDocumentRequest.reference
+    })}`)
     expect(MOCK_UPDATE).toHaveBeenCalledWith('AHWR-1234-5678', {
       status: SEND_FAILED,
       completed: MOCK_NOW
     })
-    expect(response).toEqual(false)
   })
 })

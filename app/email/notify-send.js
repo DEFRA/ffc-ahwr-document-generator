@@ -8,41 +8,33 @@ const { SEND_FAILED } = require('./notify-statuses')
 const { templateIdFarmerApplicationGeneration, carbonCopyEmailAddress } = require('../config').notifyConfig
 const { update } = require('../repositories/document-log-repository')
 
-const send = async (templateId, email, personalisation) => {
-  console.log(`Received email to send to ${email} for ${personalisation.reference}`)
-  return notifyClient.sendEmail(
-    templateId,
-    email,
-    personalisation
-  )
-}
-
 const sendEmail = async (email, personalisation, reference, templateId) => {
+  console.log(`Sending email to: ${JSON.stringify({
+    email,
+    reference
+  })}`)
   let success = true
   try {
-    const response = await send(templateId, email, { personalisation, reference })
+    const response = await notifyClient.sendEmail(
+      templateId,
+      email,
+      {
+        personalisation,
+        reference
+      }
+    )
     const emailReference = response.data?.id
-    console.log(`Email sent to ${email} for ${reference}`)
     update(reference, { emailReference, status: EMAIL_CREATED })
-    await sendCarbonCopy(templateId, { personalisation, reference })
   } catch (e) {
     success = false
     update(reference, { status: SEND_FAILED, completed: new Date() })
-    console.error(`Error occurred sending email to ${email} for ${reference}. Error: ${e.response?.data}`)
+    console.error(`Error while sending email: ${JSON.stringify({
+      email,
+      reference,
+      err: e.response?.data
+    })}`)
   }
   return success
-}
-
-const sendCarbonCopy = async (templateId, personalisation) => {
-  if (carbonCopyEmailAddress) {
-    await send(
-      templateId,
-      carbonCopyEmailAddress,
-      personalisation
-    )
-
-    console.log(`Carbon copy email sent to ${carbonCopyEmailAddress} for ${personalisation.reference}`)
-  }
 }
 
 const sendFarmerApplicationEmail = async (data) => {
@@ -56,7 +48,20 @@ const sendFarmerApplicationEmail = async (data) => {
     guidance_uri: `${applyServiceUri}/guidance-for-farmers`,
     claim_uri: claimServiceUri
   }
-  return sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGeneration)
+  if (await sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGeneration)) {
+    console.log(`Email sent to: ${JSON.stringify({
+      email: data.email,
+      reference: data.reference
+    })}`)
+  }
+  if (carbonCopyEmailAddress) {
+    if (await sendEmail(carbonCopyEmailAddress, personalisation, data.reference, templateIdFarmerApplicationGeneration)) {
+      console.log(`Carbon copy sent to: ${JSON.stringify({
+        email: carbonCopyEmailAddress,
+        reference: data.reference
+      })}`)
+    }
+  }
 }
 
 module.exports = {
