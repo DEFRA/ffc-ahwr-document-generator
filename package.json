@@ -19,7 +19,7 @@
   "license": "OGL-UK-3.0",
   "dependencies": {
     "@azure/identity": "^1.1.0",
-    "@azure/storage-blob": "^12.11.0",
+    "@azure/storage-blob": "^12.14.0",
     "@hapi/hapi": "^21.1.0",
     "applicationinsights": "^2.1.6",
     "dotenv": "^16.0.3",
