@@ -11,6 +11,10 @@ const set = async (data, fileName) => {
 }
 
 const update = async (reference, data) => {
+  console.log(`Updating document log: ${JSON.stringify({
+    reference,
+    data
+  })}`)
   return models.documentLog.update(data,
     { where: { reference } })
 }

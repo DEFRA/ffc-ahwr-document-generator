@@ -11,11 +11,28 @@ jest.mock('.../../../app/email/update-email-status', () => {
   return jest.fn()
 })
 
+jest.useFakeTimers()
+
+jest.mock('../../../app/config', () => ({
+  storageConfig: {},
+  notifyConfig: {
+    notifyApiKey: 'fake_api_key'
+  }
+}))
+
 const consoleLog = jest.spyOn(console, 'log')
 const consoleError = jest.spyOn(console, 'error')
 const emailReference = '123456789'
 
 describe('run notify monitor', () => {
+  beforeAll(() => {
+    jest.useFakeTimers()
+  })
+
+  afterAll(() => {
+    jest.useRealTimers()
+  })
+
   beforeEach(() => {
     jest.resetAllMocks()
   })
@@ -24,7 +41,16 @@ describe('run notify monitor', () => {
     checkEmailDelivered.mockReturnValue([{ emailReference }])
     checkDeliveryStatus.mockResolvedValue(DELIVERED)
     await start()
-    expect(consoleLog).toHaveBeenCalledWith('Checking message', emailReference)
+    expect(consoleLog).toHaveBeenCalledWith(`Checking message: ${JSON.stringify({ emailReference })}`)
+    expect(checkDeliveryStatus).toHaveBeenCalledTimes(1)
+  })
+
+  test('check for messages and check status - emailReference null', async () => {
+    checkEmailDelivered.mockReturnValue([{ emailReference: null }])
+    checkDeliveryStatus.mockResolvedValue(DELIVERED)
+    await start()
+    expect(consoleLog).toHaveBeenCalledWith(`Checking message: ${JSON.stringify({ emailReference: null })}`)
+    expect(checkDeliveryStatus).toHaveBeenCalledTimes(0)
   })
 
   test('check for messages and check status - error', async () => {
@@ -32,5 +58,6 @@ describe('run notify monitor', () => {
     checkDeliveryStatus.mockResolvedValue(DELIVERED)
     await start()
     expect(consoleError).toHaveBeenCalledTimes(1)
+    expect(checkDeliveryStatus).toHaveBeenCalledTimes(0)
   })
 })
