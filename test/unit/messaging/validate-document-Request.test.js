@@ -8,7 +8,8 @@ describe('validate message body of the document request', () => {
       reference: 'AHWR-1234-5678',
       sbi: '123456789',
       whichSpecies: 'beef',
-      startDate: new Date()
+      startDate: new Date(),
+      email: 'lindagodwinc@randomdomain.com.test'
     }
 
     jest.resetAllMocks()
