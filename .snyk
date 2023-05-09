@@ -1,5 +1,5 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.22.1
+version: v1.25.0
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
   SNYK-JS-HAPISTATEHOOD-2769251:
@@ -7,12 +7,7 @@ ignore:
         reason: None given
         expires: '2022-10-23T09:45:39.372Z'
   SNYK-JS-WORDWRAP-3149973:
-    - pdfmake@0.2.7 > @foliojs-fork/linebreak@1.1.1 > brfs@2.0.2 > static-module@3.0.4 > escodegen@1.14.3 > optionator@0.8.3 > word-wrap@1.2.3:
-    - pdfmake@0.2.7 > @foliojs-fork/linebreak@1.1.1 > brfs@2.0.2 > static-module@3.0.4 > static-eval@2.1.0 > escodegen@1.14.3 > optionator@0.8.3 > word-wrap@1.2.3:
-    - pdfmake@0.2.7 > @foliojs-fork/pdfkit@0.13.0 > @foliojs-fork/linebreak@1.1.1 > brfs@2.0.2 > static-module@3.0.4 > escodegen@1.14.3 > optionator@0.8.3 > word-wrap@1.2.3:
-    - pdfmake@0.2.7 > @foliojs-fork/pdfkit@0.13.0 > @foliojs-fork/fontkit@1.9.1 > brfs@2.0.2 > static-module@3.0.4 > escodegen@1.14.3 > optionator@0.8.3 > word-wrap@1.2.3:
-    - pdfmake@0.2.7 > @foliojs-fork/pdfkit@0.13.0 > @foliojs-fork/linebreak@1.1.1 > brfs@2.0.2 > static-module@3.0.4 > static-eval@2.1.0 > escodegen@1.14.3 > optionator@0.8.3 > word-wrap@1.2.3:
-    - pdfmake@0.2.7 > @foliojs-fork/pdfkit@0.13.0 > @foliojs-fork/fontkit@1.9.1 > brfs@2.0.2 > static-module@3.0.4 > static-eval@2.1.0 > escodegen@1.14.3 > optionator@0.8.3 > word-wrap@1.2.3:
-        reason: no known fix
-        expires: '2023-04-23T12:15:56.831Z'
+    - '* > pdfmake':
+      reason: 'No fix available'
+      expires: '2023-10-23T09:45:39.372Z'
 patch: {}
