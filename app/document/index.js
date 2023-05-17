@@ -9,8 +9,9 @@ const generateDocument = async (data) => {
   console.log('Document definition created')
   const pdfDoc = printer.createPdfKitDocument(docDefinition)
   console.log('Document PDF created')
-  await publish(pdfDoc, data)
+  const publishResponse = await publish(pdfDoc, data)
   console.log('Document published')
+  return publishResponse
 }
 
 module.exports = generateDocument

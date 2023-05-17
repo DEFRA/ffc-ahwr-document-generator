@@ -7,8 +7,8 @@ const processDocumentRequest = async (message, receiver) => {
     const messageBody = message.body
     if (validateDocumentRequest(messageBody)) {
       console.log('Received document generation request', JSON.stringify(messageBody))
-      await generateDocument(messageBody)
-      await sendFarmerApplicationEmail(messageBody)
+      const { blob } = await generateDocument(messageBody)
+      await sendFarmerApplicationEmail(messageBody, blob)
       await receiver.completeMessage(message)
     }
   } catch (err) {
