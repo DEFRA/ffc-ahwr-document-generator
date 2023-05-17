@@ -3,9 +3,6 @@ const mockData = require('../../mocks/data')
 const mockUser = require('../../mocks/user')
 const mockDocumentRequest = require('../../mocks/document-request')
 
-const { downloadBlob } = require('../../../app/storage')
-jest.mock('../../../app/storage')
-
 jest.mock('../../../app/repositories/document-log-repository', () => {
   return {
     update: jest.fn()
@@ -30,8 +27,7 @@ describe('notify send email messages', () => {
   test('send farmer application email - successful email send', async () => {
     notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
     notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
-    downloadBlob.mockResolvedValue(mockData)
-    const response = await sendFarmerApplicationEmail(mockData)
+    const response = await sendFarmerApplicationEmail(mockData, Buffer.from('test').toString('base64'))
     expect(consoleLog).toHaveBeenNthCalledWith(1, `File contents for ${mockDocumentRequest.whichSpecies}/${mockUser.sbi}/${mockDocumentRequest.reference}.pdf downloaded`)
     expect(consoleLog).toHaveBeenNthCalledWith(2, `Received email to send to ${mockUser.email} for ${mockDocumentRequest.reference}`)
     expect(consoleLog).toHaveBeenNthCalledWith(3, `Email sent to ${mockUser.email} for ${mockDocumentRequest.reference}`)
@@ -41,8 +37,7 @@ describe('notify send email messages', () => {
   test('send farmer application email - error raised', async () => {
     notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
     notifyClient.sendEmail.mockImplementation(() => { throw new Error() })
-    downloadBlob.mockResolvedValue(mockData)
-    const response = await sendFarmerApplicationEmail(mockData)
+    const response = await sendFarmerApplicationEmail(mockData, Buffer.from('test').toString('base64'))
     expect(consoleError).toHaveBeenCalledWith(`Error occurred sending email to ${mockUser.email} for ${mockDocumentRequest.reference}. Error: undefined`)
     expect(response).toEqual(false)
   })

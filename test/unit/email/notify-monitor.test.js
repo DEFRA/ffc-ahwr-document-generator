@@ -21,10 +21,10 @@ describe('run notify monitor', () => {
   })
 
   test('check for messages and check status', async () => {
-    checkEmailDelivered.mockReturnValue([{ emailReference }])
+    checkEmailDelivered.mockResolvedValue([{ emailReference }])
     checkDeliveryStatus.mockResolvedValue(DELIVERED)
     await start()
-    expect(consoleLog).toHaveBeenCalledWith('Checking message', emailReference)
+    expect(consoleLog).toHaveBeenCalledWith(`Checking message with email reference ${emailReference}.`)
   })
 
   test('check for messages and check status - error', async () => {
