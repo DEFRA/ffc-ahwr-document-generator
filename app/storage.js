@@ -20,20 +20,6 @@ const initialiseContainers = async (container) => {
   containersInitialised = true
 }
 
-const downloadBlob = async (container, filename) => {
-  const containerClient = blobServiceClient.getContainerClient(container)
-  console.log(`Downloading blob ${filename} from container ${container}`)
-  if (await containerClient.exists()) {
-    try {
-      const blob = containerClient.getBlockBlobClient(filename)
-      return await blob.downloadToBuffer()
-    } catch (e) {
-      console.error(e)
-    }
-  }
-  return undefined
-}
-
 const uploadBlob = async (filename, contents) => {
   const container = blobServiceClient.getContainerClient(documentContainer)
   containersInitialised ?? await initialiseContainers(container)
@@ -41,9 +27,9 @@ const uploadBlob = async (filename, contents) => {
   const result = Buffer.concat(contents)
   await blob.upload(result, result.length)
   console.log(`Generated document: ${filename}`)
+  return result
 }
 
 module.exports = {
-  downloadBlob,
   uploadBlob
 }

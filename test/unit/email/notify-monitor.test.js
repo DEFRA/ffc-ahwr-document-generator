@@ -7,6 +7,7 @@ jest.mock('../../../app/repositories/document-log-repository')
 const checkDeliveryStatus = require('../../../app/email/notify-status')
 jest.mock('.../../../app/email/notify-status')
 
+const updateEmailStatusMock = require('.../../../app/email/update-email-status')
 jest.mock('.../../../app/email/update-email-status', () => {
   return jest.fn()
 })
@@ -21,15 +22,26 @@ describe('run notify monitor', () => {
   })
 
   test('check for messages and check status', async () => {
-    checkEmailDelivered.mockReturnValue([{ emailReference }])
+    checkEmailDelivered.mockResolvedValue([{ emailReference }])
     checkDeliveryStatus.mockResolvedValue(DELIVERED)
     await start()
-    expect(consoleLog).toHaveBeenCalledWith('Checking message', emailReference)
+    expect(consoleLog).toHaveBeenCalledWith(`Checking message with email reference ${emailReference}.`)
+    expect(checkDeliveryStatus).toHaveBeenCalledTimes(1)
+    expect(checkEmailDelivered).toHaveBeenCalledTimes(1)
+    expect(updateEmailStatusMock).toHaveBeenCalledTimes(1)
+  })
+
+  test('check for messages and skip null email reference', async () => {
+    checkEmailDelivered.mockResolvedValue([{ emailReference: null }])
+    await start()
+    expect(consoleLog).toHaveBeenCalledWith('Checking message with email reference null.')
+    expect(checkDeliveryStatus).toHaveBeenCalledTimes(0)
+    expect(checkEmailDelivered).toHaveBeenCalledTimes(1)
+    expect(updateEmailStatusMock).toHaveBeenCalledTimes(0)
   })
 
   test('check for messages and check status - error', async () => {
     checkEmailDelivered.mockImplementation(() => { throw new Error() })
-    checkDeliveryStatus.mockResolvedValue(DELIVERED)
     await start()
     expect(consoleError).toHaveBeenCalledTimes(1)
   })

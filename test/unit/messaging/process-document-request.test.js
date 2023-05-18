@@ -29,6 +29,7 @@ describe('process document request message', () => {
 
   test('completes message on success', async () => {
     mockValidation.validateDocumentRequest.mockReturnValue(true)
+    mockDocumentGenerator.mockResolvedValue('filename', Buffer.from('test').toString('base64'))
 
     const message = {
       body: mockDocumentRequest

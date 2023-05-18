@@ -10,9 +10,9 @@ const publishDocument = (pdfDocGenerator, data) => {
     pdfDocGenerator.on('data', chunk => chunks.push(chunk))
 
     pdfDocGenerator.on('end', async () => {
-      uploadBlob(filename, chunks)
+      const blob = await uploadBlob(filename, chunks)
       await set(data, filename)
-      resolve(filename)
+      resolve({ filename, blob })
     })
 
     pdfDocGenerator.on('error', (err) => reject(err))
