@@ -30,7 +30,7 @@
     "moment": "2.29.4",
     "notifications-node-client": "^5.1.1",
     "pdfmake": "0.2.7",
-    "pg": "8.7.3",
+    "pg": "8.10.0",
     "pg-hstore": "2.3.4",
     "sequelize": "^6.29.0"
   },
