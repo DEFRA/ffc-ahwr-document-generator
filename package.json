@@ -23,7 +23,7 @@
     "@hapi/hapi": "^21.1.0",
     "applicationinsights": "^2.1.6",
     "dotenv": "^16.0.3",
-    "fast-xml-parser": "^4.1.2",
+    "fast-xml-parser": "^4.2.2",
     "ffc-messaging": "^2.6.2",
     "joi": "17.6.0",
     "log-timestamp": "0.3.0",
