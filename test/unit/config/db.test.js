@@ -26,6 +26,16 @@ describe('beforeConnect hook', () => {
 
     expect(cfg.password).not.toBe('originalPassword')
     expect(cfg.password).toEqual(MOCK_TOKEN)
+
+    await dbConfig.production.hooks.beforeConnect(cfg)
+
+    expect(cfg.password).not.toBe('originalPassword')
+    expect(cfg.password).toEqual(MOCK_TOKEN)
+
+    await dbConfig.test.hooks.beforeConnect(cfg)
+
+    expect(cfg.password).not.toBe('originalPassword')
+    expect(cfg.password).toEqual(MOCK_TOKEN)
   })
 
   test('should not modify password in non-production environment', async () => {
@@ -36,6 +46,14 @@ describe('beforeConnect hook', () => {
     process.env.NODE_ENV = 'development'
 
     await dbConfig.development.hooks.beforeConnect(cfg)
+
+    expect(cfg.password).toBe('originalPassword')
+
+    await dbConfig.production.hooks.beforeConnect(cfg)
+
+    expect(cfg.password).toBe('originalPassword')
+
+    await dbConfig.test.hooks.beforeConnect(cfg)
 
     expect(cfg.password).toBe('originalPassword')
   })
