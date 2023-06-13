@@ -1,3 +1,7 @@
+jest.mock('../../app/config/notify', () => ({
+  apiKey: 'mockApiKey'
+}))
+
 jest.mock('../../app/config/storage', () => ({
   storageAccount: 'mockStorageAccount'
 }))
