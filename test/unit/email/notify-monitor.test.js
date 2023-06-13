@@ -17,7 +17,21 @@ const consoleError = jest.spyOn(console, 'error')
 const emailReference = '123456789'
 
 describe('run notify monitor', () => {
+  const originalSetTimeout = setTimeout;
+
   beforeEach(() => {
+    const mockSetTimeout = (callback, delay) => {
+      // Do nothing
+    };
+    setTimeout = mockSetTimeout;
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  afterAll(() => {
+    setTimeout = originalSetTimeout;
     jest.resetAllMocks()
   })
 
