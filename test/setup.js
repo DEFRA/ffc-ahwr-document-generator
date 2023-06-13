@@ -4,6 +4,10 @@ jest.mock('../app/config/notify', () => ({
   apiKey: 'mockApiKey'
 }))
 
+jest.mock('../app/config/storage', () => ({
+  storageAccount: 'mockStorageAccount'
+}))
+
 beforeEach(async () => {
   // Set reference to server in order to close the server during teardown.
   const createServer = require('../app/server')

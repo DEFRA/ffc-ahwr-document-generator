@@ -1,7 +1,3 @@
-jest.mock('../../app/config/storage', () => ({
-  storageAccount: 'mockStorageAccount'
-}))
-
 describe('storage tests', () => {
   beforeEach(() => {
     jest.clearAllMocks()
