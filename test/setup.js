@@ -1,7 +1,7 @@
 require('dotenv').config()
 
 jest.mock('../app/config/notify', () => ({
-  apiKey: 'mockApiKey'
+  notifyApiKey: 'mockNotifyApiKey'
 }))
 
 jest.mock('../app/config/storage', () => ({
