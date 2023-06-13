@@ -14,12 +14,12 @@ describe('errors plugin', () => {
       method: 'GET',
       path: '/example',
       handler: (request, h) => {
-        const { boom } = request.query;
+        const { boom } = request.query
 
         request.log = MOCK_LOG
 
         if (boom === 'true') {
-          return Boom.internal('Err message');
+          return Boom.internal('Err message')
         }
 
         return 'Success'
