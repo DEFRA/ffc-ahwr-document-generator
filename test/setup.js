@@ -1,5 +1,9 @@
 require('dotenv').config()
 
+jest.mock('../app/config/notify', () => ({
+  apiKey: 'mockApiKey'
+}))
+
 beforeEach(async () => {
   // Set reference to server in order to close the server during teardown.
   const createServer = require('../app/server')
