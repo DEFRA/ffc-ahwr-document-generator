@@ -18,6 +18,15 @@ const emailReference = '123456789'
 
 describe('run notify monitor', () => {
   beforeEach(() => {
+    jest.useFakeTimers()
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  afterAll(() => {
+    jest.useRealTimers()
     jest.resetAllMocks()
   })
 
