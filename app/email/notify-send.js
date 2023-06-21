@@ -51,6 +51,7 @@ const sendFarmerApplicationEmail = async (data, blob) => {
     reference: data.reference,
     link_to_file: notifyClient.prepareUpload(blob),
     guidance_uri: `${applyServiceUri}/guidance-for-farmers`,
+    claim_guidance_uri: `${applyServiceUri}/claim-guidance-for-farmers`,
     claim_uri: claimServiceUri
   }
   return sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGeneration)
