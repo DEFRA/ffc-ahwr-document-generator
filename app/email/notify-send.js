@@ -26,7 +26,7 @@ const sendEmail = async (email, personalisation, reference, templateId) => {
   } catch (e) {
     success = false
     update(reference, { status: SEND_FAILED })
-    console.error(`Error occurred sending email to ${email} for ${reference}. Error: ${e.response?.data}`)
+    console.error(`Error occurred sending email to ${email} for ${reference}. Error: ${JSON.stringify(e.response?.data)}`)
   }
   return success
 }
