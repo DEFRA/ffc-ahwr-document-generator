@@ -20,9 +20,9 @@ const applicationDetails = (data) => {
   return {
     stack: [
       { text: 'You have applied for funding for a review.\n\n' },
-      { text: 'By applying for this funding you’ve entered into an agreement with the Rural Payments Agency (RPA). The agreement will be governed by the agreed terms and conditions.\n\n' },
+      { text: 'By applying for this funding you have entered into an agreement with the Rural Payments Agency (RPA). The agreement will be governed by the agreed ' },
+      { text: 'terms and conditions.\n\n', link: config.termsAndConditionsUrl, decoration: 'underline', color: '#1D70B8' },
       { text: 'Agreement summary \n\n', style: 'subheader' },
-      { text: 'Here are the following details:\n\n' },
       {
         ul: [
           `Agreement number: ${data.reference} \n\n`,
@@ -33,7 +33,11 @@ const applicationDetails = (data) => {
         ]
       },
       { text: `You must have a minimum number of animals on the date the vet visits your farm to do the review. You must have ${eligibility(data.whichSpecies)}.\n\n` },
-      { text: 'Terms and conditions\n\n', link: config.termsAndConditionsUrl, decoration: 'underline', color: '#1D70B8' }
+      { text: 'More information\n\n', style: 'subheader' },
+      { text: 'For information on what happens during a review and what you need to do, read the ' },
+      { text: 'guidance on how to apply for an annual health and welfare review of livestock.\n\n', link: config.applyServiceUri, decoration: 'underline', color: '#1D70B8' },
+      { text: 'For information on how to claim, read the ' },
+      { text: 'guidance on how to claim funding for an annual health and welfare review of livestock.\n\n', link: config.claimServiceUri, decoration: 'underline', color: '#1D70B8' }
     ]
   }
 }
