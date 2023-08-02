@@ -44,8 +44,8 @@ module.exports = {
           ul: [
             'Agreement number: AHWR-1234-5678 \n\n',
             'Agreement holder: John Farmer - 111111111 \n\n',
-            'Agreement start date: 22/03/2023 \n\n',
-            'Agreement end date: 22/09/2023 \n\n',
+            'Agreement start date: 22 March 2023 \n\n',
+            'Agreement end date: 22 September 2023 \n\n',
             'Type of livestock review: beef \n\n'
           ]
         },

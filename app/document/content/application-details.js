@@ -2,7 +2,7 @@ const moment = require('moment')
 const config = require('../../config')
 
 const calculateEndDate = (startDate, duration) => {
-  return moment(startDate).add(duration, 'months').format('DD/MM/YYYY')
+  return moment(startDate).add(duration, 'months').format('D MMMM YYYY')
 }
 
 const eligibility = (whichSpecies) => {
@@ -27,7 +27,7 @@ const applicationDetails = (data) => {
         ul: [
           `Agreement number: ${data.reference} \n\n`,
           `Agreement holder: ${data.farmerName} - ${data.sbi} \n\n`,
-          `Agreement start date: ${moment(data.startDate).format('DD/MM/YYYY')} \n\n`,
+          `Agreement start date: ${moment(data.startDate).format('D MMMM YYYY')} \n\n`,
           `Agreement end date: ${calculateEndDate(data.startDate, 6)} \n\n`,
           `Type of livestock review: ${data.whichSpecies} \n\n`
         ]
