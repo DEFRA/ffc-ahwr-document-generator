@@ -35,9 +35,9 @@ const applicationDetails = (data) => {
       { text: `You must have a minimum number of animals on the date the vet visits your farm to do the review. You must have ${eligibility(data.whichSpecies)}.\n\n` },
       { text: 'More information\n\n', style: 'subheader' },
       { text: 'For information about what happens during a review and what you need to do, read the ' },
-      { text: 'guidance on how to apply for an annual health and welfare review of livestock.\n\n', link: config.applyServiceUri, decoration: 'underline', color: '#1D70B8' },
+      { text: 'guidance on how to apply for an annual health and welfare review of livestock.\n\n', link: `${config.applyServiceUri}/guidance-for-farmers`, decoration: 'underline', color: '#1D70B8' },
       { text: 'For information on how to claim, read the ' },
-      { text: 'guidance on how to claim funding for an annual health and welfare review of livestock.\n\n', link: config.claimServiceUri, decoration: 'underline', color: '#1D70B8' }
+      { text: 'guidance on how to claim funding for an annual health and welfare review of livestock.\n\n', link: `${config.applyServiceUri}/claim-guidance-for-farmers`, decoration: 'underline', color: '#1D70B8' }
     ]
   }
 }

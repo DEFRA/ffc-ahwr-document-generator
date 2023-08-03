@@ -54,7 +54,7 @@ describe('generate document content', () => {
 
   test('includes application guidance link', () => {
     expect(result[1].stack[8].text).toBe('guidance on how to apply for an annual health and welfare review of livestock.\n\n')
-    expect(result[1].stack[8].link).toBe(config.applyServiceUri)
+    expect(result[1].stack[8].link).toBe(`${config.applyServiceUri}/guidance-for-farmers`)
   })
 
   test('includes claim guidance text', () => {
@@ -63,6 +63,6 @@ describe('generate document content', () => {
 
   test('includes claim guidance link', () => {
     expect(result[1].stack[10].text).toBe('guidance on how to claim funding for an annual health and welfare review of livestock.\n\n')
-    expect(result[1].stack[10].link).toBe(config.claimServiceUri)
+    expect(result[1].stack[10].link).toBe(`${config.applyServiceUri}/claim-guidance-for-farmers`)
   })
 })
