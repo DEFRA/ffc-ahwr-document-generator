@@ -57,7 +57,7 @@ module.exports = {
           style: 'subheader'
         },
         {
-          text: 'For information on what happens during a review and what you need to to, read the '
+          text: 'For information about what happens during a review and what you need to to, read the '
         },
         {
           text: 'guidance on how to apply for an annual health and welfare review of livestock. \n\n',

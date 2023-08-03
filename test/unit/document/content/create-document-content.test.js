@@ -49,7 +49,7 @@ describe('generate document content', () => {
   })
 
   test('includes application guidance text', () => {
-    expect(result[1].stack[7].text).toBe('For information on what happens during a review and what you need to do, read the ')
+    expect(result[1].stack[7].text).toBe('For information about what happens during a review and what you need to do, read the ')
   })
 
   test('includes application guidance link', () => {
