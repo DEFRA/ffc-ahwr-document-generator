@@ -28,21 +28,24 @@ module.exports = {
           text: 'You have applied for funding for a review.\n\n'
         },
         {
-          text: 'By applying for this funding you’ve entered into an agreement with the Rural Payments Agency (RPA). The agreement will be governed by the agreed terms and conditions.\n\n'
+          text: 'By applying for this funding you have entered into an agreement with the Rural Payments Agency (RPA). The agreement will be governed by the agreed '
+        },
+        {
+          text: 'terms and conditions.\n\n',
+          link: '#',
+          decoration: 'underline',
+          color: '#1D70B8'
         },
         {
           text: 'Agreement summary \n\n',
           style: 'subheader'
         },
         {
-          text: 'Here are the following details:\n\n'
-        },
-        {
           ul: [
             'Agreement number: AHWR-1234-5678 \n\n',
             'Agreement holder: John Farmer - 111111111 \n\n',
-            'Agreement start date: 22/03/2023 \n\n',
-            'Agreement end date: 22/09/2023 \n\n',
+            'Agreement start date: 22 March 2023 \n\n',
+            'Agreement end date: 22 September 2023 \n\n',
             'Type of livestock review: beef \n\n'
           ]
         },
@@ -50,7 +53,23 @@ module.exports = {
           text: 'You must have a minimum number of animals on the date the vet visits your farm to do the review. You must have 11 or more beef cattle.\n\n'
         },
         {
-          text: 'Terms and conditions\n\n',
+          text: 'More information \n\n',
+          style: 'subheader'
+        },
+        {
+          text: 'For information about what happens during a review and what you need to to, read the '
+        },
+        {
+          text: 'guidance on how to apply for an annual health and welfare review of livestock. \n\n',
+          link: '#',
+          decoration: 'underline',
+          color: '#1D70B8'
+        },
+        {
+          text: 'For information on how to claim, read the '
+        },
+        {
+          text: 'guidance on how to claim funding for an annual health and welfare review of livestock. \n\n',
           link: '#',
           decoration: 'underline',
           color: '#1D70B8'
