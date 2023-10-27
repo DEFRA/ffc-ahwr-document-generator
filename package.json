@@ -18,7 +18,7 @@
   "contributors": [],
   "license": "OGL-UK-3.0",
   "dependencies": {
-    "@azure/identity": "^1.1.0",
+    "@azure/identity": "^2.0.0",
     "@azure/storage-blob": "^12.11.0",
     "@hapi/hapi": "^20.3.0",
     "applicationinsights": "^2.1.6",
