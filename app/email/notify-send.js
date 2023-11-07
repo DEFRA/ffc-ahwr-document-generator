@@ -5,6 +5,7 @@ const { EMAIL_CREATED } = require('../statuses')
 const { SEND_FAILED } = require('./notify-statuses')
 const { templateIdFarmerApplicationGeneration, carbonCopyEmailAddress } = require('../config').notifyConfig
 const { update } = require('../repositories/document-log-repository')
+const appInsights = require('applicationinsights')
 
 const send = async (templateId, email, personalisation) => {
   console.log(`Received email to send to ${email} for ${personalisation.reference}`)
@@ -27,11 +28,21 @@ const sendEmail = async (email, personalisation, reference, templateId) => {
     console.log(`Email sent to ${email} for ${reference}`)
     update(reference, { emailReference, status: EMAIL_CREATED })
     await sendCarbonCopy(templateId, { personalisation, reference })
+    appInsights.defaultClient.trackEvent({
+      name: 'email',
+      properties: {
+        status: success,
+        reference,
+        email,
+        templateId
+      }
+    })
     success = true
   } catch (e) {
     success = false
     update(reference, { status: SEND_FAILED })
     console.error(`Error occurred sending email to ${email} for ${reference}. Error: ${JSON.stringify(e.response?.data)}`)
+    appInsights.defaultClient.trackException({ exception: e })
   }
   return success
 }
