@@ -18,7 +18,7 @@
   "contributors": [],
   "license": "OGL-UK-3.0",
   "dependencies": {
-    "@azure/identity": "^1.1.0",
+    "@azure/identity": "^3.3.2",
     "@azure/storage-blob": "^12.11.0",
     "@hapi/hapi": "^20.3.0",
     "applicationinsights": "^2.1.6",
@@ -28,7 +28,7 @@
     "joi": "^17.9.1",
     "log-timestamp": "0.3.0",
     "moment": "2.29.4",
-    "notifications-node-client": "^5.1.1",
+    "notifications-node-client": "^7.0.3",
     "pdfmake": "0.2.7",
     "pg": "8.7.3",
     "pg-hstore": "2.3.4",
@@ -36,7 +36,8 @@
   },
   "overrides": {
     "notifications-node-client": {
-      "jsonwebtoken": "9.0.0"
+      "jsonwebtoken": "9.0.0",
+      "axios": "1.6.0"
     },
     "@azure/identity": {
       "jsonwebtoken": "9.0.0"
