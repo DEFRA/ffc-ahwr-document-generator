@@ -12,6 +12,8 @@ jest.mock('../../../app/repositories/document-log-repository', () => {
 const notifyClient = require('../../../app/email/notify-client')
 jest.mock('../../../app/email/notify-client')
 
+jest.mock('applicationinsights', () => ({ defaultClient: { trackException: jest.fn(), trackEvent: jest.fn() }, dispose: jest.fn() }))
+
 const { sendFarmerApplicationEmail } = require('../../../app/email/notify-send')
 
 const consoleLog = jest.spyOn(console, 'log')

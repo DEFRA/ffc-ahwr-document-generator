@@ -5,41 +5,60 @@ const { EMAIL_CREATED } = require('../statuses')
 const { SEND_FAILED } = require('./notify-statuses')
 const { templateIdFarmerApplicationGeneration, carbonCopyEmailAddress } = require('../config').notifyConfig
 const { update } = require('../repositories/document-log-repository')
+const appInsights = require('applicationinsights')
 
 const send = async (templateId, email, personalisation) => {
   console.log(`Received email to send to ${email} for ${personalisation.reference}`)
-  return notifyClient.sendEmail(
-    templateId,
-    email,
-    personalisation
-  )
+  try {
+    return notifyClient.sendEmail(
+      templateId,
+      email,
+      personalisation
+    )
+  } catch (error) {
+    throw Error(error)
+  }
 }
 
 const sendEmail = async (email, personalisation, reference, templateId) => {
-  let success = true
+  let success = false
   try {
     const response = await send(templateId, email, { personalisation, reference })
     const emailReference = response.data?.id
     console.log(`Email sent to ${email} for ${reference}`)
     update(reference, { emailReference, status: EMAIL_CREATED })
     await sendCarbonCopy(templateId, { personalisation, reference })
+    appInsights.defaultClient.trackEvent({
+      name: 'email',
+      properties: {
+        status: success,
+        reference,
+        email,
+        templateId
+      }
+    })
+    success = true
   } catch (e) {
     success = false
     update(reference, { status: SEND_FAILED })
     console.error(`Error occurred sending email to ${email} for ${reference}. Error: ${JSON.stringify(e.response?.data)}`)
+    appInsights.defaultClient.trackException({ exception: e })
   }
   return success
 }
 
 const sendCarbonCopy = async (templateId, personalisation) => {
-  if (carbonCopyEmailAddress) {
-    await send(
-      templateId,
-      carbonCopyEmailAddress,
-      personalisation
-    )
-
-    console.log(`Carbon copy email sent to ${carbonCopyEmailAddress} for ${personalisation.reference}`)
+  try {
+    if (carbonCopyEmailAddress) {
+      await send(
+        templateId,
+        carbonCopyEmailAddress,
+        personalisation
+      )
+      console.log(`Carbon copy email sent to ${carbonCopyEmailAddress} for ${personalisation.reference}`)
+    }
+  } catch (error) {
+    throw Error(error)
   }
 }
 
