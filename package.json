@@ -28,7 +28,7 @@
     "joi": "^17.9.1",
     "log-timestamp": "0.3.0",
     "moment": "2.29.4",
-    "notifications-node-client": "^7.0.3",
+    "notifications-node-client": "^7.0.4",
     "pdfmake": "0.2.7",
     "pg": "8.7.3",
     "pg-hstore": "2.3.4",
