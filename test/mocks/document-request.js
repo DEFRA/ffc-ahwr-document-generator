@@ -4,5 +4,5 @@ module.exports = {
   whichSpecies: 'beef',
   startDate: new Date(),
   email: 'test@email.com',
-  farmerName: 'Farmer'
+  farmerName: 'Farmer',
 }

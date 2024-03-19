@@ -73,6 +73,9 @@ const sendFarmerApplicationEmail = async (data, blob) => {
     claim_guidance_uri: `${applyServiceUri}/claim-guidance-for-farmers`,
     claim_uri: claimServiceUri
   }
+  if (data?.orgEmail) {
+    sendEmail(data.orgEmail, personalisation, data.reference, templateIdFarmerApplicationGeneration)
+  }
   return sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGeneration)
 }
 
