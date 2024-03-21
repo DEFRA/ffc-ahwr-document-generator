@@ -20,6 +20,9 @@ const consoleLog = jest.spyOn(console, 'log')
 const consoleError = jest.spyOn(console, 'error')
 
 const notifyResponseId = '123456789'
+const personalisation = { reference: '123abc' }
+const carbonCopyEmailAddress = 'test@example.com'
+const templateId = 'template-id'
 
 describe('notify send email messages', () => {
   beforeEach(() => {
@@ -57,17 +60,21 @@ describe('notify send email messages', () => {
   })
 
   test('send carbon copy email - successful email', async () => {
-    const personalisation = { reference: '4544333' }
-    const carbonCopyEmailAddress = 'test@email.com'
-    const templateId = '23334445555'
+    notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
     await sendCarbonCopy(templateId, personalisation, carbonCopyEmailAddress)
     expect(consoleLog).toHaveBeenNthCalledWith(1, `Received email to send to ${carbonCopyEmailAddress} for ${personalisation.reference}`)
     expect(consoleLog).toHaveBeenNthCalledWith(2, `Carbon copy email sent to ${carbonCopyEmailAddress} for ${personalisation.reference}`)
   })
 
+  test('does not send carbon copy email when no carbon copy email address', async () => {
+    await sendCarbonCopy(templateId, personalisation)
+
+    expect(notifyClient.sendEmail).not.toHaveBeenCalled()
+  })
+
   test('send carbon copy email - error raised', async () => {
     notifyClient.sendEmail.mockImplementation(() => { throw new Error() })
-    await sendFarmerApplicationEmail(mockData, Buffer.from('test').toString('base64'))
-    expect(consoleError).toHaveBeenCalledWith(`Error occurred sending email to ${mockUser.email} for ${mockDocumentRequest.reference}. Error: undefined`)
+    await sendCarbonCopy(templateId, personalisation, carbonCopyEmailAddress)
+    expect(consoleError).toHaveBeenCalledWith(`Error occurred sending carbon email to ${carbonCopyEmailAddress} for ${personalisation.reference}. Error: undefined`)
   })
 })

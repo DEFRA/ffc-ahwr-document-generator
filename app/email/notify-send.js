@@ -57,8 +57,8 @@ const sendCarbonCopy = async (templateId, personalisation, carbonCopyEmailAddres
       )
       console.log(`Carbon copy email sent to ${carbonCopyEmailAddress} for ${personalisation.reference}`)
     }
-  } catch (error) {
-    throw Error(error)
+  } catch (e) {
+    console.error(`Error occurred sending carbon email to ${carbonCopyEmailAddress} for ${personalisation.reference}. Error: ${JSON.stringify(e.response?.data)}`)
   }
 }
 
@@ -81,5 +81,6 @@ const sendFarmerApplicationEmail = async (data, blob) => {
 
 module.exports = {
   sendFarmerApplicationEmail,
-  sendCarbonCopy
+  sendCarbonCopy,
+  send
 }
