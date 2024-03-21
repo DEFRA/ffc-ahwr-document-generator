@@ -14,7 +14,7 @@ jest.mock('../../../app/email/notify-client')
 
 jest.mock('applicationinsights', () => ({ defaultClient: { trackException: jest.fn(), trackEvent: jest.fn() }, dispose: jest.fn() }))
 
-const { sendFarmerApplicationEmail } = require('../../../app/email/notify-send')
+const { sendFarmerApplicationEmail, sendCarbonCopy } = require('../../../app/email/notify-send')
 
 const consoleLog = jest.spyOn(console, 'log')
 const consoleError = jest.spyOn(console, 'error')
@@ -54,5 +54,14 @@ describe('notify send email messages', () => {
     const response = await sendFarmerApplicationEmail(mockData, Buffer.from('test').toString('base64'))
     expect(consoleError).toHaveBeenCalledWith(`Error occurred sending email to ${mockUser.email} for ${mockDocumentRequest.reference}. Error: undefined`)
     expect(response).toEqual(false)
+  })
+
+  test('send carbon copy email - successful email', async () => {
+    const personalisation = { reference: '4544333' }
+    const carbonCopyEmailAddress = 'test@email.com'
+    const templateId = '23334445555'
+    await sendCarbonCopy(templateId, personalisation, carbonCopyEmailAddress)
+    expect(consoleLog).toHaveBeenNthCalledWith(1, `Received email to send to ${carbonCopyEmailAddress} for ${personalisation.reference}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(2, `Carbon copy email sent to ${carbonCopyEmailAddress} for ${personalisation.reference}`)
   })
 })

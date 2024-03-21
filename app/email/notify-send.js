@@ -27,7 +27,7 @@ const sendEmail = async (email, personalisation, reference, templateId) => {
     const emailReference = response.data?.id
     console.log(`Email sent to ${email} for ${reference}`)
     update(reference, { emailReference, status: EMAIL_CREATED })
-    await sendCarbonCopy(templateId, { personalisation, reference })
+    await sendCarbonCopy(templateId, { personalisation, reference }, carbonCopyEmailAddress)
     appInsights.defaultClient.trackEvent({
       name: 'email',
       properties: {
@@ -47,7 +47,7 @@ const sendEmail = async (email, personalisation, reference, templateId) => {
   return success
 }
 
-const sendCarbonCopy = async (templateId, personalisation) => {
+const sendCarbonCopy = async (templateId, personalisation, carbonCopyEmailAddress) => {
   try {
     if (carbonCopyEmailAddress) {
       await send(
@@ -80,5 +80,6 @@ const sendFarmerApplicationEmail = async (data, blob) => {
 }
 
 module.exports = {
-  sendFarmerApplicationEmail
+  sendFarmerApplicationEmail,
+  sendCarbonCopy
 }
