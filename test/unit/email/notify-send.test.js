@@ -64,4 +64,10 @@ describe('notify send email messages', () => {
     expect(consoleLog).toHaveBeenNthCalledWith(1, `Received email to send to ${carbonCopyEmailAddress} for ${personalisation.reference}`)
     expect(consoleLog).toHaveBeenNthCalledWith(2, `Carbon copy email sent to ${carbonCopyEmailAddress} for ${personalisation.reference}`)
   })
+
+  test('send carbon copy email - error raised', async () => {
+    notifyClient.sendEmail.mockImplementation(() => { throw new Error() })
+    await sendFarmerApplicationEmail(mockData, Buffer.from('test').toString('base64'))
+    expect(consoleError).toHaveBeenCalledWith(`Error occurred sending email to ${mockUser.email} for ${mockDocumentRequest.reference}. Error: undefined`)
+  })
 })
