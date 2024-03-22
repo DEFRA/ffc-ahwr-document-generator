@@ -33,7 +33,7 @@ describe('generate document content', () => {
 
   test('includes Agreement details', () => {
     expect(result[1].stack[4].ul[0]).toBe(`Agreement number: ${mockData.reference} \n\n`)
-    expect(result[1].stack[4].ul[1]).toBe(`Agreement holder: ${mockData.farmerName} - ${mockData.sbi} \n\n`)
+    expect(result[1].stack[4].ul[1]).toBe(`Agreement holder: ${mockData.orgName} - ${mockData.sbi} \n\n`)
     expect(result[1].stack[4].ul[2]).toBe(`Agreement start date: ${moment(mockData.startDate).format('D MMMM YYYY')} \n\n`)
     expect(result[1].stack[4].ul[3]).toBe(`Agreement end date: ${moment(mockData.startDate).add(6, 'M').format('D MMMM YYYY')} \n\n`)
     expect(result[1].stack[4].ul[4]).toBe(`Type of livestock review: ${mockData.whichSpecies} \n\n`)

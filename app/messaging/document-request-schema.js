@@ -6,6 +6,8 @@ const eventSchema = joi.object({
   whichSpecies: joi.string().required(),
   startDate: joi.date().required(),
   email: joi.string().email({ tlds: false }).optional(),
+  orgEmail: joi.string().email({ tlds: false }).optional(),
+  orgName: joi.string().optional(),
   farmerName: joi.string().optional()
 })
 

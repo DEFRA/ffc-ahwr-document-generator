@@ -14,12 +14,15 @@ jest.mock('../../../app/email/notify-client')
 
 jest.mock('applicationinsights', () => ({ defaultClient: { trackException: jest.fn(), trackEvent: jest.fn() }, dispose: jest.fn() }))
 
-const { sendFarmerApplicationEmail } = require('../../../app/email/notify-send')
+const { sendFarmerApplicationEmail, sendCarbonCopy } = require('../../../app/email/notify-send')
 
 const consoleLog = jest.spyOn(console, 'log')
 const consoleError = jest.spyOn(console, 'error')
 
 const notifyResponseId = '123456789'
+const personalisation = { reference: '123abc' }
+const carbonCopyEmailAddress = 'test@example.com'
+const templateId = 'template-id'
 
 describe('notify send email messages', () => {
   beforeEach(() => {
@@ -30,6 +33,18 @@ describe('notify send email messages', () => {
     notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
     notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
     const response = await sendFarmerApplicationEmail(mockData, Buffer.from('test').toString('base64'))
+    expect(consoleLog).toHaveBeenNthCalledWith(1, `File contents for ${mockDocumentRequest.whichSpecies}/${mockUser.sbi}/${mockDocumentRequest.reference}.pdf downloaded`)
+    expect(consoleLog).toHaveBeenNthCalledWith(2, `Received email to send to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(3, `Received email to send to ${mockUser.email} for ${mockDocumentRequest.reference}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(4, `Email sent to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(5, `Email sent to ${mockUser.email} for ${mockDocumentRequest.reference}`)
+    expect(response).toEqual(true)
+  })
+
+  test('send farmer application email - successful email send when org email does not exist', async () => {
+    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
+    notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
+    const response = await sendFarmerApplicationEmail({ ...mockData, orgEmail: undefined }, Buffer.from('test').toString('base64'))
     expect(consoleLog).toHaveBeenNthCalledWith(1, `File contents for ${mockDocumentRequest.whichSpecies}/${mockUser.sbi}/${mockDocumentRequest.reference}.pdf downloaded`)
     expect(consoleLog).toHaveBeenNthCalledWith(2, `Received email to send to ${mockUser.email} for ${mockDocumentRequest.reference}`)
     expect(consoleLog).toHaveBeenNthCalledWith(3, `Email sent to ${mockUser.email} for ${mockDocumentRequest.reference}`)
@@ -42,5 +57,24 @@ describe('notify send email messages', () => {
     const response = await sendFarmerApplicationEmail(mockData, Buffer.from('test').toString('base64'))
     expect(consoleError).toHaveBeenCalledWith(`Error occurred sending email to ${mockUser.email} for ${mockDocumentRequest.reference}. Error: undefined`)
     expect(response).toEqual(false)
+  })
+
+  test('send carbon copy email - successful email', async () => {
+    notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
+    await sendCarbonCopy(templateId, personalisation, carbonCopyEmailAddress)
+    expect(consoleLog).toHaveBeenNthCalledWith(1, `Received email to send to ${carbonCopyEmailAddress} for ${personalisation.reference}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(2, `Carbon copy email sent to ${carbonCopyEmailAddress} for ${personalisation.reference}`)
+  })
+
+  test('does not send carbon copy email when no carbon copy email address', async () => {
+    await sendCarbonCopy(templateId, personalisation)
+
+    expect(notifyClient.sendEmail).not.toHaveBeenCalled()
+  })
+
+  test('send carbon copy email - error raised', async () => {
+    notifyClient.sendEmail.mockImplementation(() => { throw new Error() })
+    await sendCarbonCopy(templateId, personalisation, carbonCopyEmailAddress)
+    expect(consoleError).toHaveBeenCalledWith(`Error occurred sending carbon email to ${carbonCopyEmailAddress} for ${personalisation.reference}. Error: undefined`)
   })
 })
