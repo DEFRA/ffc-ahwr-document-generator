@@ -26,7 +26,7 @@ const applicationDetails = (data) => {
       {
         ul: [
           `Agreement number: ${data.reference} \n\n`,
-          `Agreement holder: ${data.orgName} - ${data.sbi} \n\n`,
+          `Agreement holder: ${data.name} - ${data.sbi} \n\n`,
           `Agreement start date: ${moment(data.startDate).format('D MMMM YYYY')} \n\n`,
           `Agreement end date: ${calculateEndDate(data.startDate, 6)} \n\n`,
           `Type of livestock review: ${data.whichSpecies} \n\n`
