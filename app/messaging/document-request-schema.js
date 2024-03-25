@@ -7,7 +7,7 @@ const eventSchema = joi.object({
   startDate: joi.date().required(),
   email: joi.string().email({ tlds: false }).optional(),
   orgEmail: joi.string().email({ tlds: false }).optional(),
-  orgName: joi.string().optional(),
+  name: joi.string().optional(),
   farmerName: joi.string().optional()
 })
 

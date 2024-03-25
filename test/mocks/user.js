@@ -5,6 +5,5 @@ module.exports = {
   cph: '11/111/1111',
   address: '1 Long Lane, Longton, AA11 1AA',
   email: 'admin@the-dairy.com',
-  orgEmail: 'test@email.org',
-  orgName: 'Farmer org'
+  orgEmail: 'test@email.org'
 }
