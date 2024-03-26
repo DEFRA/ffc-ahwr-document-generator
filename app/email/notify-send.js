@@ -20,14 +20,16 @@ const send = async (templateId, email, personalisation) => {
   }
 }
 
-const sendEmail = async (email, personalisation, reference, templateId) => {
+const sendEmail = async (email, personalisation, reference, templateId, carbonEmail = false) => {
   let success = false
   try {
     const response = await send(templateId, email, { personalisation, reference })
     const emailReference = response.data?.id
     console.log(`Email sent to ${email} for ${reference}`)
     update(reference, { emailReference, status: EMAIL_CREATED })
-    await sendCarbonCopy(templateId, { personalisation, reference }, carbonCopyEmailAddress)
+    if (carbonEmail) {
+      await sendCarbonCopy(templateId, { personalisation, reference }, carbonCopyEmailAddress)
+    }
     appInsights.defaultClient.trackEvent({
       name: 'email',
       properties: {
@@ -73,10 +75,10 @@ const sendFarmerApplicationEmail = async (data, blob) => {
     claim_guidance_uri: `${applyServiceUri}/claim-guidance-for-farmers`,
     claim_uri: claimServiceUri
   }
-  if (data?.orgEmail) {
+  if (data?.orgEmail && data?.orgEmail !== data.email) {
     sendEmail(data.orgEmail, personalisation, data.reference, templateIdFarmerApplicationGeneration)
   }
-  return sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGeneration)
+  return sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGeneration, true)
 }
 
 module.exports = {
