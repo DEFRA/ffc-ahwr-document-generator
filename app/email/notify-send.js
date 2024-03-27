@@ -68,7 +68,7 @@ const sendFarmerApplicationEmail = async (data, blob) => {
   const filename = createFileName(data)
   console.log(`File contents for ${filename} downloaded`)
   const personalisation = {
-    name: data.farmerName,
+    name: data.name,
     reference: data.reference,
     link_to_file: notifyClient.prepareUpload(blob),
     guidance_uri: `${applyServiceUri}/guidance-for-farmers`,
