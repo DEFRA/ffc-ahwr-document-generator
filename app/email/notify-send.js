@@ -1,9 +1,14 @@
 const notifyClient = require('./notify-client')
 const createFileName = require('../document/create-filename')
-const { applyServiceUri, claimServiceUri } = require('../config')
+const { applyServiceUri, claimServiceUri, endemics } = require('../config')
 const { EMAIL_CREATED } = require('../statuses')
 const { SEND_FAILED } = require('./notify-statuses')
-const { templateIdFarmerApplicationGeneration, carbonCopyEmailAddress } = require('../config').notifyConfig
+const { 
+    templateIdFarmerApplicationGeneration, 
+    templateIdFarmerApplicationGenerationNewUser, 
+    templateIdFarmerApplicationGenerationExistingUser,
+    carbonCopyEmailAddress 
+} = require('../config').notifyConfig
 const { update } = require('../repositories/document-log-repository')
 const appInsights = require('applicationinsights')
 
@@ -65,6 +70,7 @@ const sendCarbonCopy = async (templateId, personalisation, carbonCopyEmailAddres
 }
 
 const sendFarmerApplicationEmail = async (data, blob) => {
+  console.log(`Sending email for ${data.reference}`)
   const filename = createFileName(data)
   console.log(`File contents for ${filename} downloaded`)
   const personalisation = {
@@ -76,7 +82,18 @@ const sendFarmerApplicationEmail = async (data, blob) => {
     claim_uri: claimServiceUri
   }
   if (data?.orgEmail && data?.orgEmail !== data.email) {
-    sendEmail(data.orgEmail, personalisation, data.reference, templateIdFarmerApplicationGeneration)
+    console.log('endemics enabled', endemics.enabled)
+    if (endemics.enabled) {
+        return (data?.userType === 'newUser') ?  
+                sendEmail(data.orgEmail, personalisation, data.reference, templateIdFarmerApplicationGenerationNewUser, true):
+                sendEmail(data.orgEmail, personalisation, data.reference, templateIdFarmerApplicationGenerationExistingUser, true)
+    }
+      return sendEmail(data.orgEmail, personalisation, data.reference, templateIdFarmerApplicationGeneration)
+  }
+  if(endemics.enabled){
+    return (data.userType === 'existingUser') ? 
+      sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGenerationNewUser, true):
+      sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGenerationExistingUser, true)
   }
   return sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGeneration, true)
 }

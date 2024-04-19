@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
       defaultValue: sequelize.UUIDV4
-    },
+    }, 
     reference: DataTypes.STRING,
     emailReference: DataTypes.STRING,
     sbi: DataTypes.STRING,

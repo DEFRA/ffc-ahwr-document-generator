@@ -10,7 +10,10 @@ const schema = Joi.object({
   isDev: Joi.boolean().default(false),
   termsAndConditionsUrl: Joi.string().default('#'),
   applyServiceUri: Joi.string().default('#'),
-  claimServiceUri: Joi.string().default('#')
+  claimServiceUri: Joi.string().default('#'),
+  endemics: Joi.object({
+      enabled: Joi.boolean().default(false)
+   }) 
 })
 
 const config = {
@@ -19,7 +22,10 @@ const config = {
   isDev: process.env.NODE_ENV === 'development',
   termsAndConditionsUrl: process.env.TERMS_AND_CONDITIONS_URL,
   applyServiceUri: process.env.APPLY_SERVICE_URI,
-  claimServiceUri: process.env.CLAIM_SERVICE_URI
+  claimServiceUri: process.env.CLAIM_SERVICE_URI,
+  endemics: {
+      enabled: process.env.ENDEMICS_ENABLED
+   }
 }
 
 const { error, value } = schema.validate(config, { abortEarly: false })
