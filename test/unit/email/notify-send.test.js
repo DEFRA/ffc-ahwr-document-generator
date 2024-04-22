@@ -14,6 +14,7 @@ jest.mock('../../../app/email/notify-client')
 jest.mock('applicationinsights', () => ({ defaultClient: { trackException: jest.fn(), trackEvent: jest.fn() }, dispose: jest.fn() }))
 
 const { sendFarmerApplicationEmail, sendCarbonCopy } = require('../../../app/email/notify-send')
+const { endemics } = require('../../../app/config')
 
 const consoleLog = jest.spyOn(console, 'log')
 const consoleError = jest.spyOn(console, 'error')
@@ -33,11 +34,10 @@ describe('notify send email messages', () => {
     notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
     const response = await sendFarmerApplicationEmail(mockData, Buffer.from('test').toString('base64'))
 
-    expect(consoleLog).toHaveBeenNthCalledWith(1, `File contents for ${mockDocumentRequest.whichSpecies}/${mockUser.sbi}/${mockDocumentRequest.reference}.pdf downloaded`)
-    expect(consoleLog).toHaveBeenNthCalledWith(2, `Received email to send to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
-    expect(consoleLog).toHaveBeenNthCalledWith(3, `Received email to send to ${mockUser.email} for ${mockDocumentRequest.reference}`)
-    expect(consoleLog).toHaveBeenNthCalledWith(4, `Email sent to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
-    expect(consoleLog).toHaveBeenNthCalledWith(5, `Email sent to ${mockUser.email} for ${mockDocumentRequest.reference}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(2, `File contents for ${mockDocumentRequest.whichSpecies}/${mockUser.sbi}/${mockDocumentRequest.reference}.pdf downloaded`)
+    expect(consoleLog).toHaveBeenNthCalledWith(3, 'endemics enabled', endemics.enabled)
+    expect(consoleLog).toHaveBeenNthCalledWith(4, `Received email to send to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(5, `Email sent to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
     expect(response).toEqual(true)
   })
 
@@ -45,9 +45,10 @@ describe('notify send email messages', () => {
     notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
     notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
     const response = await sendFarmerApplicationEmail({ ...mockData, orgEmail: undefined }, Buffer.from('test').toString('base64'))
-    expect(consoleLog).toHaveBeenNthCalledWith(1, `File contents for ${mockDocumentRequest.whichSpecies}/${mockUser.sbi}/${mockDocumentRequest.reference}.pdf downloaded`)
-    expect(consoleLog).toHaveBeenNthCalledWith(2, `Received email to send to ${mockUser.email} for ${mockDocumentRequest.reference}`)
-    expect(consoleLog).toHaveBeenNthCalledWith(3, `Email sent to ${mockUser.email} for ${mockDocumentRequest.reference}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(1, `Sending email for ${mockDocumentRequest.reference}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(2, `File contents for ${mockDocumentRequest.whichSpecies}/${mockUser.sbi}/${mockDocumentRequest.reference}.pdf downloaded`)
+    expect(consoleLog).toHaveBeenNthCalledWith(3, `Received email to send to ${mockUser.email} for ${mockDocumentRequest.reference}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(4, `Email sent to ${mockUser.email} for ${mockDocumentRequest.reference}`)
     expect(response).toEqual(true)
   })
 
@@ -55,7 +56,7 @@ describe('notify send email messages', () => {
     notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
     notifyClient.sendEmail.mockImplementation(() => { throw new Error() })
     const response = await sendFarmerApplicationEmail(mockData, Buffer.from('test').toString('base64'))
-    expect(consoleError).toHaveBeenCalledWith(`Error occurred sending email to ${mockUser.email} for ${mockDocumentRequest.reference}. Error: undefined`)
+    expect(consoleError).toHaveBeenCalledWith(`Error occurred sending email to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}. Error: undefined`)
     expect(response).toEqual(false)
   })
 
