@@ -1,4 +1,3 @@
-
 describe('Config Validation', () => {
   const originalProcessEnv = process.env
 

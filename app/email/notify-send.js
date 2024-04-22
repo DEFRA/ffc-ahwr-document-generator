@@ -3,11 +3,11 @@ const createFileName = require('../document/create-filename')
 const { applyServiceUri, claimServiceUri, endemics } = require('../config')
 const { EMAIL_CREATED } = require('../statuses')
 const { SEND_FAILED } = require('./notify-statuses')
-const { 
-    templateIdFarmerApplicationGeneration, 
-    templateIdFarmerApplicationGenerationNewUser, 
-    templateIdFarmerApplicationGenerationExistingUser,
-    carbonCopyEmailAddress 
+const {
+  templateIdFarmerApplicationGeneration,
+  templateIdFarmerApplicationGenerationNewUser,
+  templateIdFarmerApplicationGenerationExistingUser,
+  carbonCopyEmailAddress
 } = require('../config').notifyConfig
 const { update } = require('../repositories/document-log-repository')
 const appInsights = require('applicationinsights')
@@ -84,16 +84,16 @@ const sendFarmerApplicationEmail = async (data, blob) => {
   if (data?.orgEmail && data?.orgEmail !== data.email) {
     console.log('endemics enabled', endemics.enabled)
     if (endemics.enabled) {
-        return (data?.userType === 'newUser') ?  
-                sendEmail(data.orgEmail, personalisation, data.reference, templateIdFarmerApplicationGenerationNewUser, true):
-                sendEmail(data.orgEmail, personalisation, data.reference, templateIdFarmerApplicationGenerationExistingUser, true)
+      return (data?.userType === 'newUser')
+        ? sendEmail(data.orgEmail, personalisation, data.reference, templateIdFarmerApplicationGenerationNewUser, true)
+        : sendEmail(data.orgEmail, personalisation, data.reference, templateIdFarmerApplicationGenerationExistingUser, true)
     }
-      return sendEmail(data.orgEmail, personalisation, data.reference, templateIdFarmerApplicationGeneration)
+    return sendEmail(data.orgEmail, personalisation, data.reference, templateIdFarmerApplicationGeneration)
   }
-  if(endemics.enabled){
-    return (data.userType === 'existingUser') ? 
-      sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGenerationNewUser, true):
-      sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGenerationExistingUser, true)
+  if (endemics.enabled) {
+    return (data.userType === 'existingUser')
+      ? sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGenerationNewUser, true)
+      : sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGenerationExistingUser, true)
   }
   return sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGeneration, true)
 }

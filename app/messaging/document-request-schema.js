@@ -24,8 +24,6 @@ const endemicsEventSchema = joi.object({
   farmerName: joi.string().optional()
 })
 
-
-
 const validateDocumentRequest = (event) => {
   const validate = endemicsEnabled ? endemicsEventSchema.validate(event) : eventSchema.validate(event)
 

@@ -3,6 +3,7 @@ module.exports = {
   sbi: '123456789',
   whichSpecies: 'beef',
   startDate: new Date(),
+  userType: 'newUser',
   email: 'test@email.com',
   farmerName: 'Farmer'
 }

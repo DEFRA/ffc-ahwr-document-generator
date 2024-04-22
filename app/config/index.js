@@ -12,8 +12,8 @@ const schema = Joi.object({
   applyServiceUri: Joi.string().default('#'),
   claimServiceUri: Joi.string().default('#'),
   endemics: Joi.object({
-      enabled: Joi.boolean().default(false)
-   }) 
+    enabled: Joi.boolean().default(false)
+  })
 })
 
 const config = {
@@ -24,8 +24,8 @@ const config = {
   applyServiceUri: process.env.APPLY_SERVICE_URI,
   claimServiceUri: process.env.CLAIM_SERVICE_URI,
   endemics: {
-      enabled: process.env.ENDEMICS_ENABLED
-   }
+    enabled: process.env.ENDEMICS_ENABLED
+  }
 }
 
 const { error, value } = schema.validate(config, { abortEarly: false })
