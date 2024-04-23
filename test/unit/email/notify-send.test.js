@@ -41,7 +41,6 @@ describe('notify send email messages', () => {
 
     expect(consoleLog).toHaveBeenNthCalledWith(2, `File contents for ${mockDocumentRequest.whichSpecies}/${mockUser.sbi}/${mockDocumentRequest.reference}.pdf downloaded`)
     expect(consoleLog).toHaveBeenNthCalledWith(3, `Received email to send to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
-    // expect(consoleLog).toHaveBeenNthCalledWith(4, `Received email to send to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
     expect(consoleLog).toHaveBeenNthCalledWith(4, `Email sent to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
     expect(response).toEqual(true)
   })
@@ -99,6 +98,16 @@ describe('notify send email messages', () => {
     if (endemics.enabled && mockData.userType === 'newUser') {
       const response = notifyClient.sendEmail(mockUser.email, personalisation, mockDocumentRequest.reference, templateIdFarmerApplicationGeneration, true)
       expect(response).toBeFalsy()
+    }
+  })
+
+  test('send farmer application email - endemics enabled and userType is newUser', async () => {
+    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
+    if (endemics.enabled && mockData.userType === 'newUser') {
+      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
+      const response = await sendFarmerApplicationEmail({ ...mockData, orgEmail: undefined }, Buffer.from('test').toString('base64'))
+
+      expect(response).toEqual(true)
     }
   })
 })
