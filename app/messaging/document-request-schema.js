@@ -4,9 +4,8 @@ const endemicsEnabled = require('../config/index').endemics.enabled
 const eventSchema = joi.object({
   reference: joi.string().required(),
   sbi: joi.string().required(),
-  whichSpecies: joi.string().optional(),
+  whichSpecies: joi.string().required(),
   startDate: joi.date().required(),
-  userType: joi.string().optional(),
   email: joi.string().email({ tlds: false }).optional(),
   orgEmail: joi.string().email({ tlds: false }).optional(),
   name: joi.string().optional(),
