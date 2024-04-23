@@ -137,7 +137,7 @@ describe('notify send email messages', () => {
       expect(response).toBeTruthy()
     }
   })
-  test('send farmer email returns true ', async () => {
+  test('send farmer email returns true for agreement', async () => {
     notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
     if (endemics.enabled) {
       notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
