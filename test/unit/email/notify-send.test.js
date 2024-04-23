@@ -2,7 +2,11 @@ const mockData = require('../../mocks/data')
 const mockUser = require('../../mocks/user')
 const mockDocumentRequest = require('../../mocks/document-request')
 
-const { templateIdFarmerApplicationGenerationNewUser, templateIdFarmerApplicationGenerationExistingUser } = require('../../../app/config')
+const {
+  templateIdFarmerApplicationGeneration,
+  templateIdFarmerApplicationGenerationNewUser,
+  templateIdFarmerApplicationGenerationExistingUser
+} = require('../../../app/config')
 jest.mock('../../../app/repositories/document-log-repository', () => {
   return {
     update: jest.fn()
@@ -90,5 +94,20 @@ describe('notify send email messages', () => {
       const response = notifyClient.sendEmail(mockUser.email, personalisation, mockDocumentRequest.reference, templateIdFarmerApplicationGenerationExistingUser, true)
       expect(response).toBeFalsy()
     }
+  })
+  test('return falsy when default template Id Sent ', async () => {
+    if (endemics.enabled && mockData.userType === 'newUser') {
+      const response = notifyClient.sendEmail(mockUser.email, personalisation, mockDocumentRequest.reference, templateIdFarmerApplicationGeneration, true)
+      expect(response).toBeFalsy()
+    }
+  })
+  test('send farmer agreement application email', async () => {
+    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
+    if (endemics.enabled && mockData.userType === 'newUser') {
+      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
+    }
+    const response = await sendFarmerApplicationEmail({ ...mockData, orgEmail: undefined }, Buffer.from('test').toString('base64'))
+
+    expect(response).toEqual(true)
   })
 })
