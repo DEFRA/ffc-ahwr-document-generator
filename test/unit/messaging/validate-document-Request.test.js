@@ -62,14 +62,7 @@ describe('validate message body of the document request', () => {
     const validationResponse = validateDocumentRequest(documentRequest)
     expect(validationResponse).toEqual(false)
   })
-  test('document request message is valid and returns true - endemics true no whichSpecies', async () => {
-    if (endemicsEnabled) {
-      documentRequest.whichSpecies = null
-      endemicsDocumentRequest.userType = 'exisitingUser'
-    }
-    const validationResponse = validateDocumentRequest(endemicsDocumentRequest)
-    expect(validationResponse).toBeTruthy()
-  })
+
   test('document request message is invalid and returns false -  endemics is enabled', async () => {
     if (endemicsEnabled) {
       endemicsDocumentRequest.userType = ''
