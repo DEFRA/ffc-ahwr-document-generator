@@ -128,4 +128,22 @@ describe('notify send email messages', () => {
       expect(response).toBeTruthy()
     }
   })
+  test('send email with orgEmail and default template Id ', async () => {
+    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
+    if (endemics.enabled) {
+      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
+      const response = await sendFarmerApplicationEmail({ ...mockData, userType: undefined, email: undefined }, Buffer.from('test').toString('base64'))
+
+      expect(response).toBeTruthy()
+    }
+  })
+  test('send farmer email returns true ', async () => {
+    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
+    if (endemics.enabled) {
+      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
+      const response = await sendFarmerApplicationEmail({ ...mockData, userType: undefined, email: undefined }, Buffer.from('test').toString('base64'))
+
+      expect(response).toBeTruthy()
+    }
+  })
 })
