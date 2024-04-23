@@ -146,4 +146,54 @@ describe('notify send email messages', () => {
       expect(response).toBeTruthy()
     }
   })
+
+  test('send farmer application email - endemics enabled and userType is newUser', async () => {
+    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
+    if (endemics.enabled && mockData.userType === 'newUser') {
+      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
+      const response = await sendFarmerApplicationEmail({ ...mockData, orgEmail: undefined }, Buffer.from('test').toString('base64'))
+
+      expect(response).toEqual(true)
+    }
+  })
+
+  test('send email for existing user', async () => {
+    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
+    if (endemics.enabled && mockData.userType === 'existingUser') {
+      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
+      const response = await sendFarmerApplicationEmail({ ...mockData, orgEmail: undefined }, Buffer.from('test').toString('base64'))
+
+      expect(response).toEqual(true)
+    }
+  })
+
+  test('send email with default Id', async () => {
+    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
+    if (endemics.enabled) {
+      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
+      const response = await sendFarmerApplicationEmail({ ...mockData, userType: undefined }, Buffer.from('test').toString('base64'))
+
+      expect(response).toBeTruthy()
+    }
+  })
+
+  test('send email with orgEmail and default template Id ', async () => {
+    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
+    if (endemics.enabled) {
+      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
+      const response = await sendFarmerApplicationEmail({ ...mockData, userType: undefined, email: undefined }, Buffer.from('test').toString('base64'))
+
+      expect(response).toBeTruthy()
+    }
+  })
+
+  test('send farmer email returns true for agreement - endemics off', async () => {
+    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
+    if (!endemics.enabled) {
+      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
+      const response = await sendFarmerApplicationEmail({ ...mockData, userType: undefined, email: undefined }, Buffer.from('test').toString('base64'))
+
+      expect(response).toBeTruthy()
+    }
+  })
 })
