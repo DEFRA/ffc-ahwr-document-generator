@@ -82,7 +82,6 @@ const sendFarmerApplicationEmail = async (data, blob) => {
     claim_uri: claimServiceUri
   }
   if (data?.orgEmail && data?.orgEmail !== data.email) {
-    console.log('endemics enabled', endemics.enabled)
     if (endemics.enabled) {
       return (data?.userType === 'newUser')
         ? sendEmail(data.orgEmail, personalisation, data.reference, templateIdFarmerApplicationGenerationNewUser, true)

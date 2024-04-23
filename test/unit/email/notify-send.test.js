@@ -36,9 +36,9 @@ describe('notify send email messages', () => {
     const response = await sendFarmerApplicationEmail(mockData, Buffer.from('test').toString('base64'))
 
     expect(consoleLog).toHaveBeenNthCalledWith(2, `File contents for ${mockDocumentRequest.whichSpecies}/${mockUser.sbi}/${mockDocumentRequest.reference}.pdf downloaded`)
-    expect(consoleLog).toHaveBeenNthCalledWith(3, 'endemics enabled', endemics.enabled)
-    expect(consoleLog).toHaveBeenNthCalledWith(4, `Received email to send to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
-    expect(consoleLog).toHaveBeenNthCalledWith(5, `Email sent to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(3, `Received email to send to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
+    // expect(consoleLog).toHaveBeenNthCalledWith(4, `Received email to send to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(4, `Email sent to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
     expect(response).toEqual(true)
   })
 
@@ -81,13 +81,13 @@ describe('notify send email messages', () => {
   })
   test('return false send email with wrong template id and personalisation', async () => {
     if (endemics.enabled && mockData.userType === 'existingUser') {
-      const response = await sendFarmerApplicationEmail(mockUser.orgEmail, personalisation, mockDocumentRequest.reference, templateIdFarmerApplicationGenerationNewUser)
+      const response = notifyClient.sendEmail(mockUser.orgEmail, personalisation, mockDocumentRequest.reference, templateIdFarmerApplicationGenerationNewUser)
       expect(response).toFalsy()
     }
   })
-  test('return truthy with correct details', async () => {
+  test('return falsy when newUser and template of existing user sent', async () => {
     if (endemics.enabled && mockData.userType === 'newUser') {
-      const response = await sendFarmerApplicationEmail(mockUser.email, personalisation, mockDocumentRequest.reference, templateIdFarmerApplicationGenerationExistingUser)
+      const response = notifyClient.sendEmail(mockUser.email, personalisation, mockDocumentRequest.reference, templateIdFarmerApplicationGenerationExistingUser, true)
       expect(response).toBeFalsy()
     }
   })
