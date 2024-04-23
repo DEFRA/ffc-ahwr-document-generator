@@ -110,4 +110,13 @@ describe('notify send email messages', () => {
       expect(response).toEqual(true)
     }
   })
+  test('send email for existing user', async () => {
+    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
+    if (endemics.enabled && mockData.userType === 'existingUser') {
+      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
+      const response = await sendFarmerApplicationEmail({ ...mockData, orgEmail: undefined }, Buffer.from('test').toString('base64'))
+
+      expect(response).toEqual(true)
+    }
+  })
 })
