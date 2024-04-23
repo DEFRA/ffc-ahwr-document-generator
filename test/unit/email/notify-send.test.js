@@ -2,6 +2,7 @@ const mockData = require('../../mocks/data')
 const mockUser = require('../../mocks/user')
 const mockDocumentRequest = require('../../mocks/document-request')
 
+const { templateIdFarmerApplicationGenerationNewUser, templateIdFarmerApplicationGenerationExistingUser } = require('../../../app/config')
 jest.mock('../../../app/repositories/document-log-repository', () => {
   return {
     update: jest.fn()
@@ -77,5 +78,17 @@ describe('notify send email messages', () => {
     notifyClient.sendEmail.mockImplementation(() => { throw new Error() })
     await sendCarbonCopy(templateId, personalisation, carbonCopyEmailAddress)
     expect(consoleError).toHaveBeenCalledWith(`Error occurred sending carbon email to ${carbonCopyEmailAddress} for ${personalisation.reference}. Error: undefined`)
+  })
+  test('return false send email with wrong template id and personalisation', async () => {
+    if (endemics.enabled && mockData.userType === 'existingUser') {
+      const response = await sendFarmerApplicationEmail(mockUser.orgEmail, personalisation, mockDocumentRequest.reference, templateIdFarmerApplicationGenerationNewUser)
+      expect(response).toFalsy()
+    }
+  })
+  test('return truthy with correct details', async () => {
+    if (endemics.enabled && mockData.userType === 'newUser') {
+      const response = await sendFarmerApplicationEmail(mockUser.email, personalisation, mockDocumentRequest.reference, templateIdFarmerApplicationGenerationExistingUser)
+      expect(response).toBeFalsy()
+    }
   })
 })
