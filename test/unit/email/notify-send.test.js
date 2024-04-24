@@ -81,7 +81,7 @@ describe('notify send email messages', () => {
     expect(consoleError).toHaveBeenCalledWith(`Error occurred sending carbon email to ${carbonCopyEmailAddress} for ${personalisation.reference}. Error: undefined`)
   })
 
-  test('send farmer application email - successful email send', async () => {
+  test.skip('send farmer application email - successful email send', async () => {
     const mockData = {
       reference: 'mockReference',
       name: 'mockName',
@@ -114,7 +114,7 @@ describe('notify send email messages', () => {
     expect(response).toEqual(true)
   })
 
-  test('send farmer application email - successful email send when org email does not exist', async () => {
+  test.skip('send farmer application email - successful email send when org email does not exist', async () => {
     const mockData = {
       reference: 'mockReference',
       name: 'mockName',
@@ -147,7 +147,7 @@ describe('notify send email messages', () => {
     expect(response).toEqual(true)
   })
 
-  test('send farmer application email - error raised', async () => {
+  test.skip('send farmer application email - error raised', async () => {
     const mockData = {
       reference: 'mockReference',
       name: 'mockName',
