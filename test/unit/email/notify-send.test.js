@@ -194,7 +194,7 @@ describe('notify send email messages', () => {
       const response = await sendFarmerApplicationEmail({ ...mockData, userType: undefined, email: undefined }, Buffer.from('test').toString('base64'))
 
       expect(response).toBeTruthy()
-      expect(notifyClient.sendEmail).toHaveBeenCalledWith(mockUser.emai, personalisation, mockDocumentRequest.reference, templateIdFarmerApplicationGeneration, true)
+      expect(notifyClient.sendEmail).toHaveBeenCalledWith(mockUser.email, personalisation, mockDocumentRequest.reference, templateIdFarmerApplicationGeneration, true)
     }
   })
 })
