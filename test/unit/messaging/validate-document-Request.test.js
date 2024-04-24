@@ -79,4 +79,9 @@ describe('validate message body of the document request', () => {
   test('document request message is valid and returns true-  endemics is enabled', async () => {
     expect(validateDocumentRequest(endemicsDocumentRequest)).toEqual(true)
   })
+  test('document request message is valid for apply journeyand returns true-  endemics is off', async () => {
+    if (!endemicsEnabled) {
+      expect(validateDocumentRequest(documentRequest)).toEqual(true)
+    }
+  })
 })
