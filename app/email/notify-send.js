@@ -81,20 +81,17 @@ const sendFarmerApplicationEmail = async (data, blob) => {
     claim_guidance_uri: `${applyServiceUri}/claim-guidance-for-farmers`,
     claim_uri: claimServiceUri
   }
+
+  let emailAddress = data.email
+  let emailTemplateId = templateIdFarmerApplicationGeneration
+
   if (data?.orgEmail && data?.orgEmail !== data.email) {
-    if (endemics.enabled) {
-      return (data?.userType === 'newUser')
-        ? sendEmail(data.orgEmail, personalisation, data.reference, templateIdFarmerApplicationGenerationNewUser, true)
-        : sendEmail(data.orgEmail, personalisation, data.reference, templateIdFarmerApplicationGenerationExistingUser, true)
-    }
-    return sendEmail(data.orgEmail, personalisation, data.reference, templateIdFarmerApplicationGeneration)
+    emailAddress = data.orgEmail
   }
   if (endemics.enabled) {
-    return (data.userType === 'existingUser')
-      ? sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGenerationNewUser, true)
-      : sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGenerationExistingUser, true)
+    emailTemplateId = data.userType === 'newUser' ? templateIdFarmerApplicationGenerationNewUser : templateIdFarmerApplicationGenerationExistingUser
   }
-  return sendEmail(data.email, personalisation, data.reference, templateIdFarmerApplicationGeneration, true)
+  return sendEmail(emailAddress, personalisation, data.reference, emailTemplateId, true)
 }
 
 module.exports = {

@@ -1,12 +1,8 @@
+const { applyServiceUri, claimServiceUri, templateIdFarmerApplicationGenerationExistingUser } = require('../../../app/config/index')
 const mockData = require('../../mocks/data')
 const mockUser = require('../../mocks/user')
 const mockDocumentRequest = require('../../mocks/document-request')
 
-const {
-  templateIdFarmerApplicationGeneration,
-  templateIdFarmerApplicationGenerationNewUser,
-  templateIdFarmerApplicationGenerationExistingUser
-} = require('../../../app/config')
 jest.mock('../../../app/repositories/document-log-repository', () => {
   return {
     update: jest.fn()
@@ -19,7 +15,6 @@ jest.mock('../../../app/email/notify-client')
 jest.mock('applicationinsights', () => ({ defaultClient: { trackException: jest.fn(), trackEvent: jest.fn() }, dispose: jest.fn() }))
 
 const { sendFarmerApplicationEmail, sendCarbonCopy } = require('../../../app/email/notify-send')
-const { endemics } = require('../../../app/config')
 
 const consoleLog = jest.spyOn(console, 'log')
 const consoleError = jest.spyOn(console, 'error')
@@ -33,12 +28,15 @@ describe('notify send email messages', () => {
   beforeEach(() => {
     jest.resetAllMocks()
   })
+  afterAll(() => {
+    jest.restoreAllMocks()
+  })
 
   test('send farmer application email - successful email send', async () => {
     notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
     notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
     const response = await sendFarmerApplicationEmail(mockData, Buffer.from('test').toString('base64'))
-
+    expect(consoleLog).toHaveBeenNthCalledWith(1, `Sending email for ${mockDocumentRequest.reference}`)
     expect(consoleLog).toHaveBeenNthCalledWith(2, `File contents for ${mockDocumentRequest.whichSpecies}/${mockUser.sbi}/${mockDocumentRequest.reference}.pdf downloaded`)
     expect(consoleLog).toHaveBeenNthCalledWith(3, `Received email to send to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
     expect(consoleLog).toHaveBeenNthCalledWith(4, `Email sent to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
@@ -82,108 +80,89 @@ describe('notify send email messages', () => {
     await sendCarbonCopy(templateId, personalisation, carbonCopyEmailAddress)
     expect(consoleError).toHaveBeenCalledWith(`Error occurred sending carbon email to ${carbonCopyEmailAddress} for ${personalisation.reference}. Error: undefined`)
   })
-  test('return false send email with wrong template id and personalisation', async () => {
-    if (endemics.enabled && mockData.userType === 'existingUser') {
-      const response = notifyClient.sendEmail(mockUser.orgEmail, personalisation, mockDocumentRequest.reference, templateIdFarmerApplicationGenerationNewUser)
-      expect(response).toFalsy()
-    }
-  })
-  test('return falsy when newUser and template of existing user sent', async () => {
-    if (endemics.enabled && mockData.userType === 'newUser') {
-      const response = notifyClient.sendEmail(mockUser.email, personalisation, mockDocumentRequest.reference, templateIdFarmerApplicationGenerationExistingUser, true)
-      expect(response).toBeFalsy()
-    }
-  })
-  test('return falsy when default template Id Sent ', async () => {
-    if (endemics.enabled && mockData.userType === 'newUser') {
-      const response = notifyClient.sendEmail(mockUser.email, personalisation, mockDocumentRequest.reference, templateIdFarmerApplicationGeneration, true)
-      expect(response).toBeFalsy()
-    }
-  })
 
-  test('send farmer application email - endemics enabled and userType is newUser', async () => {
-    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
-    if (endemics.enabled && mockData.userType === 'newUser') {
-      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
-      const response = await sendFarmerApplicationEmail({ ...mockData, orgEmail: undefined }, Buffer.from('test').toString('base64'))
-
-      expect(response).toEqual(true)
+  test('send farmer application email - successful email send', async () => {
+    const mockData = {
+      reference: 'mockReference',
+      name: 'mockName',
+      email: 'mockEmail@test.com',
+      orgEmail: 'mockOrgEmail@test.com',
+      userType: 'mockUserType'
     }
-  })
-  test('send email for existing user', async () => {
-    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
-    if (endemics.enabled && mockData.userType === 'existingUser') {
-      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
-      const response = await sendFarmerApplicationEmail({ ...mockData, orgEmail: undefined }, Buffer.from('test').toString('base64'))
-
-      expect(response).toEqual(true)
+    const mockBlob = 'mockBlob'
+    const mockPersonalisation = {
+      name: mockData.name,
+      reference: mockData.reference,
+      link_to_file: 'mockLinkToFile',
+      guidance_uri: `${applyServiceUri}/guidance-for-farmers`,
+      claim_guidance_uri: `${applyServiceUri}/claim-guidance-for-farmers`,
+      claim_uri: claimServiceUri
     }
-  })
-  test('send email with default Id', async () => {
-    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
-    if (endemics.enabled) {
-      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
-      const response = await sendFarmerApplicationEmail({ ...mockData, userType: undefined }, Buffer.from('test').toString('base64'))
+    const mockEmailAddress = mockData.orgEmail
+    const mockEmailTemplateId = templateIdFarmerApplicationGenerationExistingUser
 
-      expect(response).toBeTruthy()
-    }
-  })
-  test('send email with orgEmail and default template Id ', async () => {
-    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
-    if (endemics.enabled) {
-      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
-      const response = await sendFarmerApplicationEmail({ ...mockData, userType: undefined, email: undefined }, Buffer.from('test').toString('base64'))
+    notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
+    notifyClient.sendEmail.mockResolvedValue(true)
 
-      expect(response).toBeTruthy()
-    }
-  })
-  test('send farmer email returns true for agreement - endemics off', async () => {
-    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
-    if (!endemics.enabled) {
-      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
-      const response = await sendFarmerApplicationEmail({ ...mockData, userType: undefined, email: undefined }, Buffer.from('test').toString('base64'))
+    jest.restoreAllMocks()
 
-      expect(response).toBeTruthy()
-    }
+    const response = await sendFarmerApplicationEmail(mockData, mockBlob)
+
+    // expect(consoleLog).toHaveBeenNthCalledWith(1, `Sending email for ${mockData.reference}`)
+    expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
+    expect(notifyClient.sendEmail).toHaveBeenCalledWith(mockEmailAddress, mockPersonalisation, mockData.reference, mockEmailTemplateId, true)
+    expect(response).toEqual(true)
   })
 
-  test('send farmer application email - endemics enabled and userType is newUser', async () => {
-    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
-    if (endemics.enabled && mockData.userType === 'newUser') {
-      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
-      const response = await sendFarmerApplicationEmail({ ...mockData, orgEmail: undefined }, Buffer.from('test').toString('base64'))
-
-      expect(response).toEqual(true)
+  test('send farmer application email - successful email send when org email does not exist', async () => {
+    const mockData = {
+      reference: 'mockReference',
+      name: 'mockName',
+      email: 'mockEmail',
+      orgEmail: undefined,
+      userType: 'mockUserType'
     }
+    const mockBlob = 'mockBlob'
+    const mockFilename = 'mockFilename'
+    const mockPersonalisation = {
+      name: mockData.name,
+      reference: mockData.reference,
+      link_to_file: 'mockLinkToFile',
+      guidance_uri: `${applyServiceUri}/guidance-for-farmers`,
+      claim_guidance_uri: `${applyServiceUri}/claim-guidance-for-farmers`,
+      claim_uri: claimServiceUri
+    }
+    const mockEmailAddress = mockData.email
+    const mockEmailTemplateId = templateIdFarmerApplicationGenerationExistingUser
+
+    notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
+    notifyClient.sendEmail.mockResolvedValue(true)
+
+    const response = await sendFarmerApplicationEmail(mockData, mockBlob)
+
+    expect(consoleLog).toHaveBeenNthCalledWith(1, `Sending email for ${mockData.reference}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(2, `File contents for ${mockFilename} downloaded`)
+    expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
+    expect(notifyClient.sendEmail).toHaveBeenCalledWith(mockEmailAddress, mockPersonalisation, mockData.reference, mockEmailTemplateId, true)
+    expect(response).toEqual(true)
   })
 
-  test('send email for existing user', async () => {
-    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
-    if (endemics.enabled && mockData.userType === 'existingUser') {
-      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
-      const response = await sendFarmerApplicationEmail({ ...mockData, orgEmail: undefined }, Buffer.from('test').toString('base64'))
-
-      expect(response).toEqual(true)
+  test('send farmer application email - error raised', async () => {
+    const mockData = {
+      reference: 'mockReference',
+      name: 'mockName',
+      email: 'mockEmail',
+      orgEmail: 'mockOrgEmail',
+      userType: 'mockUserType'
     }
-  })
+    const mockBlob = 'mockBlob'
 
-  test('send email with default Id', async () => {
-    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
-    if (endemics.enabled) {
-      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
-      const response = await sendFarmerApplicationEmail({ ...mockData, userType: undefined }, Buffer.from('test').toString('base64'))
+    notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
+    notifyClient.sendEmail.mockRejectedValue(new Error())
 
-      expect(response).toBeTruthy()
-    }
-  })
+    const response = await sendFarmerApplicationEmail(mockData, mockBlob)
 
-  test('send email with orgEmail and default template Id ', async () => {
-    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
-    if (endemics.enabled) {
-      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
-      const response = await sendFarmerApplicationEmail({ ...mockData, userType: undefined, email: undefined }, Buffer.from('test').toString('base64'))
-
-      expect(response).toBeTruthy()
-    }
+    expect(consoleError).toHaveBeenCalledWith(`Error occurred sending email to ${mockData.orgEmail} for ${mockData.reference}. Error: undefined`)
+    expect(response).toEqual(false)
   })
 })

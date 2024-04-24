@@ -31,10 +31,15 @@ describe('validate message body of the document request', () => {
   })
 
   test('document request is invalid returns false', async () => {
-    if (!endemicsEnabled) {
-      documentRequest.whichSpecies = null
-      documentRequest.userType = 'newUser'
-    }
+    jest.mock('../../../app/config/index', () => ({
+      ...jest.requireActual('../../../app/config/index'),
+      endemics: {
+        enabled: false
+      }
+    }))
+    documentRequest.whichSpecies = null
+    documentRequest.userType = 'newUser'
+
     const validationResponse = validateDocumentRequest(documentRequest)
     expect(validationResponse).toEqual(false)
   })
@@ -79,7 +84,7 @@ describe('validate message body of the document request', () => {
   test('document request message is valid and returns true-  endemics is enabled', async () => {
     expect(validateDocumentRequest(endemicsDocumentRequest)).toEqual(true)
   })
-  test('document request message is valid for apply journeyand returns true-  endemics is off', async () => {
+  test('document request message is valid for apply journey and returns true -  endemics is off', async () => {
     if (!endemicsEnabled) {
       expect(validateDocumentRequest(documentRequest)).toEqual(true)
     }
