@@ -1,5 +1,11 @@
 const { validateDocumentRequest } = require('../../../app/messaging/document-request-schema')
 const endemicsEnabled = require('../../../app/config/index').endemics.enabled
+jest.mock('../../../app/config/index', () => ({
+  ...jest.requireActual('../../../app/config/index'),
+  endemics: {
+    enabled: true
+  }
+}))
 
 describe('validate message body of the document request', () => {
   let documentRequest
@@ -69,5 +75,8 @@ describe('validate message body of the document request', () => {
     }
     const validationResponse = validateDocumentRequest(endemicsDocumentRequest)
     expect(validationResponse).toBeFalsy()
+  })
+  test('document request message is valid and returns true-  endemics is enabled', async () => {
+    expect(validateDocumentRequest(endemicsDocumentRequest)).toEqual(true)
   })
 })
