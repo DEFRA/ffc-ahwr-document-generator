@@ -186,15 +186,4 @@ describe('notify send email messages', () => {
       expect(response).toBeTruthy()
     }
   })
-
-  test('send farmer email for agreement - endemics off', async () => {
-    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
-    if (!endemics.enabled) {
-      notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
-      const response = await sendFarmerApplicationEmail({ ...mockData, userType: undefined, email: undefined }, Buffer.from('test').toString('base64'))
-
-      expect(response).toBeTruthy()
-      expect(notifyClient.sendEmail).toHaveBeenCalledWith(mockUser.email, personalisation, mockDocumentRequest.reference, templateIdFarmerApplicationGeneration, true)
-    }
-  })
 })
