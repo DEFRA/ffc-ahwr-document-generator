@@ -100,5 +100,6 @@ const sendFarmerApplicationEmail = async (data, blob) => {
 module.exports = {
   sendFarmerApplicationEmail,
   sendCarbonCopy,
-  send
+  send,
+  sendEmail
 }

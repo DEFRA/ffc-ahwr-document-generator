@@ -16,7 +16,7 @@ jest.mock('../../../app/email/notify-client')
 
 jest.mock('applicationinsights', () => ({ defaultClient: { trackException: jest.fn(), trackEvent: jest.fn() }, dispose: jest.fn() }))
 
-const { sendFarmerApplicationEmail, sendCarbonCopy } = require('../../../app/email/notify-send')
+const { sendFarmerApplicationEmail, sendCarbonCopy, sendEmail } = require('../../../app/email/notify-send')
 
 const consoleLog = jest.spyOn(console, 'log')
 const consoleError = jest.spyOn(console, 'error')
@@ -25,6 +25,31 @@ const notifyResponseId = '123456789'
 const personalisation = { reference: '123abc' }
 const carbonCopyEmailAddress = 'test@example.com'
 const templateId = 'template-id'
+const mockEmailAddress = 'mockEmail@mock.com'
+
+describe('sendEmail', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+  })
+
+  test('send email succesfully', async () => {
+    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
+    notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
+    const response = await sendEmail(mockEmailAddress, personalisation, notifyResponseId, templateId)
+    expect(consoleLog).toHaveBeenNthCalledWith(1, `Received email to send to ${mockEmailAddress} for ${notifyResponseId}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(2, `Email sent to ${mockEmailAddress} for ${notifyResponseId}`)
+    expect(response).toEqual(true)
+  })
+
+  test('send email fail', async () => {
+    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
+    notifyClient.sendEmail.mockImplementation(() => { throw new Error() })
+    const response = await sendEmail(mockEmailAddress, personalisation, notifyResponseId, templateId)
+    expect(consoleError).toHaveBeenNthCalledWith(1, `Error occurred sending email to ${mockEmailAddress} for ${notifyResponseId}. Error: undefined`)
+    expect(consoleLog).toHaveBeenNthCalledWith(1, `Received email to send to ${mockEmailAddress} for ${notifyResponseId}`)
+    expect(response).toEqual(false)
+  })
+})
 
 describe('notify send email messages', () => {
   beforeEach(() => {
