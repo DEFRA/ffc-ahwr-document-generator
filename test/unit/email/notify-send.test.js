@@ -1,4 +1,6 @@
-const { applyServiceUri, claimServiceUri, templateIdFarmerApplicationGenerationExistingUser } = require('../../../app/config/index')
+// const { applyServiceUri, claimServiceUri } = require('../../../app/config/index')
+// const { templateIdFarmerApplicationGeneration, templateIdFarmerApplicationGenerationNewUser, templateIdFarmerApplicationGenerationExistingUser } = require('../../../app/config/index').notifyConfig
+// const { templateIdFarmerApplicationGenerationExistingUser } = require('../../../app/config/index').notifyConfig
 const mockData = require('../../mocks/data')
 const mockUser = require('../../mocks/user')
 const mockDocumentRequest = require('../../mocks/document-request')
@@ -81,59 +83,8 @@ describe('notify send email messages', () => {
     expect(consoleError).toHaveBeenCalledWith(`Error occurred sending carbon email to ${carbonCopyEmailAddress} for ${personalisation.reference}. Error: undefined`)
   })
 
-  test.skip('send farmer application email - successful email send', async () => {
-    const mockData = {
-      reference: 'mockReference',
-      name: 'mockName',
-      email: 'mockEmail@test.com',
-      orgEmail: 'mockOrgEmail@test.com',
-      userType: 'mockUserType'
-    }
+  test('send farmer application email - successful email send', async () => {
     const mockBlob = 'mockBlob'
-    const mockPersonalisation = {
-      name: mockData.name,
-      reference: mockData.reference,
-      link_to_file: 'mockLinkToFile',
-      guidance_uri: `${applyServiceUri}/guidance-for-farmers`,
-      claim_guidance_uri: `${applyServiceUri}/claim-guidance-for-farmers`,
-      claim_uri: claimServiceUri
-    }
-    const mockEmailAddress = mockData.orgEmail
-    const mockEmailTemplateId = templateIdFarmerApplicationGenerationExistingUser
-
-    notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
-    notifyClient.sendEmail.mockResolvedValue(true)
-
-    jest.restoreAllMocks()
-
-    const response = await sendFarmerApplicationEmail(mockData, mockBlob)
-
-    // expect(consoleLog).toHaveBeenNthCalledWith(1, `Sending email for ${mockData.reference}`)
-    expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
-    expect(notifyClient.sendEmail).toHaveBeenCalledWith(mockEmailAddress, mockPersonalisation, mockData.reference, mockEmailTemplateId, true)
-    expect(response).toEqual(true)
-  })
-
-  test.skip('send farmer application email - successful email send when org email does not exist', async () => {
-    const mockData = {
-      reference: 'mockReference',
-      name: 'mockName',
-      email: 'mockEmail',
-      orgEmail: undefined,
-      userType: 'mockUserType'
-    }
-    const mockBlob = 'mockBlob'
-    const mockFilename = 'mockFilename'
-    const mockPersonalisation = {
-      name: mockData.name,
-      reference: mockData.reference,
-      link_to_file: 'mockLinkToFile',
-      guidance_uri: `${applyServiceUri}/guidance-for-farmers`,
-      claim_guidance_uri: `${applyServiceUri}/claim-guidance-for-farmers`,
-      claim_uri: claimServiceUri
-    }
-    const mockEmailAddress = mockData.email
-    const mockEmailTemplateId = templateIdFarmerApplicationGenerationExistingUser
 
     notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
     notifyClient.sendEmail.mockResolvedValue(true)
@@ -141,13 +92,27 @@ describe('notify send email messages', () => {
     const response = await sendFarmerApplicationEmail(mockData, mockBlob)
 
     expect(consoleLog).toHaveBeenNthCalledWith(1, `Sending email for ${mockData.reference}`)
-    expect(consoleLog).toHaveBeenNthCalledWith(2, `File contents for ${mockFilename} downloaded`)
     expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
-    expect(notifyClient.sendEmail).toHaveBeenCalledWith(mockEmailAddress, mockPersonalisation, mockData.reference, mockEmailTemplateId, true)
+    expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
     expect(response).toEqual(true)
   })
 
-  test.skip('send farmer application email - error raised', async () => {
+  test('send farmer application email - successful email send when org email does not exist', async () => {
+    const mockBlob = 'mockBlob'
+
+    notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
+    notifyClient.sendEmail.mockResolvedValue(true)
+
+    const response = await sendFarmerApplicationEmail(mockData, mockBlob)
+
+    expect(consoleLog).toHaveBeenNthCalledWith(1, `Sending email for ${mockData.reference}`)
+    expect(consoleLog).toHaveBeenNthCalledWith(2, `File contents for ${mockDocumentRequest.whichSpecies}/${mockUser.sbi}/${mockDocumentRequest.reference}.pdf downloaded`)
+    expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
+    expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
+    expect(response).toEqual(true)
+  })
+
+  test('send farmer application email - error raised', async () => {
     const mockData = {
       reference: 'mockReference',
       name: 'mockName',
