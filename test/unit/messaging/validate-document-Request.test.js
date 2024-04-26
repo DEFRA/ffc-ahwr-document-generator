@@ -1,11 +1,13 @@
 const { validateDocumentRequest } = require('../../../app/messaging/document-request-schema')
-const endemicsEnabled = require('../../../app/config/index').endemics.enabled
-jest.mock('../../../app/config/index', () => ({
-  ...jest.requireActual('../../../app/config/index'),
-  endemics: {
-    enabled: true
-  }
-}))
+// const endemicsEnabled = require('../../../app/config/index').endemics.enabled
+// jest.mock('../../../app/config/index', () => ({
+//   ...jest.requireActual('../../../app/config/index'),
+//   endemics: {
+//     enabled: true
+//   }
+// }))
+
+const { setEndemicsEnabled } = require('../../mocks/config')
 
 describe('validate message body of the document request', () => {
   let documentRequest
@@ -28,6 +30,7 @@ describe('validate message body of the document request', () => {
     }
 
     jest.resetAllMocks()
+    setEndemicsEnabled(true)
   })
 
   test('document request is invalid returns false', async () => {
@@ -75,9 +78,7 @@ describe('validate message body of the document request', () => {
   })
 
   test('document request message is invalid and returns false -  endemics is enabled', async () => {
-    if (endemicsEnabled) {
-      endemicsDocumentRequest.userType = ''
-    }
+    endemicsDocumentRequest.userType = ''
     const validationResponse = validateDocumentRequest(endemicsDocumentRequest)
     expect(validationResponse).toBeFalsy()
   })
@@ -85,8 +86,7 @@ describe('validate message body of the document request', () => {
     expect(validateDocumentRequest(endemicsDocumentRequest)).toEqual(true)
   })
   test('document request message is valid for apply journey and returns true -  endemics is off', async () => {
-    if (!endemicsEnabled) {
-      expect(validateDocumentRequest(documentRequest)).toEqual(true)
-    }
+    setEndemicsEnabled(false)
+    expect(validateDocumentRequest(documentRequest)).toEqual(true)
   })
 })

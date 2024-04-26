@@ -1,5 +1,5 @@
 const joi = require('joi')
-const endemicsEnabled = require('../config/index').endemics.enabled
+const { endemics } = require('../config/index')
 
 const eventSchema = joi.object({
   reference: joi.string().required(),
@@ -24,7 +24,8 @@ const endemicsEventSchema = joi.object({
 })
 
 const validateDocumentRequest = (event) => {
-  const validate = endemicsEnabled ? endemicsEventSchema.validate(event) : eventSchema.validate(event)
+  console.log('endm ', endemics.enabled)
+  const validate = endemics.enabled ? endemicsEventSchema.validate(event) : eventSchema.validate(event)
 
   if (validate.error) {
     console.log('Document request validation error', JSON.stringify(validate.error))
