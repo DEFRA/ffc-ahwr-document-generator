@@ -42,6 +42,8 @@ container:
   imagePullPolicy: IfNotPresent
   notifyApiKey:
   notifyTemplateIdFarmerApplicationComplete:
+  notifyTemplateIdFarmerApplicationCompleteNewUser:
+  notifyTemplateIdFarmerApplicationCompleteExisitingUser:
   termsAndConditionsUrl:
   requestMemory: 10Mi
   requestCpu: 10m
@@ -50,6 +52,7 @@ container:
   port: 3000
   applyServiceUri:
   claimServiceUri:
+  endemicsEnabled:
 
 postgresService:
   postgresDb: ffc_ahwr_document_generator

@@ -1,4 +1,3 @@
-
 const { millimetresToPoints } = require('../../../../app/document/conversion')
 
 describe('conversion test', () => {
