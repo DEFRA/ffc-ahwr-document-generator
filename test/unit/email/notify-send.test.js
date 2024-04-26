@@ -10,6 +10,16 @@ jest.mock('../../../app/repositories/document-log-repository', () => {
   }
 })
 
+jest.mock('../../../app/config/notify', () => ({
+  ...jest.requireActual('../../../app/config/notify'),
+  carbonCopyEmailAddress: undefined,
+  notifyApiKey: 'mockNotifyApiKey',
+  notfiyCheckInterval: 30000,
+  templateIdFarmerApplicationGeneration: 'mockTemplateIdFarmerApplicationGeneration',
+  templateIdFarmerApplicationGenerationNewUser: 'mockTemplateIdFarmerApplicationGenerationNewUser',
+  templateIdFarmerApplicationGenerationExistingUser: 'mockTemplateIdFarmerApplicationGenerationExistingUser'
+}))
+
 const notifyClient = require('../../../app/email/notify-client')
 jest.mock('../../../app/email/notify-client')
 
@@ -52,7 +62,7 @@ describe('notify send email messages', () => {
   describe('endemics ennable true', () => {
     beforeEach(() => {
       jest.resetAllMocks()
-      setEndemicsEnabled(true)
+      // setEndemicsEnabled(true)
     })
 
     test('send farmer application email - successful email send', async () => {

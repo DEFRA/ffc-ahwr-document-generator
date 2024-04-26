@@ -1,13 +1,13 @@
 require('dotenv').config()
 
 jest.mock('../app/config/notify', () => ({
-  ...jest.requireActual('../app/config/notify'),
-  carbonCopyEmailAddress: undefined,
-  notifyApiKey: 'mockNotifyApiKey',
-  notfiyCheckInterval: 30000,
-  templateIdFarmerApplicationGeneration: 'mockTemplateIdFarmerApplicationGeneration',
-  templateIdFarmerApplicationGenerationNewUser: 'mockTemplateIdFarmerApplicationGenerationNewUser',
-  templateIdFarmerApplicationGenerationExistingUser: 'mockTemplateIdFarmerApplicationGenerationExistingUser'
+  // ...jest.requireActual('../app/config/notify'),
+  // carbonCopyEmailAddress: undefined,
+  notifyApiKey: 'mockNotifyApiKey'
+  // notfiyCheckInterval: 30000,
+  // templateIdFarmerApplicationGeneration: 'mockTemplateIdFarmerApplicationGeneration',
+  // templateIdFarmerApplicationGenerationNewUser: 'mockTemplateIdFarmerApplicationGenerationNewUser',
+  // templateIdFarmerApplicationGenerationExistingUser: 'mockTemplateIdFarmerApplicationGenerationExistingUser'
 }))
 
 jest.mock('../app/config/storage', () => ({
