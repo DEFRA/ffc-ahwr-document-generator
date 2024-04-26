@@ -1,7 +1,6 @@
 require('dotenv').config()
 
 jest.mock('../app/config/notify', () => ({
-  // ...jest.requireActual('../app/config/notify'),
   carbonCopyEmailAddress: undefined,
   notifyApiKey: 'mockNotifyApiKey',
   notfiyCheckInterval: 30000,
