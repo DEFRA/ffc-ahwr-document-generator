@@ -10,13 +10,6 @@ jest.mock('../../../app/repositories/document-log-repository', () => {
   }
 })
 
-jest.mock('../../../app/config/notify', () => ({
-  ...jest.requireActual('../../../app/config/notify'),
-  templateIdFarmerApplicationGeneration: 'mockTemplateIdFarmerApplicationGeneration',
-  templateIdFarmerApplicationGenerationNewUser: 'mockTemplateIdFarmerApplicationGenerationNewUser',
-  templateIdFarmerApplicationGenerationExistingUser: 'mockTemplateIdFarmerApplicationGenerationExistingUser'
-}))
-
 const notifyClient = require('../../../app/email/notify-client')
 jest.mock('../../../app/email/notify-client')
 
