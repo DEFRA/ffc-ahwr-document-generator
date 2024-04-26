@@ -52,7 +52,7 @@ describe('notify send email messages', () => {
   describe('endemics ennable true', () => {
     beforeEach(() => {
       jest.resetAllMocks()
-      // setEndemicsEnabled(true)
+      setEndemicsEnabled(true)
     })
 
     test('send farmer application email - successful email send', async () => {
