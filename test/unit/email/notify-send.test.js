@@ -12,9 +12,6 @@ jest.mock('../../../app/repositories/document-log-repository', () => {
 
 jest.mock('../../../app/config/notify', () => ({
   ...jest.requireActual('../../../app/config/notify'),
-  carbonCopyEmailAddress: undefined,
-  notifyApiKey: 'mockNotifyApiKey',
-  notfiyCheckInterval: 30000,
   templateIdFarmerApplicationGeneration: 'mockTemplateIdFarmerApplicationGeneration',
   templateIdFarmerApplicationGenerationNewUser: 'mockTemplateIdFarmerApplicationGenerationNewUser',
   templateIdFarmerApplicationGenerationExistingUser: 'mockTemplateIdFarmerApplicationGenerationExistingUser'
