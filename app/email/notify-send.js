@@ -94,7 +94,7 @@ const sendFarmerApplicationEmail = async (data, blob) => {
   if (endemics.enabled) {
     emailTemplateId = data.userType === 'newUser' ? templateIdFarmerApplicationGenerationNewUser : templateIdFarmerApplicationGenerationExistingUser
   }
-  return sendEmail(emailAddress, JSON.stringify(personalisation), data.reference, emailTemplateId, carbonEmail)
+  return sendEmail(emailAddress, personalisation, data.reference, emailTemplateId, carbonEmail)
 }
 
 module.exports = {

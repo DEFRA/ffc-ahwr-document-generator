@@ -24,7 +24,6 @@ const endemicsEventSchema = joi.object({
 })
 
 const validateDocumentRequest = (event) => {
-  console.log('endm ', endemics.enabled)
   const validate = endemics.enabled ? endemicsEventSchema.validate(event) : eventSchema.validate(event)
 
   if (validate.error) {
