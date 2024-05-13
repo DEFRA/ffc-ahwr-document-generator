@@ -23,14 +23,14 @@ containerSecret:
   type: Opaque
 
 deployment:
-  cpuThreshold: 40
+  cpuThreshold: 80
   memoryThreshold: 80
   minReadySeconds: 0
   minReplicas: 1
-  maxReplicas: 1
+  maxReplicas: 2
   priorityClassName: default
   restartPolicy: Always
-  replicas: 1
+  replicas: 2
 
 container:
   messageQueueHost: namespace.servicebus.windows.net
@@ -45,8 +45,8 @@ container:
   notifyTemplateIdFarmerApplicationCompleteNewUser:
   notifyTemplateIdFarmerApplicationCompleteExisitingUser:
   termsAndConditionsUrl:
-  requestMemory: 10Mi
-  requestCpu: 10m
+  requestMemory: 100Mi
+  requestCpu: 100m
   limitMemory: 120Mi
   limitCpu: 120m
   port: 3000
