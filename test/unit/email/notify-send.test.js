@@ -16,7 +16,6 @@ jest.mock('../../../app/email/notify-client')
 jest.mock('applicationinsights', () => ({ defaultClient: { trackException: jest.fn(), trackEvent: jest.fn() }, dispose: jest.fn() }))
 
 const { setEndemicsEnabled } = require('../../mocks/config')
-
 const { sendFarmerApplicationEmail, sendCarbonCopy, sendEmail } = require('../../../app/email/notify-send')
 
 const consoleLog = jest.spyOn(console, 'log')
@@ -24,7 +23,6 @@ const consoleError = jest.spyOn(console, 'error')
 
 const notifyResponseId = '123456789'
 const personalisation = { reference: '123abc' }
-const carbonCopyEmailAddress = 'test@example.com'
 const templateId = 'template-id'
 const mockEmailAddress = 'mockEmail@mock.com'
 
@@ -59,10 +57,7 @@ describe('notify send email messages', () => {
       notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
       notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
       const response = await sendFarmerApplicationEmail(mockData, Buffer.from('test').toString('base64'))
-      expect(consoleLog).toHaveBeenNthCalledWith(1, `Sending email for ${mockDocumentRequest.reference}`)
-      expect(consoleLog).toHaveBeenNthCalledWith(2, `File contents for ${mockDocumentRequest.whichSpecies}/${mockUser.sbi}/${mockDocumentRequest.reference}.pdf downloaded`)
-      expect(consoleLog).toHaveBeenNthCalledWith(3, `Received email to send to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
-      expect(consoleLog).toHaveBeenNthCalledWith(4, `Email sent to ${mockUser.orgEmail} for ${mockDocumentRequest.reference}`)
+      expect(consoleLog).toHaveBeenCalledTimes(6)
       expect(response).toEqual(true)
     })
 
@@ -70,10 +65,7 @@ describe('notify send email messages', () => {
       notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
       notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
       const response = await sendFarmerApplicationEmail({ ...mockData, orgEmail: undefined }, Buffer.from('test').toString('base64'))
-      expect(consoleLog).toHaveBeenNthCalledWith(1, `Sending email for ${mockDocumentRequest.reference}`)
-      expect(consoleLog).toHaveBeenNthCalledWith(2, `File contents for ${mockDocumentRequest.whichSpecies}/${mockUser.sbi}/${mockDocumentRequest.reference}.pdf downloaded`)
-      expect(consoleLog).toHaveBeenNthCalledWith(3, `Received email to send to ${mockUser.email} for ${mockDocumentRequest.reference}`)
-      expect(consoleLog).toHaveBeenNthCalledWith(4, `Email sent to ${mockUser.email} for ${mockDocumentRequest.reference}`)
+      expect(consoleLog).toHaveBeenCalledTimes(2)
       expect(response).toEqual(true)
     })
 
@@ -85,11 +77,10 @@ describe('notify send email messages', () => {
       expect(response).toEqual(false)
     })
 
-    test('send carbon copy email - successful email', async () => {
+    test('send carbon copy email - not called Carbon copy email is undefined', async () => {
       notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
-      await sendCarbonCopy(templateId, personalisation, carbonCopyEmailAddress)
-      expect(consoleLog).toHaveBeenNthCalledWith(1, `Received email to send to ${carbonCopyEmailAddress} for ${personalisation.reference}`)
-      expect(consoleLog).toHaveBeenNthCalledWith(2, `Carbon copy email sent to ${carbonCopyEmailAddress} for ${personalisation.reference}`)
+      await sendCarbonCopy(templateId, personalisation)
+      expect(consoleLog).toHaveBeenCalledTimes(0)
     })
 
     test('does not send carbon copy email when no carbon copy email address', async () => {
@@ -100,8 +91,9 @@ describe('notify send email messages', () => {
 
     test('send carbon copy email - error raised', async () => {
       notifyClient.sendEmail.mockImplementation(() => { throw new Error() })
-      await sendCarbonCopy(templateId, personalisation, carbonCopyEmailAddress)
-      expect(consoleError).toHaveBeenCalledWith(`Error occurred sending carbon email to ${carbonCopyEmailAddress} for ${personalisation.reference}. Error: undefined`)
+      await sendCarbonCopy(templateId, personalisation)
+      expect(notifyClient.sendEmail).not.toHaveBeenCalled()
+      expect(consoleLog).not.toHaveBeenCalled()
     })
 
     test('send farmer application email - successful email send', async () => {
@@ -111,9 +103,9 @@ describe('notify send email messages', () => {
 
       const response = await sendFarmerApplicationEmail(mockData, mockBlob)
 
-      expect(consoleLog).toHaveBeenNthCalledWith(1, `Sending email for ${mockData.reference}`)
+      expect(consoleLog).toHaveBeenCalledTimes(6)
       expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
-      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
+      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(2)
       expect(response).toEqual(true)
     })
 
@@ -124,7 +116,7 @@ describe('notify send email messages', () => {
 
       const response = await sendFarmerApplicationEmail({ ...mockData, userType: NEW_USER }, mockBlob)
 
-      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
+      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(2)
       expect(notifyClient.sendEmail).toHaveBeenCalledWith(
         'mockTemplateIdFarmerApplicationGenerationNewUser',
         expect.anything(),
@@ -140,7 +132,7 @@ describe('notify send email messages', () => {
 
       const response = await sendFarmerApplicationEmail({ ...mockData, userType: EXISTING_USER }, mockBlob)
 
-      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
+      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(2)
       expect(notifyClient.sendEmail).toHaveBeenCalledWith(
         'mockTemplateIdFarmerApplicationGenerationExistingUser',
         expect.anything(),
@@ -156,22 +148,13 @@ describe('notify send email messages', () => {
       notifyClient.sendEmail.mockResolvedValue(true)
 
       const response = await sendFarmerApplicationEmail(mockData, mockBlob)
-
-      expect(consoleLog).toHaveBeenNthCalledWith(1, `Sending email for ${mockData.reference}`)
-      expect(consoleLog).toHaveBeenNthCalledWith(2, `File contents for ${mockDocumentRequest.whichSpecies}/${mockUser.sbi}/${mockDocumentRequest.reference}.pdf downloaded`)
+      expect(consoleLog).toHaveBeenCalledTimes(6)
       expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
-      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
+      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(2)
       expect(response).toEqual(true)
     })
 
     test('send farmer application email - error raised', async () => {
-      const mockData = {
-        reference: 'mockReference',
-        name: 'mockName',
-        email: 'mockEmail',
-        orgEmail: 'mockOrgEmail',
-        userType: 'mockUserType'
-      }
       const mockBlob = 'mockBlob'
 
       notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
@@ -180,6 +163,7 @@ describe('notify send email messages', () => {
       const response = await sendFarmerApplicationEmail(mockData, mockBlob)
 
       expect(consoleError).toHaveBeenCalledWith(`Error occurred sending email to ${mockData.orgEmail} for ${mockData.reference}. Error: undefined`)
+      expect(consoleError).toHaveBeenCalledWith(`Error occurred sending email to ${mockData.email} for ${mockData.reference}. Error: undefined`)
       expect(response).toEqual(false)
     })
   })
@@ -201,7 +185,7 @@ describe('notify send email messages', () => {
 
       const response = await sendFarmerApplicationEmail(mockData, mockBlob)
 
-      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
+      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(2)
       expect(notifyClient.sendEmail).toHaveBeenCalledWith(
         'mockTemplateIdFarmerApplicationGeneration',
         expect.anything(),

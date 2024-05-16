@@ -7,7 +7,7 @@ const { DOCUMENT_CREATED, EMAIL_DELIVERED } = require('../../../app/statuses')
 describe('document log db', () => {
   beforeEach(async () => {
     jest.clearAllMocks()
-    jest.useFakeTimers().setSystemTime(new Date(2022, 7, 5, 15, 30, 10, 120))
+    jest.useFakeTimers().setSystemTime(new Date(2024, 6, 15, 15, 30, 10, 120))
 
     await db.sequelize.truncate({ cascade: true })
   })

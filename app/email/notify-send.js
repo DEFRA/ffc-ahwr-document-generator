@@ -11,6 +11,7 @@ const {
 } = require('../config').notifyConfig
 const { update } = require('../repositories/document-log-repository')
 const appInsights = require('applicationinsights')
+const { orgEmail } = require('../../test/mocks/user')
 
 const send = async (templateId, email, personalisation) => {
   console.log(`Received email to send to ${email} for ${personalisation.reference}`)
@@ -25,16 +26,14 @@ const send = async (templateId, email, personalisation) => {
   }
 }
 
-const sendEmail = async (email, personalisation, reference, templateId, carbonEmail = false) => {
+const sendEmail = async (email, personalisation, reference, templateId) => {
   let success = false
   try {
     const response = await send(templateId, email, { personalisation, reference })
     const emailReference = response.data?.id
     console.log(`Email sent to ${email} for ${reference}`)
     update(reference, { emailReference, status: EMAIL_CREATED })
-    if (carbonEmail) {
-      await sendCarbonCopy(templateId, { personalisation, reference }, carbonCopyEmailAddress)
-    }
+
     appInsights.defaultClient.trackEvent({
       name: 'email',
       properties: {
@@ -54,7 +53,7 @@ const sendEmail = async (email, personalisation, reference, templateId, carbonEm
   return success
 }
 
-const sendCarbonCopy = async (templateId, personalisation, carbonCopyEmailAddress) => {
+const sendCarbonCopy = async (templateId, personalisation) => {
   try {
     if (carbonCopyEmailAddress) {
       await send(
@@ -70,7 +69,7 @@ const sendCarbonCopy = async (templateId, personalisation, carbonCopyEmailAddres
 }
 
 const sendFarmerApplicationEmail = async (data, blob) => {
-  console.log(`Sending email for ${data.reference}`)
+  console.log(`Sending email for ${data.reference} - ${data.userType} - ${data.email} - ${data.orgEmail}`)
   const filename = createFileName(data)
   console.log(`File contents for ${filename} downloaded`)
   const personalisation = {
@@ -82,19 +81,25 @@ const sendFarmerApplicationEmail = async (data, blob) => {
     claim_uri: claimServiceUri
   }
 
-  let emailAddress = data.email
+  const emailAddress = data.email
   let emailTemplateId = templateIdFarmerApplicationGeneration
-  let carbonEmail = false
-
-  if (data?.orgEmail && data?.orgEmail !== data.email) {
-    emailAddress = data.orgEmail
-    carbonEmail = true
-  }
+  let isSuccess = true
 
   if (endemics.enabled) {
     emailTemplateId = data.userType === 'newUser' ? templateIdFarmerApplicationGenerationNewUser : templateIdFarmerApplicationGenerationExistingUser
   }
-  return sendEmail(emailAddress, personalisation, data.reference, emailTemplateId, carbonEmail)
+
+  sendCarbonCopy(emailTemplateId, personalisation)
+
+  if (data?.orgEmail) {
+    isSuccess = sendEmail(orgEmail, personalisation, data.reference, emailTemplateId)
+  }
+
+  if (data?.orgEmail && data?.orgEmail !== data.email) {
+    isSuccess = sendEmail(emailAddress, personalisation, data.reference, emailTemplateId)
+  }
+
+  return isSuccess
 }
 
 module.exports = {
