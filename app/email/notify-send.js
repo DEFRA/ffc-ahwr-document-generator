@@ -11,7 +11,6 @@ const {
 } = require('../config').notifyConfig
 const { update } = require('../repositories/document-log-repository')
 const appInsights = require('applicationinsights')
-const { orgEmail } = require('../../test/mocks/user')
 
 const send = async (templateId, email, personalisation) => {
   console.log(`Received email to send to ${email} for ${personalisation.reference}`)
