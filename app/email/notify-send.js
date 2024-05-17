@@ -46,7 +46,7 @@ const sendEmail = async (email, personalisation, reference, templateId) => {
   } catch (e) {
     success = false
     update(reference, { status: SEND_FAILED })
-    console.error(`Error occurred sending email to ${email} for ${reference}. Error: ${e}`)
+    console.error(`Error occurred sending email to ${email} for ${reference}. Error: ${JSON.stringify(e.response?.data)}`)
     appInsights.defaultClient.trackException({ exception: e })
   }
   return success
@@ -60,7 +60,7 @@ const sendCarbonCopy = async (personalisation, reference, templateId) => {
         carbonCopyEmailAddress,
         { personalisation, reference }
       )
-      console.log(`Carbon copy email sent to ${carbonCopyEmailAddress} for ${preference}`)
+      console.log(`Carbon copy email sent to ${carbonCopyEmailAddress} for ${reference}`)
     }
   } catch (e) {
     console.error(`Error occurred sending carbon email to ${carbonCopyEmailAddress} for ${reference}. Error: ${JSON.stringify(e.response?.data)}`)
@@ -94,7 +94,7 @@ const sendFarmerApplicationEmail = async (data, blob) => {
     isSuccess = sendEmail(data.orgEmail, personalisation, data.reference, emailTemplateId)
   }
 
-  if (data?.orgEmail && data?.orgEmail !== data.email) {
+  if (data?.orgEmail && data?.orgEmail !== emailAddress) {
     isSuccess = sendEmail(emailAddress, personalisation, data.reference, emailTemplateId)
   }
 
