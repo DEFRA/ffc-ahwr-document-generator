@@ -46,24 +46,24 @@ const sendEmail = async (email, personalisation, reference, templateId) => {
   } catch (e) {
     success = false
     update(reference, { status: SEND_FAILED })
-    console.error(`Error occurred sending email to ${email} for ${reference}. Error: ${JSON.stringify(e.response?.data)}`)
+    console.error(`Error occurred sending email to ${email} for ${reference}. Error: ${e}`)
     appInsights.defaultClient.trackException({ exception: e })
   }
   return success
 }
 
-const sendCarbonCopy = async (templateId, personalisation) => {
+const sendCarbonCopy = async (personalisation, reference, templateId) => {
   try {
     if (carbonCopyEmailAddress) {
       await send(
         templateId,
         carbonCopyEmailAddress,
-        personalisation
+        { personalisation, reference }
       )
-      console.log(`Carbon copy email sent to ${carbonCopyEmailAddress} for ${personalisation.reference}`)
+      console.log(`Carbon copy email sent to ${carbonCopyEmailAddress} for ${preference}`)
     }
   } catch (e) {
-    console.error(`Error occurred sending carbon email to ${carbonCopyEmailAddress} for ${personalisation.reference}. Error: ${JSON.stringify(e.response?.data)}`)
+    console.error(`Error occurred sending carbon email to ${carbonCopyEmailAddress} for ${reference}. Error: ${JSON.stringify(e.response?.data)}`)
   }
 }
 
@@ -88,7 +88,7 @@ const sendFarmerApplicationEmail = async (data, blob) => {
     emailTemplateId = data.userType === 'newUser' ? templateIdFarmerApplicationGenerationNewUser : templateIdFarmerApplicationGenerationExistingUser
   }
 
-  sendCarbonCopy(emailTemplateId, personalisation)
+  sendCarbonCopy(personalisation, data.reference, emailTemplateId)
 
   if (data?.orgEmail) {
     isSuccess = sendEmail(data.orgEmail, personalisation, data.reference, emailTemplateId)
