@@ -91,7 +91,7 @@ const sendFarmerApplicationEmail = async (data, blob) => {
   sendCarbonCopy(emailTemplateId, personalisation)
 
   if (data?.orgEmail) {
-    isSuccess = sendEmail(orgEmail, personalisation, data.reference, emailTemplateId)
+    isSuccess = sendEmail(data.orgEmail, personalisation, data.reference, emailTemplateId)
   }
 
   if (data?.orgEmail && data?.orgEmail !== data.email) {
