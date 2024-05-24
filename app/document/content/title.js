@@ -6,7 +6,6 @@ const { millimetresToPoints } = require('../conversion')
 const title = () => {
   const titleEndemicsOn = 'Agreement summary: get funding to improve animal health and welfare'
   const titleEndemicsOff = 'Annual health and welfare review of livestock agreement summary'
-  
   return {
     stack: [
       { image: `${imagePath}/logo.jpg`, fit: [millimetresToPoints(200), millimetresToPoints(25)], style: 'logo', link: applyServiceUri },
