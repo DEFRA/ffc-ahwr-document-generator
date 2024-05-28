@@ -49,7 +49,7 @@ const applicationDetails = (data) => {
       { text: 'Guidance', style: 'subheader', margin: [0, 20, 0, 7] },
       {
         ul: [
-          { text: 'Get finding to improve animal health and welfare', link: '#', decoration: 'underline', color: '#1D70B8', margin: [15, 0, 0, 0] }
+          { text: 'Get funding to improve animal health and welfare', link: '#', decoration: 'underline', color: '#1D70B8', margin: [15, 0, 0, 0] }
         ]
       }
     ]
