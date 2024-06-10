@@ -26,7 +26,7 @@ const applicationDetails = (data) => {
           { text: 'endemic disease follow-ups', link: 'https://www.gov.uk/guidance/farmers-how-to-apply-for-funding-to-improve-animal-health-and-welfare#endemic-disease-follow-up', decoration: 'underline', color: '#1D70B8', margin: [15, 0, 0, 5] }
         ]
       },
-      { text: ['By applying for this ', { text: 'funding', link: '#', decoration: 'underline', color: '#1D70B8' }, { text: ' you have entered into an agreement with the Rural Payments Agency.' }], margin: [0, 20, 0, 10] },
+      { text: 'By applying for this funding, you have entered into an agreement with the Rural Payments Agency.', margin: [0, 20, 0, 10] },
       { text: [{ text: 'The agreement will be governed by the ' }, { text: 'terms and conditions.', link: termsAndConditionsUrl, decoration: 'underline', color: '#1D70B8' }] },
       { text: 'Agreement details', style: 'subheader', margin: [0, 20, 0, 7] },
       {
