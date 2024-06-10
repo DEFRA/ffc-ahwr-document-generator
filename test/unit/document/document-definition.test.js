@@ -6,7 +6,7 @@ const moment = require('moment')
 const { setEndemicsEnabled } = require('../../mocks/config')
 
 describe('get document definition', () => {
-  describe('Endemics On', () => {
+  describe('Endemics Off', () => {
     beforeEach(() => {
       jest.resetAllMocks()
       setEndemicsEnabled(false)
@@ -32,7 +32,7 @@ describe('get document definition', () => {
       expect(result.defaultStyle).toBe(styles.default)
     })
   })
-  describe('Endemics Off', () => {
+  describe('Endemics On', () => {
     beforeEach(() => {
       jest.resetAllMocks()
       setEndemicsEnabled(true)
