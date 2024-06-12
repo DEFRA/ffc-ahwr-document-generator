@@ -26,16 +26,26 @@ const applicationDetails = (data) => {
           { text: 'endemic disease follow-ups', link: 'https://www.gov.uk/guidance/farmers-how-to-apply-for-funding-to-improve-animal-health-and-welfare#endemic-disease-follow-up', decoration: 'underline', color: '#1D70B8', margin: [15, 0, 0, 5] }
         ]
       },
-      { text: 'By applying for this funding, you have entered into an agreement with the Rural Payments Agency.', margin: [0, 20, 0, 10] },
-      { text: [{ text: 'The agreement will be governed by the ' }, { text: 'terms and conditions.', link: termsAndConditionsUrl, decoration: 'underline', color: '#1D70B8' }] },
+      { text: ['By applying for this funding, you have entered into an agreement with the Rural Payments Agency. The agreement will be governed by the ', { text: 'terms and conditions.', link: termsAndConditionsUrl, decoration: 'underline', color: '#1D70B8' }], margin: [0, 20, 0, 10] },
       { text: 'Agreement details', style: 'subheader', margin: [0, 20, 0, 7] },
       {
-        ul: [
-          { text: `Agreement number: ${data.reference}`, margin: [15, 0, 0, 5] },
-          { text: `Agreement holder: ${data.name} - ${data.sbi}`, margin: [15, 0, 0, 5] },
-          { text: `Agreement start date: ${moment(data.startDate).format('D MMMM YYYY')} `, margin: [15, 0, 0, 5] },
-          { text: `Agreement end date: ${calculateEndDate(data.startDate, 6)}`, margin: [15, 0, 0, 0] }
-        ]
+        table: {
+          body: [
+            [{ text: 'Agreement number:', margin: [0, 10, 0, 10] }, { text: `${data.reference}`, margin: [0, 10, 0, 10] }],
+            [{ text: 'Agreement holder:', margin: [0, 10, 0, 10] }, { text: `${data.name} - ${data.sbi}`, margin: [0, 10, 0, 10] }],
+            [{ text: 'Agreement start date:', margin: [0, 10, 0, 10] }, { text: `${moment(data.startDate).format('D MMMM YYYY')}`, margin: [0, 10, 0, 10] }],
+            [{ text: 'Review and follow-up deadline:', margin: [0, 10, 0, 10] }, { text: '19 June 2027. You must do all your reviews and follow-ups by this date.', margin: [0, 10, 0, 10] }],
+            [{ text: 'Claims deadline:', margin: [0, 10, 0, 10] }, { text: '19 September 2027. You must submit all your claims by this date.', margin: [0, 10, 0, 10] }]
+          ]
+        },
+        layout: {
+          hLineWidth: function (i, node) {
+            return (i === 0 || i === node.table.body.length) ? 0 : 1
+          },
+          vLineWidth: function (i, node) {
+            return 0
+          }
+        }
       },
       { text: 'Important requirements', style: 'subheader', margin: [0, 20, 0, 7] },
       { text: 'You must:', margin: [0, 0, 0, 6] },
