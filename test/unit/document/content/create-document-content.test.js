@@ -105,6 +105,8 @@ describe('generate document content', () => {
       expect(result[1].stack[4].layout.hLineWidth(2, { table: { body: [1, 2, 3, 4] } })).toBe(1)
       expect(result[1].stack[4].layout.hLineWidth(3, { table: { body: [1, 2, 3, 4] } })).toBe(1)
       expect(result[1].stack[4].layout.hLineWidth(4, { table: { body: [1, 2, 3, 4] } })).toBe(0)
+
+      expect(result[1].stack[4].layout.vLineWidth(0, {})).toBe(0)
     })
   })
 })
