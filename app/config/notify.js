@@ -8,7 +8,8 @@ const schema = Joi.object({
   notfiyCheckInterval: Joi.number().default(30000),
   templateIdFarmerApplicationGeneration: Joi.string().uuid(),
   templateIdFarmerApplicationGenerationNewUser: Joi.string().uuid(),
-  templateIdFarmerApplicationGenerationExistingUser: Joi.string().uuid()
+  templateIdFarmerApplicationGenerationExistingUser: Joi.string().uuid(),
+  templateIdFarmerApplicationCompleteExistingUserRejectedWithinTenMonths: Joi.string()
 })
 
 const config = {
@@ -17,7 +18,8 @@ const config = {
   notfiyCheckInterval: process.env.NOTIFY_CHECK_INTERVAL,
   templateIdFarmerApplicationGeneration: process.env.NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE,
   templateIdFarmerApplicationGenerationNewUser: process.env.NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_NEW_USER,
-  templateIdFarmerApplicationGenerationExistingUser: process.env.NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_EXISTING_USER
+  templateIdFarmerApplicationGenerationExistingUser: process.env.NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_EXISTING_USER,
+  templateIdFarmerApplicationCompleteExistingUserRejectedWithinTenMonths: process.env.NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_EXISTING_USER_REJECTED_WITHIN_10_MONTHS
 }
 
 const { error, value } = schema.validate(config, { abortEarly: false })

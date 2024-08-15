@@ -7,10 +7,12 @@ const {
   templateIdFarmerApplicationGeneration,
   templateIdFarmerApplicationGenerationNewUser,
   templateIdFarmerApplicationGenerationExistingUser,
+  templateIdFarmerApplicationCompleteExistingUserRejectedWithinTenMonths,
   carbonCopyEmailAddress
 } = require('../config').notifyConfig
 const { update } = require('../repositories/document-log-repository')
 const appInsights = require('applicationinsights')
+const emailTemplateIdSelector = require('../utils/email-templateId-selector')
 
 const send = async (templateId, email, personalisation) => {
   console.log(`Received email to send to ${email} for ${personalisation.reference}`)
@@ -67,8 +69,12 @@ const sendCarbonCopy = async (personalisation, reference, templateId) => {
   }
 }
 
+
+
+// 
 const sendFarmerApplicationEmail = async (data, blob) => {
-  console.log(`Sending email for ${data.reference} - ${data.userType} - ${data.email} - ${data.orgEmail}`)
+  console.log(`Sending data:  ${JSON.stringify(data)}`)
+  console.log(`Sending email for ${data.reference} - ${data.userType} - ${data.email} - ${data.orgEmail} - ${JSON.stringify(data.oldWorldRejectedAgreement10months)}`)
   const filename = createFileName(data)
   console.log(`File contents for ${filename} downloaded`)
   const personalisation = {
@@ -85,7 +91,8 @@ const sendFarmerApplicationEmail = async (data, blob) => {
   let isSuccess = true
 
   if (endemics.enabled) {
-    emailTemplateId = data.userType === 'newUser' ? templateIdFarmerApplicationGenerationNewUser : templateIdFarmerApplicationGenerationExistingUser
+    emailTemplateId =  emailTemplateIdSelector(data.userType, data.oldWorldRejectedAgreement10months?.isValid)
+
   }
 
   sendCarbonCopy(personalisation, data.reference, emailTemplateId)
