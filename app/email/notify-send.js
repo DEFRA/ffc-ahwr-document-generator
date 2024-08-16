@@ -5,9 +5,6 @@ const { EMAIL_CREATED } = require('../statuses')
 const { SEND_FAILED } = require('./notify-statuses')
 const {
   templateIdFarmerApplicationGeneration,
-  templateIdFarmerApplicationGenerationNewUser,
-  templateIdFarmerApplicationGenerationExistingUser,
-  templateIdFarmerApplicationCompleteExistingUserRejectedWithinTenMonths,
   carbonCopyEmailAddress
 } = require('../config').notifyConfig
 const { update } = require('../repositories/document-log-repository')
@@ -69,11 +66,8 @@ const sendCarbonCopy = async (personalisation, reference, templateId) => {
   }
 }
 
-
-
-// 
+//
 const sendFarmerApplicationEmail = async (data, blob) => {
-  console.log(`Sending data:  ${JSON.stringify(data)}`)
   console.log(`Sending email for ${data.reference} - ${data.userType} - ${data.email} - ${data.orgEmail} - ${JSON.stringify(data.oldWorldRejectedAgreement10months)}`)
   const filename = createFileName(data)
   console.log(`File contents for ${filename} downloaded`)
@@ -89,10 +83,8 @@ const sendFarmerApplicationEmail = async (data, blob) => {
   const emailAddress = data.email
   let emailTemplateId = templateIdFarmerApplicationGeneration
   let isSuccess = true
-
   if (endemics.enabled) {
-    emailTemplateId =  emailTemplateIdSelector(data.userType, data.oldWorldRejectedAgreement10months?.isValid)
-
+    emailTemplateId = emailTemplateIdSelector(data.userType, data.oldWorldRejectedAgreement10months?.isExistingUserRejectedAgreementWithin10months)
   }
 
   sendCarbonCopy(personalisation, data.reference, emailTemplateId)
