@@ -6,7 +6,8 @@ jest.mock('../app/config/notify', () => ({
   notfiyCheckInterval: 30000,
   templateIdFarmerApplicationGeneration: 'mockTemplateIdFarmerApplicationGeneration',
   templateIdFarmerApplicationGenerationNewUser: 'mockTemplateIdFarmerApplicationGenerationNewUser',
-  templateIdFarmerApplicationGenerationExistingUser: 'mockTemplateIdFarmerApplicationGenerationExistingUser'
+  templateIdFarmerApplicationGenerationExistingUser: 'mockTemplateIdFarmerApplicationGenerationExistingUser',
+  templateIdFarmerApplicationCompleteExistingUserRejectedWithinTenMonths: 'mockTemplateIdFarmerApplicationCompleteExistingUserRejectedWithinTenMonths'
 }))
 
 jest.mock('../app/config/storage', () => ({
