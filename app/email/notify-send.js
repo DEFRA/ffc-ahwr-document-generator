@@ -68,7 +68,7 @@ const sendCarbonCopy = async (personalisation, reference, templateId) => {
 
 //
 const sendFarmerApplicationEmail = async (data, blob) => {
-  console.log(`Sending email for ${data.reference} - ${data.userType} - ${data.email} - ${data.orgEmail} - ${JSON.stringify(data.oldWorldRejectedAgreement10months)}`)
+  console.log(`Sending email for ${data.reference} - ${data.userType} - ${data.email} - ${data.orgEmail} - ${JSON.stringify(data.userTypeStatus)}`)
   const filename = createFileName(data)
   console.log(`File contents for ${filename} downloaded`)
   const personalisation = {
@@ -84,7 +84,7 @@ const sendFarmerApplicationEmail = async (data, blob) => {
   let emailTemplateId = templateIdFarmerApplicationGeneration
   let isSuccess = true
   if (endemics.enabled) {
-    emailTemplateId = emailTemplateIdSelector(data.userType, data.oldWorldRejectedAgreement10months?.isExistingUserRejectedAgreementWithin10months)
+    emailTemplateId = emailTemplateIdSelector(data.userType, data.userTypeStatus?.isExistingUserRejectedAgreementWithin10months)
   }
 
   sendCarbonCopy(personalisation, data.reference, emailTemplateId)
