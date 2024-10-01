@@ -57,7 +57,7 @@ describe('notify send email messages', () => {
       notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
       notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
       const response = await sendFarmerApplicationEmail(mockData, Buffer.from('test').toString('base64'))
-      expect(consoleLog).toHaveBeenCalledTimes(5)
+      expect(consoleLog).toHaveBeenCalledTimes(6)
       expect(response).toEqual(true)
     })
 
@@ -65,7 +65,7 @@ describe('notify send email messages', () => {
       notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
       notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
       const response = await sendFarmerApplicationEmail({ ...mockData, orgEmail: undefined }, Buffer.from('test').toString('base64'))
-      expect(consoleLog).toHaveBeenCalledTimes(1)
+      expect(consoleLog).toHaveBeenCalledTimes(2)
       expect(response).toEqual(true)
     })
 
@@ -103,7 +103,7 @@ describe('notify send email messages', () => {
 
       const response = await sendFarmerApplicationEmail(mockData, mockBlob)
 
-      expect(consoleLog).toHaveBeenCalledTimes(5)
+      expect(consoleLog).toHaveBeenCalledTimes(6)
       expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
       expect(notifyClient.sendEmail).toHaveBeenCalledTimes(2)
       expect(response).toEqual(true)
@@ -148,7 +148,7 @@ describe('notify send email messages', () => {
       notifyClient.sendEmail.mockResolvedValue(true)
 
       const response = await sendFarmerApplicationEmail(mockData, mockBlob)
-      expect(consoleLog).toHaveBeenCalledTimes(5)
+      expect(consoleLog).toHaveBeenCalledTimes(6)
       expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
       expect(notifyClient.sendEmail).toHaveBeenCalledTimes(2)
       expect(response).toEqual(true)
