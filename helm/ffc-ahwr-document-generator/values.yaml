@@ -44,7 +44,6 @@ container:
   notifyTemplateIdFarmerApplicationComplete:
   notifyTemplateIdFarmerApplicationCompleteNewUser:
   notifyTemplateIdFarmerApplicationCompleteExistingUser:
-  notifyTemplateIdFarmerApplicationCompleteExistingUserRejectedWithin10Months:
   termsAndConditionsUrl:
   requestMemory: 100Mi
   requestCpu: 100m
