@@ -83,7 +83,7 @@ const sendFarmerApplicationEmail = async (data, blob) => {
   let emailTemplateId = templateIdFarmerApplicationGeneration
   let isSuccess = true
   if (endemics.enabled) {
-    emailTemplateId = emailTemplateIdSelector(data.userType, data.oldWorldRejectedAgreement10months?.isExistingUserRejectedAgreementWithin10months)
+    emailTemplateId = emailTemplateIdSelector(data.userType, data.userTypeStatus?.isExistingUserRejectedAgreementWithin10months)
   }
 
   sendCarbonCopy(personalisation, data.reference, emailTemplateId)
