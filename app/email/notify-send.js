@@ -66,9 +66,7 @@ const sendCarbonCopy = async (personalisation, reference, templateId) => {
   }
 }
 
-//
 const sendFarmerApplicationEmail = async (data, blob) => {
-  console.log(`Sending email for ${data.reference} - ${data.userType} - ${data.email} - ${data.orgEmail} - ${JSON.stringify(data.oldWorldRejectedAgreement10months)}`)
   const filename = createFileName(data)
   console.log(`File contents for ${filename} downloaded`)
   const personalisation = {
