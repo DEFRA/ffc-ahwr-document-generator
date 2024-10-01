@@ -11,8 +11,7 @@ data:
   MESSAGE_QUEUE_HOST: {{ quote .Values.container.messageQueueHost }}
   NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE: {{ quote .Values.container.notifyTemplateIdFarmerApplicationComplete }}
   NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_NEW_USER: {{ quote .Values.container.notifyTemplateIdFarmerApplicationCompleteNewUser }}
-  NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_EXISTING_USER: {{ quote .Values.container.notifyTemplateIdFarmerApplicationCompleteExistingUser }}
-  NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_EXISTING_USER_REJECTED_WITHIN_10_MONTHS: {{ quote .Values.container.notifyTemplateIdFarmerApplicationCompleteExistingUserRejectedWithin10Months }}
+  NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_EXISTING_USER: {{ quote .Values.container.notifyTemplateIdFarmerApplicationCompleteExisitingUser }}
   POSTGRES_DB: {{ quote .Values.postgresService.postgresDb }}
   POSTGRES_HOST: {{ quote .Values.postgresService.postgresExternalName }}
   POSTGRES_PORT: {{ quote .Values.postgresService.postgresPort }}

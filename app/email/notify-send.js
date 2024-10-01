@@ -5,11 +5,12 @@ const { EMAIL_CREATED } = require('../statuses')
 const { SEND_FAILED } = require('./notify-statuses')
 const {
   templateIdFarmerApplicationGeneration,
+  templateIdFarmerApplicationGenerationNewUser,
+  templateIdFarmerApplicationGenerationExistingUser,
   carbonCopyEmailAddress
 } = require('../config').notifyConfig
 const { update } = require('../repositories/document-log-repository')
 const appInsights = require('applicationinsights')
-const emailTemplateIdSelector = require('../utils/email-templateId-selector')
 
 const send = async (templateId, email, personalisation) => {
   console.log(`Received email to send to ${email} for ${personalisation.reference}`)
@@ -82,8 +83,9 @@ const sendFarmerApplicationEmail = async (data, blob) => {
   const emailAddress = data.email
   let emailTemplateId = templateIdFarmerApplicationGeneration
   let isSuccess = true
+
   if (endemics.enabled) {
-    emailTemplateId = emailTemplateIdSelector(data.userType, data.userTypeStatus?.isExistingUserRejectedAgreementWithin10months)
+    emailTemplateId = data.userType === 'newUser' ? templateIdFarmerApplicationGenerationNewUser : templateIdFarmerApplicationGenerationExistingUser
   }
 
   sendCarbonCopy(personalisation, data.reference, emailTemplateId)

@@ -43,8 +43,7 @@ container:
   notifyApiKey:
   notifyTemplateIdFarmerApplicationComplete:
   notifyTemplateIdFarmerApplicationCompleteNewUser:
-  notifyTemplateIdFarmerApplicationCompleteExistingUser:
-  notifyTemplateIdFarmerApplicationCompleteExistingUserRejectedWithin10Months:
+  notifyTemplateIdFarmerApplicationCompleteExisitingUser:
   termsAndConditionsUrl:
   requestMemory: 100Mi
   requestCpu: 100m

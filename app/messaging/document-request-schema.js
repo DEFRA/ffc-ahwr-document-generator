@@ -19,11 +19,6 @@ const endemicsEventSchema = joi.object({
   userType: joi.string().optional(),
   email: joi.string().email({ tlds: false }).optional(),
   orgEmail: joi.string().email({ tlds: false }).optional(),
-  userTypeStatus: joi.object({
-    isExistingUserRejectedAgreementWithin10months: joi.boolean(),
-    isExistingUserReadyToPayAgreementWithin10months: joi.boolean()
-  })
-    .optional(),
   name: joi.string().optional(),
   farmerName: joi.string().optional()
 })
