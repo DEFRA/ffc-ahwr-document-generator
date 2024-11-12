@@ -3,6 +3,7 @@ const dbConfig = require('./db')
 const messageQueueConfig = require('./message-queue')
 const notifyConfig = require('./notify')
 const storageConfig = require('./storage')
+const msgTypePrefix = 'uk.gov.ffc.ahwr'
 
 const schema = Joi.object({
   port: Joi.number().default(3005),
@@ -13,7 +14,11 @@ const schema = Joi.object({
   claimServiceUri: Joi.string().default('#'),
   endemics: Joi.object({
     enabled: Joi.boolean().default(false)
-  })
+  }),
+  sfdRequestMsgType: Joi.string(),
+  sfdMessage: {
+    enabled: Joi.bool().default(false)
+  }
 })
 
 const config = {
@@ -25,6 +30,10 @@ const config = {
   claimServiceUri: process.env.CLAIM_SERVICE_URI,
   endemics: {
     enabled: process.env.ENDEMICS_ENABLED
+  },
+  sfdRequestMsgType: `${msgTypePrefix}.sfd.request`,
+  sfdMessage: {
+    enabled: process.env.SFD_MESSAGE_ENABLED
   }
 }
 

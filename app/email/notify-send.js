@@ -11,10 +11,19 @@ const {
 } = require('../config').notifyConfig
 const { update } = require('../repositories/document-log-repository')
 const appInsights = require('applicationinsights')
+const sendSFDEmail = require('./sfd-client')
+const { sfdMessage } = require('../config')
 
 const send = async (templateId, email, personalisation) => {
   console.log(`Received email to send to ${email} for ${personalisation.reference}`)
   try {
+    if (sfdMessage.enabled) {
+      return sendSFDEmail(
+        templateId,
+        email,
+        personalisation
+      )
+    }
     return notifyClient.sendEmail(
       templateId,
       email,
@@ -77,7 +86,9 @@ const sendFarmerApplicationEmail = async (data, blob) => {
     link_to_file: notifyClient.prepareUpload(blob),
     guidance_uri: `${applyServiceUri}/guidance-for-farmers`,
     claim_guidance_uri: `${applyServiceUri}/claim-guidance-for-farmers`,
-    claim_uri: claimServiceUri
+    claim_uri: claimServiceUri,
+    crn: data.crn,
+    sbi: data.sbi
   }
 
   const emailAddress = data.email
