@@ -1,7 +1,5 @@
-const util = require('util')
-const config = require('../config')
 const sendMessage = require('../messaging/send-message')
-const { sfdRequestMsgType, sfdMessageQueue } = require('../config')
+const { sfdRequestMsgType, messageQueueConfig: { sfdMessageQueue } } = require('../config')
 const validateSFDClaim = require('../messaging/submit-sfd-schema')
 const states = require('../messaging/states')
 
