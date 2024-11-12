@@ -54,7 +54,7 @@ container:
   claimServiceUri:
   endemicsEnabled:
   sfdMessageQueueAddress: ffc-ahwr-sfd-message
-  sfdMessageEnabled:
+  sfdMessageEnabled: false
 
 postgresService:
   postgresDb: ffc_ahwr_document_generator
