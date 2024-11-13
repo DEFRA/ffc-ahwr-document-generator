@@ -6,8 +6,6 @@ const states = require('../messaging/states')
 const sendSFDEmail = async (templateId, email, emailInput) => {
   const { personalisation: { reference, crn, sbi } } = emailInput
   const customParams = { ...emailInput.personalisation }
-  delete customParams.crn
-  delete customParams.sbi
 
   const sfdMessage = {
     crn,
