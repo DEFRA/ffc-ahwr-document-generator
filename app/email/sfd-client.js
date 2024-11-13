@@ -3,16 +3,19 @@ const { sfdRequestMsgType, messageQueueConfig: { sfdMessageQueue } } = require('
 const validateSFDClaim = require('../messaging/submit-sfd-schema')
 const states = require('../messaging/states')
 
-const sendSFDEmail = async (templateId, email, personalisation) => {
-  const { personalisation: { reference, crn, sbi } } = personalisation
+const sendSFDEmail = async (templateId, email, emailInput) => {
+  const { personalisation: { reference, crn, sbi } } = emailInput
+  const customParams = { ...emailInput.personalisation }
+  delete customParams.crn
+  delete customParams.sbi
 
   const sfdMessage = {
-    crn: crn,
-    sbi: sbi,
+    crn,
+    sbi,
     agreementReference: reference,
     notifyTemplateId: templateId,
     emailAddress: email,
-    customParams: personalisation,
+    customParams,
     dateTime: new Date().toISOString()
   }
 

@@ -3,7 +3,6 @@ const dbConfig = require('./db')
 const messageQueueConfig = require('./message-queue')
 const notifyConfig = require('./notify')
 const storageConfig = require('./storage')
-const msgTypePrefix = 'uk.gov.ffc.ahwr'
 
 const schema = Joi.object({
   port: Joi.number().default(3005),
@@ -31,7 +30,7 @@ const config = {
   endemics: {
     enabled: process.env.ENDEMICS_ENABLED
   },
-  sfdRequestMsgType: `${msgTypePrefix}.sfd.request`,
+  sfdRequestMsgType: 'uk.gov.ffc.ahwr.sfd.request',
   sfdMessage: {
     enabled: process.env.SFD_MESSAGE_ENABLED
   }
