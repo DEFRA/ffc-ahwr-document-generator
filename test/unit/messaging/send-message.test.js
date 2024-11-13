@@ -3,9 +3,8 @@ const sendMessage = require('../../../app/messaging/send-message')
 
 jest.mock('../../../app/messaging/create-message')
 
-//These tests are not particularly useful, we should just check here if the function is calling into the ones below
+// These tests are not particularly useful, we should just check here if the function is calling into the ones below
 describe('sendMessage', () => {
-
   test('should throw error if body is missing', async () => {
     const type = 'text'
     const options = {}

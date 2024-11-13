@@ -16,12 +16,20 @@ const { sfdMessage } = require('../config')
 
 const send = async (templateId, email, personalisation) => {
   console.log(`Received email to send to ${email} for ${personalisation.reference}`)
+  // sbi and crn were added into personalisation object to get them into here without changing upstream method signatures
+  // for the time being we'll pull them out here and send into SFD route where they are needed, and make sure they don't
+  // go into the old route where they aren't needed
+  const { sbi, crn } = personalisation.personalisation
+  delete personalisation.personalisation.crn
+  delete personalisation.personalisation.sbi
   try {
     if (sfdMessage.enabled) {
       return sendSFDEmail(
         templateId,
         email,
-        personalisation
+        personalisation,
+        crn,
+        sbi
       )
     }
     return notifyClient.sendEmail(

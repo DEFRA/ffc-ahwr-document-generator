@@ -22,12 +22,12 @@ const consoleLog = jest.spyOn(console, 'log')
 const consoleError = jest.spyOn(console, 'error')
 
 const notifyResponseId = '123456789'
-const personalisation = { reference: '123abc' }
+const personalisation = { reference: '123abc', crn: 'someCrn', sbi: 'someSbi' }
 const templateId = 'template-id'
 const mockEmailAddress = 'mockEmail@mock.com'
 
 describe('sendEmail', () => {
-  test('send email succesfully', async () => {
+  test('send email successfully', async () => {
     notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
     notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
     const response = await sendEmail(mockEmailAddress, personalisation, notifyResponseId, templateId)
@@ -47,7 +47,7 @@ describe('sendEmail', () => {
 })
 
 describe('notify send email messages', () => {
-  describe('endemics ennable true', () => {
+  describe('endemics enabled true', () => {
     beforeEach(() => {
       jest.resetAllMocks()
       setEndemicsEnabled(true)
