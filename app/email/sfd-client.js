@@ -18,8 +18,9 @@ const sendSFDEmail = async (templateId, email, emailInput, crn, sbi) => {
   }
 
   if (validateSFDClaim(sfdMessage)) {
-    return await sendMessage(sfdMessage, sfdRequestMsgType, sfdMessageQueue)
+    return sendMessage(sfdMessage, sfdRequestMsgType, sfdMessageQueue)
   } else {
+    // Check this because I am not sure why we would still send a request here. Proxy won't handle this
     return sendMessage({ applicationState: states.failed }, sfdRequestMsgType, sfdMessageQueue, { templateId })
   }
 }

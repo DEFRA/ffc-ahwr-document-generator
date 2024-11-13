@@ -46,9 +46,16 @@ const sendEmail = async (email, personalisation, reference, templateId) => {
   let success = false
   try {
     const response = await send(templateId, email, { personalisation, reference })
-    const emailReference = response.data?.id
-    console.log(`Email sent to ${email} for ${reference}`)
-    update(reference, { emailReference, status: EMAIL_CREATED })
+
+    if (!sfdMessage.enabled) {
+      // If it IS enabled we don;t get any of this info as the message proxy is doing the send and audit
+      // otherwise do usual audit here
+      const emailReference = response.data?.id
+      console.log(`Email sent to ${email} for ${reference}`)
+      update(reference, { emailReference, status: EMAIL_CREATED })
+    } else {
+      console.log(`Request sent to sfd message proxy for ${reference}`)
+    }
 
     appInsights.defaultClient.trackEvent({
       name: 'email',

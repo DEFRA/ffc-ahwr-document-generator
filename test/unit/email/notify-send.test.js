@@ -13,26 +13,49 @@ jest.mock('../../../app/repositories/document-log-repository', () => {
 const notifyClient = require('../../../app/email/notify-client')
 jest.mock('../../../app/email/notify-client')
 
+const sfdSendMock = require('../../../app/email/sfd-client')
+jest.mock('../../../app/email/sfd-client')
+
 jest.mock('applicationinsights', () => ({ defaultClient: { trackException: jest.fn(), trackEvent: jest.fn() }, dispose: jest.fn() }))
 
 const { setEndemicsEnabled } = require('../../mocks/config')
 const { sendFarmerApplicationEmail, sendCarbonCopy, sendEmail } = require('../../../app/email/notify-send')
+const conf = require('../../../app/config')
 
 const consoleLog = jest.spyOn(console, 'log')
 const consoleError = jest.spyOn(console, 'error')
 
 const notifyResponseId = '123456789'
-const personalisation = { reference: '123abc', crn: 'someCrn', sbi: 'someSbi' }
+let personalisation = { reference: '123abc', crn: 'someCrn', sbi: 'someSbi' }
 const templateId = 'template-id'
 const mockEmailAddress = 'mockEmail@mock.com'
 
 describe('sendEmail', () => {
+  beforeEach(() => {
+    conf.sfdMessage.enabled = false
+    personalisation = { reference: '123abc', crn: 'someCrn', sbi: 'someSbi' }
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
   test('send email successfully', async () => {
     notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
     notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
     const response = await sendEmail(mockEmailAddress, personalisation, notifyResponseId, templateId)
     expect(consoleLog).toHaveBeenNthCalledWith(1, `Received email to send to ${mockEmailAddress} for ${notifyResponseId}`)
     expect(consoleLog).toHaveBeenNthCalledWith(2, `Email sent to ${mockEmailAddress} for ${notifyResponseId}`)
+    expect(response).toEqual(true)
+    expect(sfdSendMock).toHaveBeenCalledTimes(0)
+  })
+  test('send email successfully via SFD route', async () => {
+    conf.sfdMessage.enabled = true
+    const response = await sendEmail(mockEmailAddress, personalisation, notifyResponseId, templateId)
+    expect(sfdSendMock).toHaveBeenCalledWith(
+      'template-id', 'mockEmail@mock.com', { personalisation: { reference: '123abc' }, reference: '123456789' }, 'someCrn', 'someSbi'
+    )
+    expect(consoleLog).toHaveBeenNthCalledWith(2, 'Request sent to sfd message proxy for 123456789')
     expect(response).toEqual(true)
   })
 

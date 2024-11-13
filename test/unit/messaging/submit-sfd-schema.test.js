@@ -13,7 +13,7 @@ describe('validateSFDClaim', () => {
     dateTime: new Date().toISOString()
   }
   const invalidEvent = {
-    sbi: '123456789',
+    crn: '1234567890',
     agreementReference: 'IAHW-6222-6848',
     notifyTemplateId: '58ac9fbe-1cdc-4305-be1c-a4e4ac3232a7',
     emailAddress: 'tester@example.com',
