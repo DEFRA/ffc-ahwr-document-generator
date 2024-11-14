@@ -16,6 +16,7 @@ describe('validate message body of the document request', () => {
   beforeEach(() => {
     documentRequest = {
       reference: 'AHWR-1234-5678',
+      crn: '1234567890',
       sbi: '123456789',
       whichSpecies: 'beef',
       startDate: new Date(),
@@ -23,6 +24,7 @@ describe('validate message body of the document request', () => {
     }
     endemicsDocumentRequest = {
       reference: 'AHWR-1234-5678',
+      crn: '1234567890',
       sbi: '123456789',
       startDate: new Date(),
       userType: 'newUser',

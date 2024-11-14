@@ -13,7 +13,11 @@ const schema = Joi.object({
   claimServiceUri: Joi.string().default('#'),
   endemics: Joi.object({
     enabled: Joi.boolean().default(false)
-  })
+  }),
+  sfdRequestMsgType: Joi.string(),
+  sfdMessage: {
+    enabled: Joi.bool().default(false)
+  }
 })
 
 const config = {
@@ -25,6 +29,10 @@ const config = {
   claimServiceUri: process.env.CLAIM_SERVICE_URI,
   endemics: {
     enabled: process.env.ENDEMICS_ENABLED
+  },
+  sfdRequestMsgType: 'uk.gov.ffc.ahwr.sfd.request',
+  sfdMessage: {
+    enabled: process.env.SFD_MESSAGE_ENABLED
   }
 }
 

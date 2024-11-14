@@ -11,10 +11,27 @@ const {
 } = require('../config').notifyConfig
 const { update } = require('../repositories/document-log-repository')
 const appInsights = require('applicationinsights')
+const sendSFDEmail = require('./sfd-client')
+const { sfdMessage } = require('../config')
 
 const send = async (templateId, email, personalisation) => {
   console.log(`Received email to send to ${email} for ${personalisation.reference}`)
+  // sbi and crn were added into personalisation object to get them into here without changing upstream method signatures
+  // for the time being we'll pull them out here and send into SFD route where they are needed, and make sure they don't
+  // go into the old route where they aren't needed
+  const { sbi, crn } = personalisation.personalisation
+  delete personalisation.personalisation.crn
+  delete personalisation.personalisation.sbi
   try {
+    if (sfdMessage.enabled) {
+      return sendSFDEmail(
+        templateId,
+        email,
+        personalisation,
+        crn,
+        sbi
+      )
+    }
     return notifyClient.sendEmail(
       templateId,
       email,
@@ -29,9 +46,16 @@ const sendEmail = async (email, personalisation, reference, templateId) => {
   let success = false
   try {
     const response = await send(templateId, email, { personalisation, reference })
-    const emailReference = response.data?.id
-    console.log(`Email sent to ${email} for ${reference}`)
-    update(reference, { emailReference, status: EMAIL_CREATED })
+
+    if (!sfdMessage.enabled) {
+      // If it IS enabled we don;t get any of this info as the message proxy is doing the send and audit
+      // otherwise do usual audit here
+      const emailReference = response.data?.id
+      console.log(`Email sent to ${email} for ${reference}`)
+      update(reference, { emailReference, status: EMAIL_CREATED })
+    } else {
+      console.log(`Request sent to sfd message proxy for ${reference}`)
+    }
 
     appInsights.defaultClient.trackEvent({
       name: 'email',
@@ -77,7 +101,9 @@ const sendFarmerApplicationEmail = async (data, blob) => {
     link_to_file: notifyClient.prepareUpload(blob),
     guidance_uri: `${applyServiceUri}/guidance-for-farmers`,
     claim_guidance_uri: `${applyServiceUri}/claim-guidance-for-farmers`,
-    claim_uri: claimServiceUri
+    claim_uri: claimServiceUri,
+    crn: data.crn,
+    sbi: data.sbi
   }
 
   const emailAddress = data.email
