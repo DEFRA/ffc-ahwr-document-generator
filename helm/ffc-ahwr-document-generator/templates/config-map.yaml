@@ -21,5 +21,5 @@ data:
   CLAIM_SERVICE_URI: {{ quote .Values.container.claimServiceUri }}
   ENDEMICS_ENABLED: {{ quote .Values.container.endemicsEnabled }}
   SFD_MESSAGE_QUEUE_ADDRESS: {{ quote .Values.container.sfdMessageQueueAddress }}
-  SFD_MESSAGE_ENABLED: {{ quote .Values.container.sfdMessageEnabled }}
+  SFD_MESSAGE_ENABLED: {{ quote .Values.container.sfdMessageEnabledForAgreements }}
 {{- end -}}
