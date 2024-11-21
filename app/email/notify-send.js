@@ -19,10 +19,7 @@ const send = async (templateId, email, personalisation) => {
   // sbi and crn were added into personalisation object to get them into here without changing upstream method signatures
   // for the time being we'll pull them out here and send into SFD route where they are needed, and make sure they don't
   // go into the old route where they aren't needed
-  // Destructure and extract `crn` and `sbi` while creating a new object without them
   const { crn, sbi, ...filteredPersonalisation } = personalisation.personalisation
-
-  // Create a copy of the personalisation object with crn and sbi removed
   const copyOfPersonalisation = {
     ...personalisation,
     personalisation: filteredPersonalisation
