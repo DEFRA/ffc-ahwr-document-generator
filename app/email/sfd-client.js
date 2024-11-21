@@ -1,6 +1,6 @@
 const sendMessage = require('../messaging/send-message')
 const { sfdRequestMsgType, messageQueueConfig: { sfdMessageQueue } } = require('../config')
-const validateSFDClaim = require('../messaging/submit-sfd-schema')
+const validateSFDSchema = require('../messaging/submit-sfd-schema')
 const states = require('../messaging/states')
 
 const sendSFDEmail = async (templateId, email, emailInput, crn, sbi) => {
@@ -17,11 +17,11 @@ const sendSFDEmail = async (templateId, email, emailInput, crn, sbi) => {
     dateTime: new Date().toISOString()
   }
 
-  if (validateSFDClaim(sfdMessage)) {
+  if (validateSFDSchema(sfdMessage)) {
     return sendMessage(sfdMessage, sfdRequestMsgType, sfdMessageQueue)
   } else {
     // Check this because I am not sure why we would still send a request here. Proxy won't handle this
-    return sendMessage({ applicationState: states.failed }, sfdRequestMsgType, sfdMessageQueue, { templateId })
+    return sendMessage({ sfdMessage: states.failed }, sfdRequestMsgType, sfdMessageQueue, { templateId })
   }
 }
 

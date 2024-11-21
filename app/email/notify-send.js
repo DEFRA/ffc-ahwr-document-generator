@@ -19,15 +19,18 @@ const send = async (templateId, email, personalisation) => {
   // sbi and crn were added into personalisation object to get them into here without changing upstream method signatures
   // for the time being we'll pull them out here and send into SFD route where they are needed, and make sure they don't
   // go into the old route where they aren't needed
-  const { sbi, crn } = personalisation.personalisation
-  delete personalisation.personalisation.crn
-  delete personalisation.personalisation.sbi
+  const { crn, sbi, ...filteredPersonalisation } = personalisation.personalisation
+  const copyOfPersonalisation = {
+    ...personalisation,
+    personalisation: filteredPersonalisation
+  }
+
   try {
     if (sfdMessage.enabled) {
       return sendSFDEmail(
         templateId,
         email,
-        personalisation,
+        copyOfPersonalisation,
         crn,
         sbi
       )
@@ -35,7 +38,7 @@ const send = async (templateId, email, personalisation) => {
     return notifyClient.sendEmail(
       templateId,
       email,
-      personalisation
+      copyOfPersonalisation
     )
   } catch (error) {
     throw Error(error)
