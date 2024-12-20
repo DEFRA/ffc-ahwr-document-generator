@@ -1,5 +1,0 @@
-{{- if .Values.aadPodIdentity }}
-{{- include "ffc-helm-library.azure-identity-binding" (list . "ffc-ahwr-document-generator.azure-identity-binding") -}}
-{{- end }}
-{{- define "ffc-ahwr-document-generator.azure-identity-binding" -}}
-{{- end -}}

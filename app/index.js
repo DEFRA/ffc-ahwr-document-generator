@@ -2,7 +2,7 @@ require('./insights').setup()
 require('log-timestamp')
 const messaging = require('./messaging')
 const notifyMonitor = require('./email/notify-monitor')
-const createServer = require('./server')
+const { createServer } = require('./server')
 
 const init = async () => {
   const server = await createServer()

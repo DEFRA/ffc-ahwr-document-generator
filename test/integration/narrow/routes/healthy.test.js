@@ -1,6 +1,6 @@
 describe('Healthy test', () => {
   jest.mock('ffc-messaging')
-  const createServer = require('../../../../app/server')
+  const { createServer } = require('../../../../app/server')
   let server
 
   beforeEach(async () => {

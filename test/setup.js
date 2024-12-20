@@ -15,7 +15,7 @@ jest.mock('../app/config/storage', () => ({
 
 beforeEach(async () => {
   // Set reference to server in order to close the server during teardown.
-  const createServer = require('../app/server')
+  const { createServer } = require('../app/server')
   jest.setTimeout(15000)
   const server = await createServer()
   await server.initialize()

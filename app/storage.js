@@ -1,5 +1,6 @@
 const { BlobServiceClient } = require('@azure/storage-blob')
 const { DefaultAzureCredential } = require('@azure/identity')
+// const { server } = require('./server')
 const { createContainers, connectionString, useConnectionString, storageAccount, documentContainer } = require('./config').storageConfig
 
 let blobServiceClient
@@ -9,12 +10,12 @@ if (useConnectionString === true) {
   blobServiceClient = BlobServiceClient.fromConnectionString(connectionString)
 } else {
   const uri = `https://${storageAccount}.blob.core.windows.net`
-  blobServiceClient = new BlobServiceClient(uri, new DefaultAzureCredential())
+  blobServiceClient = new BlobServiceClient(uri, new DefaultAzureCredential({ managedIdentityClientId: process.env.AZURE_CLIENT_ID }))
 }
 
 const initialiseContainers = async (container) => {
-  if (createContainers) {
-    console.log('Making sure blob containers exist')
+  if (createContainers && !containersInitialised) {
+    // server.log('Making sure blob containers exist')
     await container.createIfNotExists()
   }
   containersInitialised = true
@@ -22,11 +23,11 @@ const initialiseContainers = async (container) => {
 
 const uploadBlob = async (filename, contents) => {
   const container = blobServiceClient.getContainerClient(documentContainer)
-  containersInitialised ?? await initialiseContainers(container)
+  await initialiseContainers(container)
   const blob = container.getBlockBlobClient(filename)
   const result = Buffer.concat(contents)
   await blob.upload(result, result.length)
-  console.log(`Generated document: ${filename}`)
+  // server.log(`Generated document: ${filename}`)
   return result
 }
 
