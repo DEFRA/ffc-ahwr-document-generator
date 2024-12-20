@@ -1,0 +1,2 @@
+container.applicationDocCreationRequestQueueAddress: queue:ffc-ahwr-document-request
+container.sfdMessageQueueAddress: queue:ffc-ahwr-sfd-message

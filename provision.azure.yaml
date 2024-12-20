@@ -1,3 +1,13 @@
 resources:
+  identity: ahwr-document-generator
+  postgreSql:
+    name: ffc-ahwr-document-generator
+    extensions:
+      - name: uuid-ossp
   queues:
-    - name: documentRequest
+    - name: ffc-ahwr-document-request
+      role: receiver
+      session: false
+    - name: ffc-ahwr-sfd-message
+      role: sender
+      session: false

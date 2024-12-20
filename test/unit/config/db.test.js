@@ -4,13 +4,11 @@ const MOCK_TOKEN = 'mockedAccessToken'
 
 jest.mock('@azure/identity', () => {
   class MockDefaultAzureCredential {
-    async getToken () {
-      return { token: MOCK_TOKEN }
-    }
   }
 
   return {
-    DefaultAzureCredential: MockDefaultAzureCredential
+    DefaultAzureCredential: MockDefaultAzureCredential,
+    getBearerTokenProvider: jest.fn(() => MOCK_TOKEN)
   }
 })
 

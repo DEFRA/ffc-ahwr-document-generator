@@ -40,6 +40,9 @@ while :; do
       show_help
       exit
       ;;
+    -f|--fix)
+      fix_lint="true" # Fix linting issues rather than just fail and stop tests running
+      ;;
     *)
       break
   esac
@@ -59,6 +62,10 @@ compose() {
 
 (
   cd "${projectRoot}"
+
+  if [ "${fix_lint}" = "true" ]; then
+    npm run lint:fix
+  fi
 
   # create test output folder
   mkdir -p test-output
