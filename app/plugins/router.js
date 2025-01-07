@@ -1,9 +1,9 @@
-const routes = [].concat(
-  require('../routes/healthy'),
-  require('../routes/healthz')
-)
+import { healthyRoute } from '../routes/healthy'
+import { healthzRoute } from '../routes/healthz'
 
-module.exports = {
+const routes = [healthyRoute, healthzRoute]
+
+export const routerPlugin = {
   plugin: {
     name: 'router',
     register: (server) => {

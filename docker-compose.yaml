@@ -31,7 +31,6 @@ services:
       TERMS_AND_CONDITIONS_URL: ${TERMS_AND_CONDITIONS_URL:-http://localhost:3000/apply/terms}
       APPLY_SERVICE_URI: http://localhost:3000/apply
       CLAIM_SERVICE_URI: http://localhost:3004/claim
-      ENDEMICS_ENABLED: ${ENDEMICS_ENABLED:-false}
       SFD_MESSAGE_QUEUE_ADDRESS: ${SFD_MESSAGE_QUEUE_ADDRESS:-ffc-ahwr-sfd-message}${MESSAGE_QUEUE_SUFFIX}
       SFD_MESSAGE_ENABLED: ${SFD_MESSAGE_ENABLED:-false}
 

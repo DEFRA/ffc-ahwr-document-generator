@@ -1,11 +1,9 @@
-const title = require('./title')
-const applicationDetails = require('./application-details')
+import { title } from './title'
+import { applicationDetails } from './application-details'
 
-const createContent = (data) => {
+export const createContent = (data) => {
   return [
     title(),
     applicationDetails(data)
   ]
 }
-
-module.exports = createContent

@@ -1,9 +1,11 @@
-const { BlobServiceClient } = require('@azure/storage-blob')
-const { DefaultAzureCredential } = require('@azure/identity')
-const { createContainers, connectionString, useConnectionString, storageAccount, documentContainer } = require('./config').storageConfig
+import { BlobServiceClient } from '@azure/storage-blob'
+import { DefaultAzureCredential } from '@azure/identity'
+import { appConfig } from './config'
 
 let blobServiceClient
 let containersInitialised
+
+const { createContainers, connectionString, useConnectionString, storageAccount, documentContainer } = appConfig.storageConfig
 
 if (useConnectionString === true) {
   blobServiceClient = BlobServiceClient.fromConnectionString(connectionString)
@@ -21,16 +23,13 @@ const initialiseContainers = async (container) => {
   }
 }
 
-const uploadBlob = async (filename, contents) => {
+export const uploadBlob = async (filename, contents) => {
   const container = blobServiceClient.getContainerClient(documentContainer)
   await initialiseContainers(container)
   const blob = container.getBlockBlobClient(filename)
   const result = Buffer.concat(contents)
   await blob.upload(result, result.length)
   console.log(`Generated document: ${filename}`)
-  return result
-}
 
-module.exports = {
-  uploadBlob
+  return result
 }

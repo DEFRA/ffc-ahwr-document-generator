@@ -1,11 +1,9 @@
-const moment = require('moment')
+import moment from 'moment'
 
-const footer = (reference) => {
+export const footer = (reference) => {
   return {
     stack: [
       { text: `Date Generated: ${moment(new Date()).format('DD/MM/YYYY')}    Application Reference: ${reference}    Application Status: Agreement Offered`, style: 'footer' }
     ]
   }
 }
-
-module.exports = footer

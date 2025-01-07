@@ -1,3 +1,5 @@
+import { buildConfig } from '../../../app/config/storage'
+
 describe('Config Validation', () => {
   const originalProcessEnv = process.env
 
@@ -15,9 +17,7 @@ describe('Config Validation', () => {
     process.env.AZURE_STORAGE_ACCOUNT_NAME = '' // Invalid: required field is missing
 
     // Validate config
-    expect(() => {
-      jest.requireActual('../../../app/config/storage')
-    }).toThrow('The blob storage config is invalid.')
+    expect(() => buildConfig()).toThrow('The blob storage config is invalid.')
   })
 
   test('should validate the config object successfully', () => {
@@ -29,7 +29,7 @@ describe('Config Validation', () => {
     process.env.AZURE_STORAGE_USE_CONNECTION_STRING = 'true'
     process.env.AZURE_STORAGE_CREATE_CONTAINERS = 'false'
 
-    const storageConfig = jest.requireActual('../../../app/config/storage')
+    const storageConfig = buildConfig()
 
     expect(storageConfig).toEqual({
       connectionString: 'connection-string',
@@ -37,8 +37,7 @@ describe('Config Validation', () => {
       documentContainer: 'document-container',
       storageAccount: 'storage-account',
       useConnectionString: true,
-      usersContainer: 'users-container',
-      usersFile: 'users.json'
+      usersContainer: 'users-container'
     })
   })
 })

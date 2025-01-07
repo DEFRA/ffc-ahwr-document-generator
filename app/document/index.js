@@ -1,17 +1,16 @@
-const PdfPrinter = require('pdfmake')
-const fonts = require('./fonts')
-const createDocumentDefinition = require('./document-definition')
-const printer = new PdfPrinter(fonts)
-const publish = require('./publish-document')
+import PdfPrinter from 'pdfmake'
+import { fonts } from './fonts'
+import { createDocumentDefinition } from './document-definition'
+import { publishDocument } from './publish-document'
 
-const generateDocument = async (data) => {
+const printer = new PdfPrinter(fonts)
+
+export const generateDocument = async (data) => {
   const docDefinition = createDocumentDefinition(data)
   console.log('Document definition created')
   const pdfDoc = printer.createPdfKitDocument(docDefinition)
   console.log('Document PDF created')
-  const publishResponse = await publish(pdfDoc, data)
+  const publishResponse = await publishDocument(pdfDoc, data)
   console.log('Document published')
   return publishResponse
 }
-
-module.exports = generateDocument

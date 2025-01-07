@@ -1,33 +1,20 @@
-const { DELIVERED } = require('../../../app/email/notify-statuses')
-const mockGetNotificationById = jest.fn().mockResolvedValue({ data: { status: DELIVERED } })
-jest.mock('notifications-node-client', () => {
-  return {
-    NotifyClient: jest.fn().mockImplementation(() => {
-      return {
-        getNotificationById: mockGetNotificationById
-      }
-    })
-  }
-})
+import { NOTIFY_STATUSES } from '../../../app/constants'
+import { checkDeliveryStatus } from '../../../app/email/notify-status'
+import { requestedDelivery } from '../../mocks/notify-delivery-status'
+import { notifyClient } from '../../../app/email/notify-client'
 
-const checkDeliveryStatus = require('../../../app/email/notify-status')
-const { requestedDelivery } = require('../../mocks/notify-delivery-status')
+jest.mock('../../../app/email/notify-client')
+
+const mockGetNotificationById = jest.fn().mockResolvedValue({ data: { status: NOTIFY_STATUSES.DELIVERED } })
+notifyClient.getNotificationById = mockGetNotificationById
 
 const reference = requestedDelivery.reference
 
 describe('check delivery status', () => {
   test('calls notify endpoint once', async () => {
-    await checkDeliveryStatus(reference)
-    expect(mockGetNotificationById).toHaveBeenCalledTimes(1)
-  })
-
-  test('calls notify endpoint with reference', async () => {
-    await checkDeliveryStatus(reference)
-    expect(mockGetNotificationById).toHaveBeenCalledWith(reference)
-  })
-
-  test('returns delivery status', async () => {
     const result = await checkDeliveryStatus(reference)
-    expect(result).toStrictEqual(DELIVERED)
+    expect(mockGetNotificationById).toHaveBeenCalledTimes(1)
+    expect(mockGetNotificationById).toHaveBeenCalledWith(reference)
+    expect(result).toStrictEqual(NOTIFY_STATUSES.DELIVERED)
   })
 })

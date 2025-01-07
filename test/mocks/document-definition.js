@@ -1,7 +1,8 @@
-const path = require('path')
+import path from 'path'
+
 const imagePath = path.join(__dirname, '../../app/document/images')
 
-module.exports = {
+export const mockDocumentDefinition = {
   pageSize: 'A4',
   content: [
     {

@@ -1,8 +1,8 @@
-const generateDocument = require('../document')
-const { sendFarmerApplicationEmail } = require('../email/notify-send')
-const { validateDocumentRequest } = require('./document-request-schema')
+import { generateDocument } from '../document'
+import { sendFarmerApplicationEmail } from '../email/notify-send'
+import { validateDocumentRequest } from './document-request-schema'
 
-const processDocumentRequest = async (message, receiver) => {
+export const processDocumentRequest = async (message, receiver) => {
   try {
     const messageBody = message.body
     if (validateDocumentRequest(messageBody)) {
@@ -16,5 +16,3 @@ const processDocumentRequest = async (message, receiver) => {
     console.error('Unable to document generation request:', err.message)
   }
 }
-
-module.exports = processDocumentRequest

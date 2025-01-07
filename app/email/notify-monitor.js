@@ -1,9 +1,9 @@
-const { checkEmailDelivered } = require('../repositories/document-log-repository')
-const { notfiyCheckInterval } = require('../config').notifyConfig
-const checkDeliveryStatus = require('./notify-status')
-const updateEmailStatus = require('./update-email-status')
+import { checkEmailDelivered } from '../repositories/document-log-repository'
+import { appConfig } from '../config'
+import { checkDeliveryStatus } from './notify-status'
+import { updateEmailStatus } from './update-email-status'
 
-const start = async () => {
+export const start = async () => {
   try {
     console.log('Checking for messages')
     const documentLogs = await checkEmailDelivered()
@@ -21,10 +21,6 @@ const start = async () => {
   } catch (err) {
     console.error(err.message)
   } finally {
-    setTimeout(start, notfiyCheckInterval)
+    setTimeout(start, Number(appConfig.notifyConfig.notfiyCheckInterval))
   }
-}
-
-module.exports = {
-  start
 }

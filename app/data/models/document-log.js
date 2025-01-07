@@ -1,6 +1,6 @@
-const { DOCUMENT_CREATED } = require('../../statuses')
+import { DOCUMENT_STATUSES } from '../../constants'
 
-module.exports = (sequelize, DataTypes) => {
+export const buildDocumentLog = (sequelize, DataTypes) => {
   const documentLog = sequelize.define('documentLog', {
     id: {
       type: DataTypes.UUID,
@@ -14,12 +14,13 @@ module.exports = (sequelize, DataTypes) => {
     data: DataTypes.JSONB,
     fileName: DataTypes.STRING,
     completed: DataTypes.DATE,
-    status: { type: DataTypes.STRING, defaultValue: DOCUMENT_CREATED },
+    status: { type: DataTypes.STRING, defaultValue: DOCUMENT_STATUSES.DOCUMENT_CREATED },
     createdAt: { type: DataTypes.DATE, defaultValue: Date.now() },
     updatedAt: { type: DataTypes.DATE, defaultValue: null }
   }, {
     freezeTableName: true,
     tableName: 'document_log'
   })
+
   return documentLog
 }

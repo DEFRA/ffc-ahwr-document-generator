@@ -1,6 +1,6 @@
-const { millimetresToPoints } = require('./conversion')
+import { millimetresToPoints } from './conversion'
 
-module.exports = {
+export const styles = {
   default: {
     font: 'Arial',
     fontSize: 14,

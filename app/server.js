@@ -1,10 +1,12 @@
-const hapi = require('@hapi/hapi')
-const config = require('./config')
+import hapi from '@hapi/hapi'
+import { appConfig } from './config'
+import { errorPlugin } from './plugins/errors'
+import { routerPlugin } from './plugins/router'
 
-async function createServer () {
+export const createServer = async () => {
   // Create the hapi server
   const server = hapi.server({
-    port: config.port,
+    port: appConfig.port,
     routes: {
       validate: {
         options: {
@@ -18,10 +20,8 @@ async function createServer () {
   })
 
   // Register the plugins
-  await server.register(require('./plugins/errors'))
-  await server.register(require('./plugins/router'))
+  await server.register(errorPlugin)
+  await server.register(routerPlugin)
 
   return server
 }
-
-module.exports = createServer

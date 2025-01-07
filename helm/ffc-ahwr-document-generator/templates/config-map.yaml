@@ -19,7 +19,6 @@ data:
   TERMS_AND_CONDITIONS_URL: {{ quote .Values.container.termsAndConditionsUrl }}
   APPLY_SERVICE_URI: {{ quote .Values.container.applyServiceUri }}
   CLAIM_SERVICE_URI: {{ quote .Values.container.claimServiceUri }}
-  ENDEMICS_ENABLED: {{ quote .Values.container.endemicsEnabled }}
   SFD_MESSAGE_QUEUE_ADDRESS: {{ quote .Values.container.sfdMessageQueueAddress }}
   SFD_MESSAGE_ENABLED: {{ quote .Values.container.sfdMessageEnabledForAgreements }}
 {{- end -}}

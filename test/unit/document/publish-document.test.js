@@ -1,12 +1,13 @@
-const publishDocument = require('../../../app/document/publish-document')
-const storageMock = require('../../../app/storage')
-jest.mock('../../../app/storage')
-const repositoryMock = require('../../../app/repositories/document-log-repository')
-jest.mock('../../../app/repositories/document-log-repository')
+import { publishDocument } from '../../../app/document/publish-document'
+import { uploadBlob } from '../../../app/storage'
+import { set } from '../../../app/repositories/document-log-repository'
+import PdfPrinter from 'pdfmake'
+import { fonts } from '../../../app/document/fonts'
+import { createDocumentDefinition } from '../../../app/document/document-definition'
 
-const PdfPrinter = require('pdfmake')
-const fonts = require('../../../app/document/fonts')
-const createDocumentDefinition = require('../../../app/document/document-definition')
+jest.mock('../../../app/repositories/document-log-repository')
+jest.mock('../../../app/storage')
+
 const printer = new PdfPrinter(fonts)
 
 describe('publish document', () => {
@@ -20,11 +21,11 @@ describe('publish document', () => {
     const pdfDoc = printer.createPdfKitDocument(docDefinition)
     const blob = Buffer.from('test').toString('base64')
 
-    storageMock.uploadBlob.mockResolvedValueOnce(blob)
+    uploadBlob.mockResolvedValueOnce(blob)
 
     const result = await publishDocument(pdfDoc, data)
-    expect(storageMock.uploadBlob).toBeCalledTimes(1)
-    expect(repositoryMock.set).toBeCalledTimes(1)
+    expect(uploadBlob).toBeCalledTimes(1)
+    expect(set).toBeCalledTimes(1)
     expect(result.filename).toBe('pig/12222321/AHWR-4444-2222.pdf')
     expect(result.blob).toBe(blob)
   })
