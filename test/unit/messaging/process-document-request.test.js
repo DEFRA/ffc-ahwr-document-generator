@@ -26,7 +26,7 @@ describe('process document request message', () => {
 
   test('completes message on success', async () => {
     validateDocumentRequest.mockReturnValue(true)
-    // generateDocument.mockImplementation(jest.fn().mockResolvedValue('filename', Buffer.from('test').toString('base64')))
+    generateDocument.mockImplementation(jest.fn().mockResolvedValue('filename', Buffer.from('test').toString('base64')))
 
     const message = {
       body: mockDocumentRequest

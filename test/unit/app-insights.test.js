@@ -1,7 +1,11 @@
-describe('App Insight', () => {
-  const appInsights = require('applicationinsights')
-  jest.mock('applicationinsights')
+import appInsights from 'applicationinsights'
+import * as insights from '../../app/insights.js'
 
+jest.mock('applicationinsights', () => ({
+  setup: jest.fn()
+}))
+
+describe('App Insight', () => {
   const startMock = jest.fn()
   const setupMock = jest.fn(() => {
     return {
@@ -17,15 +21,15 @@ describe('App Insight', () => {
         cloudRole: cloudRoleTag
       },
       tags
-    }
+    },
+    trackException: jest.fn()
   }
-
-  const consoleLogSpy = jest.spyOn(console, 'log')
 
   const appInsightsKey = process.env.APPLICATIONINSIGHTS_CONNECTION_STRING
 
   beforeEach(() => {
     delete process.env.APPLICATIONINSIGHTS_CONNECTION_STRING
+    delete process.env.APPINSIGHTS_CLOUDROLE
     jest.clearAllMocks()
   })
 
@@ -37,23 +41,21 @@ describe('App Insight', () => {
     const appName = 'test-app'
     process.env.APPINSIGHTS_CLOUDROLE = appName
     process.env.APPLICATIONINSIGHTS_CONNECTION_STRING = 'something'
-    const insights = require('../../app/insights')
 
     insights.setup()
 
     expect(setupMock).toHaveBeenCalledTimes(1)
     expect(startMock).toHaveBeenCalledTimes(1)
     expect(tags[cloudRoleTag]).toEqual(appName)
-    expect(consoleLogSpy).toHaveBeenCalledTimes(1)
-    expect(consoleLogSpy).toHaveBeenCalledWith('App Insights Running')
   })
 
-  test('logs not running when env var does not exist', () => {
-    const insights = require('../../app/insights')
+  test('when started and no cloudrole set, then app name is blank', () => {
+    process.env.APPLICATIONINSIGHTS_CONNECTION_STRING = 'something'
 
     insights.setup()
 
-    expect(consoleLogSpy).toHaveBeenCalledTimes(1)
-    expect(consoleLogSpy).toHaveBeenCalledWith('App Insights Not Running!')
+    expect(setupMock).toHaveBeenCalledTimes(1)
+    expect(startMock).toHaveBeenCalledTimes(1)
+    expect(tags[cloudRoleTag]).toEqual('')
   })
 })

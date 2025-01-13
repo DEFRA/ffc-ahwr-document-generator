@@ -1,12 +1,12 @@
 import { publishDocument } from '../../../app/document/publish-document'
-import { uploadBlob } from '../../../app/storage'
+import { uploadBlob } from '../../../app/storage/uploadBlob'
 import { set } from '../../../app/repositories/document-log-repository'
 import PdfPrinter from 'pdfmake'
 import { fonts } from '../../../app/document/fonts'
 import { createDocumentDefinition } from '../../../app/document/document-definition'
 
 jest.mock('../../../app/repositories/document-log-repository')
-jest.mock('../../../app/storage')
+jest.mock('../../../app/storage/uploadBlob', () => ({ uploadBlob: jest.fn() }))
 
 const printer = new PdfPrinter(fonts)
 

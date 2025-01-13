@@ -1,4 +1,4 @@
-const { validateDocumentRequest } = require('../../../app/messaging/document-request-schema')
+import { validateDocumentRequest } from '../../../app/messaging/document-request-schema'
 
 describe('validate message body of the document request', () => {
   let documentRequest

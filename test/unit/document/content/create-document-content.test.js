@@ -1,12 +1,12 @@
-const createContent = require('../../../../app/document/content')
-const mockData = require('../../../mocks/data')
+import { createContent } from '../../../../app/document/content'
+import { mockRequest } from '../../../mocks/data'
 
 describe('generate document content', () => {
   let result
 
   beforeEach(() => {
     jest.resetAllMocks()
-    result = createContent(mockData)
+    result = createContent(mockRequest)
   })
 
   test('includes header and logo', () => {
