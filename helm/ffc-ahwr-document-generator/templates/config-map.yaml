@@ -13,7 +13,7 @@ data:
   NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_NEW_USER: {{ quote .Values.container.notifyTemplateIdFarmerApplicationCompleteNewUser }}
   NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_EXISTING_USER: {{ quote .Values.container.notifyTemplateIdFarmerApplicationCompleteExistingUser }}
   POSTGRES_DB: {{ quote .Values.postgresService.postgresDb }}
-  POSTGRES_HOST: {{ quote .Values.postgresService.postgresExternalName }}
+  POSTGRES_HOST: {{ quote .Values.postgresService.postgresqlHost }}
   POSTGRES_PORT: {{ quote .Values.postgresService.postgresPort }}
   POSTGRES_SCHEMA_NAME: {{ quote .Values.postgresService.postgresSchema }}
   TERMS_AND_CONDITIONS_URL: {{ quote .Values.container.termsAndConditionsUrl }}
