@@ -1,7 +1,7 @@
 import { notifyClient } from './notify-client'
 import { createFileName } from '../document/create-filename'
 import { appConfig } from '../config'
-import { DOCUMENT_STATUSES, NOTIFY_STATUSES } from '../constants'
+import { DOCUMENT_STATUSES, NEW_USER, NOTIFY_STATUSES } from '../constants'
 import { update } from '../repositories/document-log-repository'
 import appInsights from 'applicationinsights'
 import { sendSFDEmail } from './sfd-client'
@@ -50,7 +50,7 @@ export const sendEmail = async (email, personalisation, reference, templateId) =
     const response = await send(templateId, email, { personalisation, reference })
 
     if (!sfdMessage.enabled) {
-      // If it IS enabled we don;t get any of this info as the message proxy is doing the send and audit
+      // If it IS enabled we don't get any of this info as the message proxy is doing the send and audit
       // otherwise do usual audit here
       const emailReference = response.data?.id
       console.log(`Email sent to ${email} for ${reference}`)
@@ -70,7 +70,6 @@ export const sendEmail = async (email, personalisation, reference, templateId) =
     })
     success = true
   } catch (e) {
-    success = false
     update(reference, { status: NOTIFY_STATUSES.SEND_FAILED })
     console.error(`Error occurred sending email to ${email} for ${reference}. Error: ${JSON.stringify(e.response?.data)}`)
     appInsights.defaultClient.trackException({ exception: e })
@@ -109,18 +108,18 @@ export const sendFarmerApplicationEmail = async (data, blob) => {
   }
 
   const emailAddress = data.email
-  const emailTemplateId = data.userType === 'newUser' ? templateIdFarmerApplicationGenerationNewUser : templateIdFarmerApplicationGenerationExistingUser
-  let isSuccess = true
+  const emailTemplateId = data.userType === NEW_USER ? templateIdFarmerApplicationGenerationNewUser : templateIdFarmerApplicationGenerationExistingUser
+  let successFullySent = true
 
   sendCarbonCopy(personalisation, data.reference, emailTemplateId)
 
   if (data?.orgEmail) {
-    isSuccess = sendEmail(data.orgEmail, personalisation, data.reference, emailTemplateId)
+    successFullySent = await sendEmail(data.orgEmail, personalisation, data.reference, emailTemplateId)
   }
 
   if (data?.orgEmail && data?.orgEmail !== emailAddress) {
-    isSuccess = sendEmail(emailAddress, personalisation, data.reference, emailTemplateId)
+    successFullySent = await sendEmail(emailAddress, personalisation, data.reference, emailTemplateId)
   }
 
-  return isSuccess
+  return successFullySent
 }
