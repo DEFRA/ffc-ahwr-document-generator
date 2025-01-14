@@ -1,6 +1,6 @@
-import { NOTIFY_STATUSES, DOCUMENT_STATUSES } from '../constants'
-import { sendFarmerApplicationEmail } from './notify-send'
-import { update } from '../repositories/document-log-repository'
+import { NOTIFY_STATUSES, DOCUMENT_STATUSES } from '../constants.js'
+import { sendFarmerApplicationEmail } from './notify-send.js'
+import { update } from '../repositories/document-log-repository.js'
 
 const { DELIVERED, PERMANENT_FAILURE, TEMPORARY_FAILURE, TECHNICAL_FAILURE } = NOTIFY_STATUSES
 const { EMAIL_DELIVERED, INVALID_EMAIL, DELIVERY_FAILED, NOTIFY_ERROR_RESEND } = DOCUMENT_STATUSES

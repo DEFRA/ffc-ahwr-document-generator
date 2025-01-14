@@ -1,7 +1,7 @@
 import hapi from '@hapi/hapi'
-import { appConfig } from './config'
-import { errorPlugin } from './plugins/errors'
-import { routerPlugin } from './plugins/router'
+import { appConfig } from './config/index.js'
+import { errorPlugin } from './plugins/errors.js'
+import { routerPlugin } from './plugins/router.js'
 
 export const createServer = async () => {
   // Create the hapi server

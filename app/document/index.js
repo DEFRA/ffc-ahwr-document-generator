@@ -1,7 +1,7 @@
 import PdfPrinter from 'pdfmake'
-import { fonts } from './fonts'
-import { createDocumentDefinition } from './document-definition'
-import { publishDocument } from './publish-document'
+import { fonts } from './fonts/index.js'
+import { createDocumentDefinition } from './document-definition.js'
+import { publishDocument } from './publish-document.js'
 
 const printer = new PdfPrinter(fonts)
 

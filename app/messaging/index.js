@@ -1,6 +1,6 @@
 import { MessageReceiver } from 'ffc-messaging'
-import { processDocumentRequest } from './process-document-request'
-import { appConfig } from '../config'
+import { processDocumentRequest } from './process-document-request.js'
+import { appConfig } from '../config/index.js'
 
 const { applicationdDocCreationRequestQueue } = appConfig.messageQueueConfig
 

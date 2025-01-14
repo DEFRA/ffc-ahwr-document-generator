@@ -1,6 +1,6 @@
-import { generateDocument } from '../document'
-import { sendFarmerApplicationEmail } from '../email/notify-send'
-import { validateDocumentRequest } from './document-request-schema'
+import { generateDocument } from '../document/index.js'
+import { sendFarmerApplicationEmail } from '../email/notify-send.js'
+import { validateDocumentRequest } from './document-request-schema.js'
 
 export const processDocumentRequest = async (message, receiver) => {
   try {

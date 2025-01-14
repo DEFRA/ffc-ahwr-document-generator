@@ -1,6 +1,10 @@
 import { createContent } from '../../../../app/document/content'
 import { mockRequest } from '../../../mocks/data'
 
+jest.mock('../../../../app/getDirName', () => ({
+  getDirName: () => 'dir/'
+}))
+
 describe('generate document content', () => {
   let result
 

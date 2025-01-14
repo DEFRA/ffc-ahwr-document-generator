@@ -4,17 +4,17 @@ export const buildConfig = () => {
   const schema = Joi.object({
     connectionString: Joi.string().when('useConnectionStr', { is: true, then: Joi.required(), otherwise: Joi.allow('').optional() }),
     storageAccount: Joi.string().required(),
-    usersContainer: Joi.string().default('users'),
-    documentContainer: Joi.string().default('documents'),
-    useConnectionString: Joi.boolean().default(false),
-    createContainers: Joi.boolean().default(true)
+    usersContainer: Joi.string(),
+    documentContainer: Joi.string(),
+    useConnectionString: Joi.boolean(),
+    createContainers: Joi.boolean()
   })
 
   const config = {
     connectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
     storageAccount: process.env.AZURE_STORAGE_ACCOUNT_NAME,
-    usersContainer: process.env.AZURE_STORAGE_USERS_CONTAINER,
-    documentContainer: process.env.AZURE_STORAGE_DOCUMENT_CONTAINER,
+    usersContainer: process.env.AZURE_STORAGE_USERS_CONTAINER || 'users',
+    documentContainer: process.env.AZURE_STORAGE_DOCUMENT_CONTAINER || 'documents',
     useConnectionString: process.env.AZURE_STORAGE_USE_CONNECTION_STRING === 'true',
     createContainers: process.env.AZURE_STORAGE_CREATE_CONTAINERS === 'true'
   }

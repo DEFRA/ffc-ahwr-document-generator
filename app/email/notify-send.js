@@ -1,10 +1,10 @@
-import { notifyClient } from './notify-client'
-import { createFileName } from '../document/create-filename'
-import { appConfig } from '../config'
-import { DOCUMENT_STATUSES, NEW_USER, NOTIFY_STATUSES } from '../constants'
-import { update } from '../repositories/document-log-repository'
+import { notifyClient } from './notify-client.js'
+import { createFileName } from '../document/create-filename.js'
+import { appConfig } from '../config/index.js'
+import { DOCUMENT_STATUSES, NEW_USER, NOTIFY_STATUSES } from '../constants.js'
+import { update } from '../repositories/document-log-repository.js'
 import appInsights from 'applicationinsights'
-import { sendSFDEmail } from './sfd-client'
+import { sendSFDEmail } from './sfd-client.js'
 
 const { applyServiceUri, claimServiceUri, notifyConfig, sfdMessage } = appConfig
 const {

@@ -1,7 +1,7 @@
-import { styles } from './styles'
-import { createContent } from './content'
-import { pageSizes } from './page-sizes'
-import { footer } from './content/footer'
+import { styles } from './styles.js'
+import { createContent } from './content/index.js'
+import { pageSizes } from './page-sizes.js'
+import { footer } from './content/footer.js'
 
 export const createDocumentDefinition = (data) => {
   return {

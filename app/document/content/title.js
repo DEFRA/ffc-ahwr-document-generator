@@ -1,12 +1,11 @@
 import path from 'path'
-import { appConfig } from '../../config'
-import { millimetresToPoints } from '../conversion'
-
-const { applyServiceUri } = appConfig
-
-const imagePath = path.join(__dirname, '../', 'images')
+import { appConfig } from '../../config/index.js'
+import { millimetresToPoints } from '../conversion.js'
+import { getDirName } from '../../getDirName.js'
 
 export const title = () => {
+  const { applyServiceUri } = appConfig
+  const imagePath = path.join(getDirName(), '../', 'images')
   const title = 'Agreement summary: get funding to improve animal health and welfare'
 
   return {

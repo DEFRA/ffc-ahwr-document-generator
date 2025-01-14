@@ -1,6 +1,7 @@
 import path from 'path'
+import { getDirName } from '../../getDirName.js'
 
-const fontPath = path.resolve(__dirname)
+const fontPath = path.resolve(getDirName())
 
 export const fonts = {
   Arial: {

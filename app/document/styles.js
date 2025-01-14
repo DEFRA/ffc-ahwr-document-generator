@@ -1,4 +1,4 @@
-import { millimetresToPoints } from './conversion'
+import { millimetresToPoints } from './conversion.js'
 
 export const styles = {
   default: {

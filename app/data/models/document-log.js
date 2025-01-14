@@ -1,4 +1,4 @@
-import { DOCUMENT_STATUSES } from '../../constants'
+import { DOCUMENT_STATUSES } from '../../constants.js'
 
 export const buildDocumentLog = (sequelize, DataTypes) => {
   const documentLog = sequelize.define('documentLog', {

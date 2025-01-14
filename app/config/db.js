@@ -1,4 +1,4 @@
-const { DefaultAzureCredential, getBearerTokenProvider } = require('@azure/identity')
+import { DefaultAzureCredential, getBearerTokenProvider } from '@azure/identity'
 
 const isProd = () => process.env.NODE_ENV === 'production'
 

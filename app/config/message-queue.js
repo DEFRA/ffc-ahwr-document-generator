@@ -1,4 +1,5 @@
 import Joi from 'joi'
+import appInsights from 'applicationinsights'
 
 const buildConfig = () => {
   const sharedConfigSchema = {
@@ -6,7 +7,7 @@ const buildConfig = () => {
     host: Joi.string(),
     password: Joi.string(),
     username: Joi.string(),
-    useCredentialChain: Joi.bool().default(false),
+    useCredentialChain: Joi.bool(),
     managedIdentityClientId: Joi.string().optional()
   }
 
@@ -24,7 +25,7 @@ const buildConfig = () => {
   })
 
   const sharedConfig = {
-    appInsights: require('applicationinsights'),
+    appInsights: appInsights,
     host: process.env.MESSAGE_QUEUE_HOST,
     password: process.env.MESSAGE_QUEUE_PASSWORD,
     username: process.env.MESSAGE_QUEUE_USER,

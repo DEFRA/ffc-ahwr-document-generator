@@ -1,6 +1,6 @@
-import { createFileName } from './create-filename'
-import { uploadBlob } from '../storage/uploadBlob'
-import { set } from '../repositories/document-log-repository'
+import { createFileName } from './create-filename.js'
+import { uploadBlob } from '../storage/uploadBlob.js'
+import { set } from '../repositories/document-log-repository.js'
 
 export const publishDocument = (pdfDocGenerator, data) => {
   const filename = createFileName(data)

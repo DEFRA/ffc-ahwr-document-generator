@@ -1,5 +1,5 @@
-import { healthyRoute } from '../routes/healthy'
-import { healthzRoute } from '../routes/healthz'
+import { healthyRoute } from '../routes/healthy.js'
+import { healthzRoute } from '../routes/healthz.js'
 
 const routes = [healthyRoute, healthzRoute]
 

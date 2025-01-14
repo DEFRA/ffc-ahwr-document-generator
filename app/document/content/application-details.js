@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { appConfig } from '../../config'
+import { appConfig } from '../../config/index.js'
 
 export const applicationDetails = (data) => {
   return {

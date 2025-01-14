@@ -9,6 +9,9 @@ jest.mock('../../../app/data')
 jest.mock('../../../app/email/notify-send')
 jest.mock('../../../app/messaging/document-request-schema')
 jest.mock('../../../app/document')
+jest.mock('../../../app/getDirName', () => ({
+  getDirName: () => 'dir/'
+}))
 
 generateDocument.mockImplementation(jest.fn().mockResolvedValue({ blob: 'something' }))
 

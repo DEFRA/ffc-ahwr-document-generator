@@ -7,6 +7,10 @@ jest.mock('../../../../app/config', () => ({
   }
 }))
 
+jest.mock('../../../../app/getDirName', () => ({
+  getDirName: () => 'dir/'
+}))
+
 describe('title', () => {
   test('it builds an object to use in the page content', () => {
     expect(title()).toEqual({
@@ -14,7 +18,7 @@ describe('title', () => {
         {
           fit: [567, 70.875],
           image:
-            '/home/node/app/document/images/logo.jpg',
+            'images/logo.jpg',
           link: 'test-uri',
           style: 'logo'
         },

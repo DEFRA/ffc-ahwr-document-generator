@@ -1,5 +1,5 @@
-import { appConfig } from '../config'
-import { getBlobServiceClient } from './getBlobServiceClient'
+import { appConfig } from '../config/index.js'
+import { getBlobServiceClient } from './getBlobServiceClient.js'
 
 let containersInitialisedState
 

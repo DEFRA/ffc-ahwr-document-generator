@@ -1,7 +1,7 @@
-import { checkEmailDelivered } from '../repositories/document-log-repository'
-import { appConfig } from '../config'
-import { checkDeliveryStatus } from './notify-status'
-import { updateEmailStatus } from './update-email-status'
+import { checkEmailDelivered } from '../repositories/document-log-repository.js'
+import { appConfig } from '../config/index.js'
+import { checkDeliveryStatus } from './notify-status.js'
+import { updateEmailStatus } from './update-email-status.js'
 
 export const start = async () => {
   try {
@@ -21,6 +21,6 @@ export const start = async () => {
   } catch (err) {
     console.error(err.message)
   } finally {
-    setTimeout(start, Number(appConfig.notifyConfig.notfiyCheckInterval))
+    setTimeout(start, Number(appConfig.notifyConfig.notifyCheckInterval))
   }
 }

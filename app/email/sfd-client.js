@@ -1,7 +1,7 @@
-import { sendMessage } from '../messaging/send-message'
-import { appConfig } from '../config'
-import { validateSFDSchema } from '../messaging/submit-sfd-schema'
-import { CLAIM_STATES } from '../constants'
+import { sendMessage } from '../messaging/send-message.js'
+import { appConfig } from '../config/index.js'
+import { validateSFDSchema } from '../messaging/submit-sfd-schema.js'
+import { CLAIM_STATES } from '../constants.js'
 
 const { sfdRequestMsgType, messageQueueConfig: { sfdMessageQueue } } = appConfig
 

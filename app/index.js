@@ -1,8 +1,8 @@
-import { setup } from './insights'
+import { setup } from './insights.js'
 import 'log-timestamp' // Unsure what this does?
-import { startMessaging, stopMessaging } from './messaging'
-import { start as startNotifyMonitor } from './email/notify-monitor'
-import { createServer } from './server'
+import { startMessaging, stopMessaging } from './messaging/index.js'
+import { start as startNotifyMonitor } from './email/notify-monitor.js'
+import { createServer } from './server.js'
 
 const init = async () => {
   await startMessaging()
