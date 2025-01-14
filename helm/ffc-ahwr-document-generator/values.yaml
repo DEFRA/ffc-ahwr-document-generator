@@ -41,7 +41,6 @@ container:
   carbonCopyEmailAddress:
   imagePullPolicy: IfNotPresent
   notifyApiKey:
-  notifyTemplateIdFarmerApplicationComplete:
   notifyTemplateIdFarmerApplicationCompleteNewUser:
   notifyTemplateIdFarmerApplicationCompleteExistingUser:
   termsAndConditionsUrl:
