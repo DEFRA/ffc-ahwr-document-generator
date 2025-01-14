@@ -8,7 +8,6 @@ const buildConfig = () => {
     carbonCopyEmailAddress: Joi.string().email().allow(null, ''),
     notifyApiKey: Joi.string().pattern(notifyApiKeyRegex),
     notifyCheckInterval: Joi.number(),
-    templateIdFarmerApplicationGeneration: Joi.string().uuid(),
     templateIdFarmerApplicationGenerationNewUser: Joi.string().uuid(),
     templateIdFarmerApplicationGenerationExistingUser: Joi.string().uuid()
   })
@@ -17,7 +16,6 @@ const buildConfig = () => {
     carbonCopyEmailAddress: process.env.CARBON_COPY_EMAIL_ADDRESS,
     notifyApiKey: process.env.NOTIFY_API_KEY,
     notifyCheckInterval: process.env.NOTIFY_CHECK_INTERVAL || 30000,
-    templateIdFarmerApplicationGeneration: process.env.NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE,
     templateIdFarmerApplicationGenerationNewUser: process.env.NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_NEW_USER,
     templateIdFarmerApplicationGenerationExistingUser: process.env.NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_EXISTING_USER
   }

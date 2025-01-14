@@ -7,7 +7,7 @@ const { applicationdDocCreationRequestQueue } = appConfig.messageQueueConfig
 let documentGenerationReceiver
 
 export const startMessaging = async () => {
-  const documentGenerationAction = message => processDocumentRequest(message, documentGenerationReceiver)
+  const documentGenerationAction = (message) => processDocumentRequest(message, documentGenerationReceiver)
   documentGenerationReceiver = new MessageReceiver(applicationdDocCreationRequestQueue, documentGenerationAction)
   await documentGenerationReceiver.subscribe()
 
