@@ -1,4 +1,4 @@
-const dbConfig = require('../../../app/config/db')
+import { dbConfig } from '../../../app/config/db'
 
 const MOCK_TOKEN = 'mockedAccessToken'
 
@@ -20,17 +20,17 @@ describe('beforeConnect hook', () => {
 
     process.env.NODE_ENV = 'production'
 
-    await dbConfig.development.hooks.beforeConnect(cfg)
+    await dbConfig.hooks.beforeConnect(cfg)
 
     expect(cfg.password).not.toBe('originalPassword')
     expect(cfg.password).toEqual(MOCK_TOKEN)
 
-    await dbConfig.production.hooks.beforeConnect(cfg)
+    await dbConfig.hooks.beforeConnect(cfg)
 
     expect(cfg.password).not.toBe('originalPassword')
     expect(cfg.password).toEqual(MOCK_TOKEN)
 
-    await dbConfig.test.hooks.beforeConnect(cfg)
+    await dbConfig.hooks.beforeConnect(cfg)
 
     expect(cfg.password).not.toBe('originalPassword')
     expect(cfg.password).toEqual(MOCK_TOKEN)
@@ -43,15 +43,15 @@ describe('beforeConnect hook', () => {
 
     process.env.NODE_ENV = 'development'
 
-    await dbConfig.development.hooks.beforeConnect(cfg)
+    await dbConfig.hooks.beforeConnect(cfg)
 
     expect(cfg.password).toBe('originalPassword')
 
-    await dbConfig.production.hooks.beforeConnect(cfg)
+    await dbConfig.hooks.beforeConnect(cfg)
 
     expect(cfg.password).toBe('originalPassword')
 
-    await dbConfig.test.hooks.beforeConnect(cfg)
+    await dbConfig.hooks.beforeConnect(cfg)
 
     expect(cfg.password).toBe('originalPassword')
   })

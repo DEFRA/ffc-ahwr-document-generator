@@ -1,5 +1,7 @@
-const createFilename = (data) => {
-  return data?.whichSpecies ? `${data.whichSpecies}/${data.sbi}/${data.reference}.pdf` : `${data.sbi}/${data.reference}.pdf`
-}
+export const createFileName = (data) => {
+  if (data?.whichSpecies) {
+    return `${data.whichSpecies}/${data.sbi}/${data.reference}.pdf`
+  }
 
-module.exports = createFilename
+  return `${data.sbi}/${data.reference}.pdf`
+}

@@ -1,9 +1,9 @@
-const createFilename = require('./create-filename')
-const { uploadBlob } = require('../storage')
-const { set } = require('../repositories/document-log-repository')
+import { createFileName } from './create-filename.js'
+import { uploadBlob } from '../storage/uploadBlob.js'
+import { set } from '../repositories/document-log-repository.js'
 
-const publishDocument = (pdfDocGenerator, data) => {
-  const filename = createFilename(data)
+export const publishDocument = (pdfDocGenerator, data) => {
+  const filename = createFileName(data)
   return new Promise((resolve, reject) => {
     const chunks = []
 
@@ -20,5 +20,3 @@ const publishDocument = (pdfDocGenerator, data) => {
     pdfDocGenerator.end()
   })
 }
-
-module.exports = publishDocument

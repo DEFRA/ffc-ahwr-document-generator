@@ -1,8 +1,6 @@
-const notifyClient = require('./notify-client')
+import { notifyClient } from './notify-client.js'
 
-const checkDeliveryStatus = async (emailReference) => {
+export const checkDeliveryStatus = async (emailReference) => {
   const response = await notifyClient.getNotificationById(emailReference)
   return response.data?.status
 }
-
-module.exports = checkDeliveryStatus

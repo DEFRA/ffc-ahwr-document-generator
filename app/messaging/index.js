@@ -1,19 +1,19 @@
-const { MessageReceiver } = require('ffc-messaging')
-const processDocumentRequest = require('./process-document-request')
-const { applicationdDocCreationRequestQueue } = require('../config').messageQueueConfig
+import { MessageReceiver } from 'ffc-messaging'
+import { processDocumentRequest } from './process-document-request.js'
+import { appConfig } from '../config/index.js'
+
+const { applicationdDocCreationRequestQueue } = appConfig.messageQueueConfig
 
 let documentGenerationReceiver
 
-const start = async () => {
-  const documentGenerationAction = message => processDocumentRequest(message, documentGenerationReceiver)
+export const startMessaging = async () => {
+  const documentGenerationAction = (message) => processDocumentRequest(message, documentGenerationReceiver)
   documentGenerationReceiver = new MessageReceiver(applicationdDocCreationRequestQueue, documentGenerationAction)
   await documentGenerationReceiver.subscribe()
 
   console.info('Ready to receive messages')
 }
 
-const stop = async () => {
+export const stopMessaging = async () => {
   await documentGenerationReceiver.closeConnection()
 }
-
-module.exports = { start, stop }

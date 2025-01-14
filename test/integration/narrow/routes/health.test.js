@@ -1,6 +1,7 @@
+import { createServer } from '../../../../app/server'
+jest.mock('ffc-messaging')
+
 describe('Healthy test', () => {
-  jest.mock('ffc-messaging')
-  const createServer = require('../../../../app/server')
   let server
 
   beforeEach(async () => {
@@ -12,6 +13,16 @@ describe('Healthy test', () => {
     const options = {
       method: 'GET',
       url: '/healthy'
+    }
+
+    const response = await server.inject(options)
+    expect(response.statusCode).toBe(200)
+  })
+
+  test('GET /healthz route returns 200', async () => {
+    const options = {
+      method: 'GET',
+      url: '/healthz'
     }
 
     const response = await server.inject(options)

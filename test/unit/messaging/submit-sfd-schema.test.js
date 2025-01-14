@@ -1,6 +1,6 @@
-const validateSFDClaim = require('../../../app/messaging/submit-sfd-schema')
+import { validateSFDSchema } from '../../../app/messaging/submit-sfd-schema'
 
-describe('validateSFDClaim', () => {
+describe('validateSFDSchema', () => {
   const validEvent = {
     crn: '1234567890',
     sbi: '123456789',
@@ -24,10 +24,10 @@ describe('validateSFDClaim', () => {
   }
 
   test('returns true when event valid', () => {
-    expect(validateSFDClaim(validEvent)).toBe(true)
+    expect(validateSFDSchema(validEvent)).toBeTruthy()
   })
 
   test('returns false when event invalid', () => {
-    expect(validateSFDClaim(invalidEvent)).toBe(false)
+    expect(validateSFDSchema(invalidEvent)).toBeFalsy()
   })
 })

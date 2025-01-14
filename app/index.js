@@ -1,27 +1,26 @@
-require('./insights').setup()
-require('log-timestamp')
-const messaging = require('./messaging')
-const notifyMonitor = require('./email/notify-monitor')
-const createServer = require('./server')
+import { setup } from './insights.js'
+import 'log-timestamp' // Unsure what this does?
+import { startMessaging, stopMessaging } from './messaging/index.js'
+import { start as startNotifyMonitor } from './email/notify-monitor.js'
+import { createServer } from './server.js'
 
 const init = async () => {
+  await startMessaging()
+  await startNotifyMonitor()
   const server = await createServer()
   await server.start()
-  console.log('Server running on %s', server.info.uri)
+  console.log(`Server running on ${server.info.uri}`)
+  setup()
 }
 
 process.on('SIGTERM', async () => {
-  await messaging.stop()
+  await stopMessaging()
   process.exit(0)
 })
 
 process.on('SIGINT', async () => {
-  await messaging.stop()
+  await stopMessaging()
   process.exit(0)
 })
 
-module.exports = (async function startService () {
-  await messaging.start()
-  await notifyMonitor.start()
-  await init()
-}())
+init()

@@ -1,16 +1,14 @@
-const styles = require('./styles')
-const generateContent = require('./content')
-const { A4 } = require('./page-sizes')
-const footer = require('./content/footer')
+import { styles } from './styles.js'
+import { createContent } from './content/index.js'
+import { pageSizes } from './page-sizes.js'
+import { footer } from './content/footer.js'
 
-const createDocumentDefinition = (data) => {
+export const createDocumentDefinition = (data) => {
   return {
-    pageSize: A4,
-    content: generateContent(data),
+    pageSize: pageSizes.A4,
+    content: createContent(data),
     footer: footer(data.reference),
     styles,
     defaultStyle: styles.default
   }
 }
-
-module.exports = createDocumentDefinition

@@ -1,7 +1,9 @@
-const path = require('path')
-const fontPath = path.resolve(__dirname)
+import path from 'path'
+import { getDirName } from '../../getDirName.js'
 
-module.exports = {
+const fontPath = path.resolve(getDirName())
+
+export const fonts = {
   Arial: {
     normal: `${fontPath}/Arial.ttf`,
     bold: `${fontPath}/Arial_Bold.ttf`

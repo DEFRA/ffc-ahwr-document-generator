@@ -1,15 +1,20 @@
-const getFilename = require('../../../app/document/create-filename')
+import { createFileName } from '../../../app/document/create-filename'
+import { mockRequest } from '../../mocks/data'
+
 const documentExtension = '.pdf'
-const mockData = require('../../mocks/data')
 
 describe('create filename', () => {
   test('writes full filename', () => {
-    mockData.whichSpecies = 'sheep'
-    const result = getFilename(mockData)
-    expect(result).toBe(`${mockData.whichSpecies}/${mockData.sbi}/${mockData.reference}${documentExtension}`)
+    const result = createFileName(mockRequest)
+
+    expect(result).toBe(`${mockRequest.whichSpecies}/${mockRequest.sbi}/${mockRequest.reference}${documentExtension}`)
   })
+
   test('writes filename without species', () => {
-    const result = getFilename({ ...mockData, whichSpecies: undefined })
-    expect(result).toBe(`${mockData.sbi}/${mockData.reference}${documentExtension}`)
+    const data = { ...mockRequest, whichSpecies: undefined }
+
+    const result = createFileName(data)
+
+    expect(result).toBe(`${data.sbi}/${data.reference}${documentExtension}`)
   })
 })

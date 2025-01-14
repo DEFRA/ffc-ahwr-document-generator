@@ -1,6 +1,6 @@
-const Hapi = require('@hapi/hapi')
-const Boom = require('@hapi/boom')
-const errorsPlugin = require('../../../app/plugins/errors')
+import Hapi from '@hapi/hapi'
+import Boom from '@hapi/boom'
+import { errorPlugin } from '../../../app/plugins/errors'
 
 describe('errors plugin', () => {
   let server
@@ -26,7 +26,7 @@ describe('errors plugin', () => {
       }
     })
 
-    await server.register(errorsPlugin)
+    await server.register(errorPlugin)
     await server.initialize()
   })
 

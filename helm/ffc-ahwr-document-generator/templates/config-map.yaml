@@ -9,7 +9,6 @@ data:
   AZURE_STORAGE_ACCOUNT_NAME: {{ quote .Values.container.azureStorageAccountName }}
   CARBON_COPY_EMAIL_ADDRESS: {{ quote .Values.container.carbonCopyEmailAddress }}
   MESSAGE_QUEUE_HOST: {{ quote .Values.container.messageQueueHost }}
-  NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE: {{ quote .Values.container.notifyTemplateIdFarmerApplicationComplete }}
   NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_NEW_USER: {{ quote .Values.container.notifyTemplateIdFarmerApplicationCompleteNewUser }}
   NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_EXISTING_USER: {{ quote .Values.container.notifyTemplateIdFarmerApplicationCompleteExistingUser }}
   POSTGRES_DB: {{ quote .Values.postgresService.postgresDb }}
@@ -19,7 +18,6 @@ data:
   TERMS_AND_CONDITIONS_URL: {{ quote .Values.container.termsAndConditionsUrl }}
   APPLY_SERVICE_URI: {{ quote .Values.container.applyServiceUri }}
   CLAIM_SERVICE_URI: {{ quote .Values.container.claimServiceUri }}
-  ENDEMICS_ENABLED: {{ quote .Values.container.endemicsEnabled }}
   SFD_MESSAGE_QUEUE_ADDRESS: {{ quote .Values.container.sfdMessageQueueAddress }}
   SFD_MESSAGE_ENABLED: {{ quote .Values.container.sfdMessageEnabledForAgreements }}
 {{- end -}}

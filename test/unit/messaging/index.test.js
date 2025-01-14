@@ -1,13 +1,26 @@
+import { appConfig } from '../../../app/config'
+import { startMessaging } from '../../../app/messaging'
+import { MessageReceiver } from 'ffc-messaging'
+
+const mockSubscribe = jest.fn().mockResolvedValue(true)
 jest.mock('ffc-messaging')
-jest.mock('../../../app/data')
-const messageService = require('../../../app/messaging')
+MessageReceiver.subscribe = mockSubscribe
 
-describe('messaging', () => {
-  afterAll(async () => {
-    await messageService.stop()
-  })
+const constructorSpy = jest.spyOn(
+  require('ffc-messaging'),
+  'MessageReceiver'
+).mockImplementation(() => ({
+  subscribe: mockSubscribe
+}))
 
-  test('runs', async () => {
-    await messageService.start()
+jest.mock('../../../app/messaging/process-document-request', () => ({
+  processDocumentRequest: jest.fn()
+}))
+
+describe('startMessaging', () => {
+  test('it instantiates the message receiver and subscribes to messages', async () => {
+    await startMessaging()
+    expect(constructorSpy).toHaveBeenCalledWith(appConfig.messageQueueConfig.applicationdDocCreationRequestQueue, expect.any(Function))
+    expect(mockSubscribe).toHaveBeenCalled()
   })
 })

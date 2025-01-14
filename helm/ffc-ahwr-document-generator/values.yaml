@@ -41,7 +41,6 @@ container:
   carbonCopyEmailAddress:
   imagePullPolicy: IfNotPresent
   notifyApiKey:
-  notifyTemplateIdFarmerApplicationComplete:
   notifyTemplateIdFarmerApplicationCompleteNewUser:
   notifyTemplateIdFarmerApplicationCompleteExistingUser:
   termsAndConditionsUrl:
@@ -52,13 +51,13 @@ container:
   port: 3000
   applyServiceUri:
   claimServiceUri:
-  endemicsEnabled:
   sfdMessageQueueAddress: ffc-ahwr-sfd-message
   sfdMessageEnabledForAgreements: false
 
 postgresService:
   postgresDb: ffc_ahwr_document_generator
   postgresExternalName: namespace.postgres.database.azure.com
+  postgresqlHost: namespace.postgres.database.azure.com
   postgresPort: 5432
   postgresSchema: public
   postgresUser: postgres

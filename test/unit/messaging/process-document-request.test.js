@@ -1,26 +1,26 @@
+import { sendFarmerApplicationEmail } from '../../../app/email/notify-send'
+import { validateDocumentRequest } from '../../../app/messaging/document-request-schema'
+import { mockDocumentRequest } from '../../mocks/data'
+import { processDocumentRequest } from '../../../app/messaging/process-document-request'
+import { generateDocument } from '../../../app/document'
+
 jest.mock('ffc-messaging')
 jest.mock('../../../app/data')
-
-const mockDocumentGenerator = jest.fn()
-jest.mock('../../../app/document', () => {
-  return mockDocumentGenerator
-})
-
-const mockNotify = require('../../../app/email/notify-send')
 jest.mock('../../../app/email/notify-send')
-
-const mockValidation = require('../../../app/messaging/document-request-schema')
 jest.mock('../../../app/messaging/document-request-schema')
+jest.mock('../../../app/document')
+jest.mock('../../../app/getDirName', () => ({
+  getDirName: () => 'dir/'
+}))
 
-const mockDocumentRequest = require('../../mocks/document-request')
-const processDocumentRequest = require('../../../app/messaging/process-document-request')
+generateDocument.mockImplementation(jest.fn().mockResolvedValue({ blob: 'something' }))
 
 let receiver
 
 describe('process document request message', () => {
   beforeEach(() => {
     jest.resetAllMocks()
-    mockNotify.sendFarmerApplicationEmail = jest.fn()
+    sendFarmerApplicationEmail.mockImplementation()
     receiver = {
       completeMessage: jest.fn(),
       deadLetterMessage: jest.fn()
@@ -28,8 +28,8 @@ describe('process document request message', () => {
   })
 
   test('completes message on success', async () => {
-    mockValidation.validateDocumentRequest.mockReturnValue(true)
-    mockDocumentGenerator.mockResolvedValue('filename', Buffer.from('test').toString('base64'))
+    validateDocumentRequest.mockReturnValue(true)
+    generateDocument.mockImplementation(jest.fn().mockResolvedValue('filename', Buffer.from('test').toString('base64')))
 
     const message = {
       body: mockDocumentRequest
@@ -40,7 +40,7 @@ describe('process document request message', () => {
   })
 
   test('deadletters message on error', async () => {
-    mockValidation.validateDocumentRequest.mockImplementation(() => { throw new Error() })
+    validateDocumentRequest.mockImplementation(() => { throw new Error() })
     const message = {
       body: mockDocumentRequest
     }

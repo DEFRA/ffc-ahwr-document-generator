@@ -1,8 +1,6 @@
-const { DefaultAzureCredential, getBearerTokenProvider } = require('@azure/identity')
+import { DefaultAzureCredential, getBearerTokenProvider } from '@azure/identity'
 
-function isProd () {
-  return process.env.NODE_ENV === 'production'
-}
+const isProd = () => process.env.NODE_ENV === 'production'
 
 const hooks = {
   beforeConnect: async (cfg) => {
@@ -26,7 +24,7 @@ const retry = {
   timeout: 60000
 }
 
-const dbConfig = {
+export const dbConfig = {
   database: process.env.POSTGRES_DB || 'ffc_ahwr_document_generator',
   dialect: 'postgres',
   dialectOptions: {
@@ -40,10 +38,4 @@ const dbConfig = {
   retry,
   schema: process.env.POSTGRES_SCHEMA_NAME || 'public',
   username: process.env.POSTGRES_USERNAME
-}
-
-module.exports = {
-  development: dbConfig,
-  production: dbConfig,
-  test: dbConfig
 }

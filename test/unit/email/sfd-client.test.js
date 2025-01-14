@@ -1,8 +1,6 @@
-
-const sfdMessageSend = require('../../../app/messaging/send-message')
+import { sendSFDEmail } from '../../../app/email/sfd-client'
+import { sendMessage } from '../../../app/messaging/send-message'
 jest.mock('../../../app/messaging/send-message')
-
-const sendSFDEmail = require('../../../app/email/sfd-client')
 
 describe('sendSFDEmail', () => {
   beforeEach(() => {
@@ -18,8 +16,8 @@ describe('sendSFDEmail', () => {
       }
     }, '1110000000', '123456789')
 
-    expect(sfdMessageSend).toHaveBeenCalledTimes(1)
-    expect(sfdMessageSend).toHaveBeenCalledWith({
+    expect(sendMessage).toHaveBeenCalledTimes(1)
+    expect(sendMessage).toHaveBeenCalledWith({
       agreementReference: 'agreementRef',
       crn: '1110000000',
       customParams: {
@@ -43,8 +41,8 @@ describe('sendSFDEmail', () => {
       }
     }, 'invalid', 'this too')
 
-    expect(sfdMessageSend).toHaveBeenCalledTimes(1)
-    expect(sfdMessageSend).toHaveBeenCalledWith({
+    expect(sendMessage).toHaveBeenCalledTimes(1)
+    expect(sendMessage).toHaveBeenCalledWith({
       sfdMessage: 'failed'
     },
     'uk.gov.ffc.ahwr.sfd.request', expect.anything(), { templateId: '99ef9794-67eb-4f18-bb38-541f30f955f8' })

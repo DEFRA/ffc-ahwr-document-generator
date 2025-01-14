@@ -1,17 +1,17 @@
-const path = require('path')
-const { endemics, applyServiceUri } = require('../../config')
-const imagePath = path.join(__dirname, '../', 'images')
-const { millimetresToPoints } = require('../conversion')
+import path from 'path'
+import { appConfig } from '../../config/index.js'
+import { millimetresToPoints } from '../conversion.js'
+import { getDirName } from '../../getDirName.js'
 
-const title = () => {
-  const titleEndemicsOn = 'Agreement summary: get funding to improve animal health and welfare'
-  const titleEndemicsOff = 'Annual health and welfare review of livestock agreement summary'
+export const title = () => {
+  const { applyServiceUri } = appConfig
+  const imagePath = path.join(getDirName(), '../', 'images')
+  const title = 'Agreement summary: get funding to improve animal health and welfare'
+
   return {
     stack: [
       { image: `${imagePath}/logo.jpg`, fit: [millimetresToPoints(200), millimetresToPoints(25)], style: 'logo', link: applyServiceUri },
-      { text: endemics.enabled ? titleEndemicsOn : titleEndemicsOff, style: 'header', alignment: 'left' }
+      { text: title, style: 'header', alignment: 'left' }
     ]
   }
 }
-
-module.exports = title

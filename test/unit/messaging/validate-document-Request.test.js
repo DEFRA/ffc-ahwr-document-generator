@@ -1,13 +1,4 @@
-const { validateDocumentRequest } = require('../../../app/messaging/document-request-schema')
-// const endemicsEnabled = require('../../../app/config/index').endemics.enabled
-// jest.mock('../../../app/config/index', () => ({
-//   ...jest.requireActual('../../../app/config/index'),
-//   endemics: {
-//     enabled: true
-//   }
-// }))
-
-const { setEndemicsEnabled } = require('../../mocks/config')
+import { validateDocumentRequest } from '../../../app/messaging/document-request-schema'
 
 describe('validate message body of the document request', () => {
   let documentRequest
@@ -32,16 +23,9 @@ describe('validate message body of the document request', () => {
     }
 
     jest.resetAllMocks()
-    setEndemicsEnabled(true)
   })
 
   test('document request is invalid returns false', async () => {
-    jest.mock('../../../app/config/index', () => ({
-      ...jest.requireActual('../../../app/config/index'),
-      endemics: {
-        enabled: false
-      }
-    }))
     documentRequest.whichSpecies = null
     documentRequest.userType = 'newUser'
 
@@ -79,16 +63,13 @@ describe('validate message body of the document request', () => {
     expect(validationResponse).toEqual(false)
   })
 
-  test('document request message is invalid and returns false -  endemics is enabled', async () => {
+  test('document request message is invalid and returns false', async () => {
     endemicsDocumentRequest.userType = ''
     const validationResponse = validateDocumentRequest(endemicsDocumentRequest)
     expect(validationResponse).toBeFalsy()
   })
-  test('document request message is valid and returns true-  endemics is enabled', async () => {
+
+  test('document request message is valid and returns true', async () => {
     expect(validateDocumentRequest(endemicsDocumentRequest)).toEqual(true)
-  })
-  test('document request message is valid for apply journey and returns true -  endemics is off', async () => {
-    setEndemicsEnabled(false)
-    expect(validateDocumentRequest(documentRequest)).toEqual(true)
   })
 })

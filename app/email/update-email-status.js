@@ -1,9 +1,11 @@
-const { DELIVERED, PERMANENT_FAILURE, TEMPORARY_FAILURE, TECHNICAL_FAILURE } = require('./notify-statuses')
-const { EMAIL_DELIVERED, INVALID_EMAIL, DELIVERY_FAILED, NOTIFY_ERROR_RESEND } = require('../statuses')
-const { sendFarmerApplicationEmail } = require('./notify-send')
-const { update } = require('../repositories/document-log-repository')
+import { NOTIFY_STATUSES, DOCUMENT_STATUSES } from '../constants.js'
+import { sendFarmerApplicationEmail } from './notify-send.js'
+import { update } from '../repositories/document-log-repository.js'
 
-const updateEmailStatus = async (documentLog, status) => {
+const { DELIVERED, PERMANENT_FAILURE, TEMPORARY_FAILURE, TECHNICAL_FAILURE } = NOTIFY_STATUSES
+const { EMAIL_DELIVERED, INVALID_EMAIL, DELIVERY_FAILED, NOTIFY_ERROR_RESEND } = DOCUMENT_STATUSES
+
+export const updateEmailStatus = async (documentLog, status) => {
   const { reference } = documentLog
 
   switch (status) {
@@ -25,5 +27,3 @@ const updateEmailStatus = async (documentLog, status) => {
       break
   }
 }
-
-module.exports = updateEmailStatus
