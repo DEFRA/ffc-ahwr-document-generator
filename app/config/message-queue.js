@@ -12,7 +12,7 @@ const buildConfig = () => {
   }
 
   const schema = Joi.object({
-    applicationdDocCreationRequestQueue: {
+    applicationDocCreationRequestQueue: {
       address: Joi.string(),
       type: Joi.string(),
       ...sharedConfigSchema
@@ -34,7 +34,7 @@ const buildConfig = () => {
   }
 
   const config = {
-    applicationdDocCreationRequestQueue: {
+    applicationDocCreationRequestQueue: {
       address: process.env.APPLICATIONDOCCREATIONREQUEST_QUEUE_ADDRESS,
       type: 'queue',
       ...sharedConfig

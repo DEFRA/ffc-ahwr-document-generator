@@ -1,8 +1,8 @@
-import { start } from '../../../app/email/notify-monitor'
+import { start, enableOrDisableSchedulerWork } from '../../../app/email/notify-monitor'
 import { NOTIFY_STATUSES } from '../../../app/constants'
 import { checkEmailDelivered } from '../../../app/repositories/document-log-repository'
 import { checkDeliveryStatus } from '../../../app/email/notify-status'
-import { updateEmailStatus } from '.../../../app/email/update-email-status'
+import { updateEmailStatus } from '../../../app/email/update-email-status'
 
 jest.mock('.../../../app/email/update-email-status')
 jest.mock('.../../../app/email/notify-status')
@@ -42,6 +42,18 @@ describe('run notify monitor', () => {
 
     expect(checkDeliveryStatus).toHaveBeenCalledTimes(0)
     expect(checkEmailDelivered).toHaveBeenCalledTimes(1)
+    expect(updateEmailStatus).toHaveBeenCalledTimes(0)
+  })
+
+  test('do not check for messages when enableSchedule is false', async () => {
+    checkEmailDelivered.mockResolvedValue([{ emailReference }])
+    checkDeliveryStatus.mockResolvedValue(NOTIFY_STATUSES.DELIVERED)
+
+    enableOrDisableSchedulerWork(false)
+    await start()
+
+    expect(checkDeliveryStatus).toHaveBeenCalledTimes(0)
+    expect(checkEmailDelivered).toHaveBeenCalledTimes(0)
     expect(updateEmailStatus).toHaveBeenCalledTimes(0)
   })
 })
