@@ -16,15 +16,8 @@ jest.mock('../../../app/data/index', () => {
 })
 
 describe('Document Log repository test', () => {
-  const env = process.env
-
   afterEach(() => {
     jest.clearAllMocks()
-  })
-
-  afterEach(() => {
-    jest.resetAllMocks()
-    process.env = { ...env }
   })
 
   test('Should query for outstanding email status rows using expected query criteria', async () => {
