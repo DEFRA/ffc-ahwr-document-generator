@@ -24,10 +24,22 @@ describe('run notify monitor', () => {
     jest.resetAllMocks()
   })
 
-  test('check for messages and check status', async () => {
+  test('By default, do not check for messages', async () => {
     checkEmailDelivered.mockResolvedValue([{ emailReference }])
     checkDeliveryStatus.mockResolvedValue(NOTIFY_STATUSES.DELIVERED)
 
+    await start()
+
+    expect(checkDeliveryStatus).toHaveBeenCalledTimes(0)
+    expect(checkEmailDelivered).toHaveBeenCalledTimes(0)
+    expect(updateEmailStatus).toHaveBeenCalledTimes(0)
+  })
+
+  test('check for messages and check status when enableSchedule set to true', async () => {
+    checkEmailDelivered.mockResolvedValue([{ emailReference }])
+    checkDeliveryStatus.mockResolvedValue(NOTIFY_STATUSES.DELIVERED)
+
+    enableOrDisableSchedulerWork(true)
     await start()
 
     expect(checkDeliveryStatus).toHaveBeenCalledTimes(1)
@@ -35,9 +47,10 @@ describe('run notify monitor', () => {
     expect(updateEmailStatus).toHaveBeenCalledTimes(1)
   })
 
-  test('check for messages and skip null email reference', async () => {
+  test('check for messages and skip null email reference when enableSchedule set to true', async () => {
     checkEmailDelivered.mockResolvedValue([{ emailReference: null }])
 
+    enableOrDisableSchedulerWork(true)
     await start()
 
     expect(checkDeliveryStatus).toHaveBeenCalledTimes(0)

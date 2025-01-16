@@ -3,7 +3,9 @@ import { appConfig } from '../config/index.js'
 import { checkDeliveryStatus } from './notify-status.js'
 import { updateEmailStatus } from './update-email-status.js'
 
-let schedulerEnabled = true
+// Going to default to false as the underlying check is fundamentally broken
+// We do have the option to switch back on should we really want to
+let schedulerEnabled = false
 
 export const start = async () => {
   try {
