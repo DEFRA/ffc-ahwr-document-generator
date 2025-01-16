@@ -20,7 +20,7 @@ jest.mock('../../../app/messaging/process-document-request', () => ({
 describe('startMessaging', () => {
   test('it instantiates the message receiver and subscribes to messages', async () => {
     await startMessaging()
-    expect(constructorSpy).toHaveBeenCalledWith(appConfig.messageQueueConfig.applicationdDocCreationRequestQueue, expect.any(Function))
+    expect(constructorSpy).toHaveBeenCalledWith(appConfig.messageQueueConfig.applicationDocCreationRequestQueue, expect.any(Function))
     expect(mockSubscribe).toHaveBeenCalled()
   })
 })

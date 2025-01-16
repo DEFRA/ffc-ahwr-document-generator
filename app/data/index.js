@@ -2,7 +2,7 @@ import { Sequelize, DataTypes } from 'sequelize'
 import { dbConfig } from '../config/db.js'
 import { buildDocumentLog } from './models/document-log.js'
 
-export default (() => {
+export const buildData = (() => {
   const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig)
 
   // This needs to be done for each table we define in /models
