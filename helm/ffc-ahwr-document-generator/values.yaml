@@ -30,7 +30,7 @@ deployment:
   maxReplicas: 2
   priorityClassName: default
   restartPolicy: Always
-  replicas: 2
+  replicas: 1
 
 container:
   messageQueueHost: namespace.servicebus.windows.net

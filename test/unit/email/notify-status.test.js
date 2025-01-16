@@ -5,13 +5,17 @@ import { notifyClient } from '../../../app/email/notify-client'
 
 jest.mock('../../../app/email/notify-client')
 
-const mockGetNotificationById = jest.fn().mockResolvedValue({ data: { status: NOTIFY_STATUSES.DELIVERED } })
-notifyClient.getNotificationById = mockGetNotificationById
-
 const reference = requestedDelivery.reference
 
 describe('check delivery status', () => {
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
   test('calls notify endpoint once', async () => {
+    const mockGetNotificationById = jest.fn().mockResolvedValueOnce({ data: { status: NOTIFY_STATUSES.DELIVERED } })
+    notifyClient.getNotificationById = mockGetNotificationById
+
     const result = await checkDeliveryStatus(reference)
     expect(mockGetNotificationById).toHaveBeenCalledTimes(1)
     expect(mockGetNotificationById).toHaveBeenCalledWith(reference)

@@ -15,7 +15,7 @@ const buildConfig = () => {
   const config = {
     carbonCopyEmailAddress: process.env.CARBON_COPY_EMAIL_ADDRESS,
     notifyApiKey: process.env.NOTIFY_API_KEY,
-    notifyCheckInterval: process.env.NOTIFY_CHECK_INTERVAL || 30000,
+    notifyCheckInterval: process.env.NOTIFY_CHECK_INTERVAL || 3600000,
     templateIdFarmerApplicationGenerationNewUser: process.env.NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_NEW_USER,
     templateIdFarmerApplicationGenerationExistingUser: process.env.NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_EXISTING_USER
   }

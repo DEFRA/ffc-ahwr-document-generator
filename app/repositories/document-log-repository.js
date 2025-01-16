@@ -1,9 +1,10 @@
-import buildData from '../data/index.js'
+import { buildData } from '../data/index.js'
+import { DOCUMENT_STATUSES } from '../constants.js'
 
 const { models } = buildData
 
 export const checkEmailDelivered = async () => {
-  return models.documentLog.findAll({ where: { completed: null } })
+  return models.documentLog.findAll({ where: { completed: null, status: DOCUMENT_STATUSES.EMAIL_CREATED } })
 }
 
 export const set = async (data, fileName) => {
