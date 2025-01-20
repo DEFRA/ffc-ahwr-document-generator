@@ -18,7 +18,7 @@ describe('title', () => {
         {
           fit: [567, 70.875],
           image:
-            'images/logo.jpg',
+            'dir/document/images/logo.jpg',
           link: 'test-uri',
           style: 'logo'
         },
