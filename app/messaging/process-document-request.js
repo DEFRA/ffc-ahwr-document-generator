@@ -18,7 +18,7 @@ export const processDocumentRequest = async (message, receiver) => {
     }
   } catch (err) {
     await receiver.deadLetterMessage(message)
-    console.error('Unable to document generation request:', err.message)
+    console.error('Unable to document generation request:', err)
   }
 }
 

@@ -5,7 +5,7 @@ import { getDirName } from '../../getDirName.js'
 
 export const title = () => {
   const { applyServiceUri } = appConfig
-  const imagePath = path.join(getDirName(), '../', 'images')
+  const imagePath = path.join(getDirName(), 'document', 'images')
   const title = 'Agreement summary: get funding to improve animal health and welfare'
 
   return {
