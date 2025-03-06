@@ -9,8 +9,7 @@ import { sendSFDEmail } from './sfd-client.js'
 const { applyServiceUri, claimServiceUri, notifyConfig, sfdMessage } = appConfig
 const {
   templateIdFarmerApplicationGenerationNewUser,
-  templateIdFarmerApplicationGenerationExistingUser,
-  carbonCopyEmailAddress
+  templateIdFarmerApplicationGenerationExistingUser
 } = notifyConfig
 
 export const send = async (templateId, email, personalisation) => {
@@ -78,6 +77,7 @@ export const sendEmail = async (email, personalisation, reference, templateId) =
 }
 
 export const sendCarbonCopy = async (personalisation, reference, templateId) => {
+  const { carbonCopyEmailAddress } = notifyConfig
   try {
     if (carbonCopyEmailAddress) {
       await send(
@@ -107,18 +107,22 @@ export const sendFarmerApplicationEmail = async (data, blob) => {
     sbi: data.sbi
   }
 
-  const emailAddress = data.email
+  const { email, orgEmail } = data
+
   const emailTemplateId = data.userType === NEW_USER ? templateIdFarmerApplicationGenerationNewUser : templateIdFarmerApplicationGenerationExistingUser
   let successFullySent = true
 
+  // send to RPA
   sendCarbonCopy(personalisation, data.reference, emailTemplateId)
 
-  if (data?.orgEmail) {
-    successFullySent = await sendEmail(data.orgEmail, personalisation, data.reference, emailTemplateId)
+  // send to orgEmail if present
+  if (orgEmail) {
+    successFullySent = await sendEmail(orgEmail, personalisation, data.reference, emailTemplateId)
   }
 
-  if (data?.orgEmail && data?.orgEmail !== emailAddress) {
-    successFullySent = await sendEmail(emailAddress, personalisation, data.reference, emailTemplateId)
+  // send to other email if present and different from orgEmail
+  if (email && email !== orgEmail) {
+    successFullySent = await sendEmail(email, personalisation, data.reference, emailTemplateId)
   }
 
   return successFullySent
