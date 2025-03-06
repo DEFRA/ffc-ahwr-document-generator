@@ -110,20 +110,20 @@ export const sendFarmerApplicationEmail = async (data, blob) => {
   const { email, orgEmail } = data
 
   const emailTemplateId = data.userType === NEW_USER ? templateIdFarmerApplicationGenerationNewUser : templateIdFarmerApplicationGenerationExistingUser
-  let successFullySent = true
+  let orgEmailSuccessFullySent = true
+  let emailSuccessFullySent = true
 
-  // send to RPA
   sendCarbonCopy(personalisation, data.reference, emailTemplateId)
 
-  // send to orgEmail if present
   if (orgEmail) {
-    successFullySent = await sendEmail(orgEmail, personalisation, data.reference, emailTemplateId)
+    orgEmailSuccessFullySent = await sendEmail(orgEmail, personalisation, data.reference, emailTemplateId)
   }
 
-  // send to other email if present and different from orgEmail
   if (email && email !== orgEmail) {
-    successFullySent = await sendEmail(email, personalisation, data.reference, emailTemplateId)
+    emailSuccessFullySent = await sendEmail(email, personalisation, data.reference, emailTemplateId)
   }
 
-  return successFullySent
+  console.log(`Email sent to orgEmail: ${orgEmailSuccessFullySent}, email: ${emailSuccessFullySent}`)
+
+  return orgEmailSuccessFullySent && emailSuccessFullySent
 }
