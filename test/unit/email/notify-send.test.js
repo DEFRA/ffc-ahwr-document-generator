@@ -56,88 +56,105 @@ describe('sendEmail', () => {
   })
 })
 
-describe('notify send email messages', () => {
+describe('notify send application email messages', () => {
   beforeEach(() => {
     jest.resetAllMocks()
   })
 
-  test('send farmer application email - successful email send', async () => {
-    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
-    notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
-    const response = await sendFarmerApplicationEmail(mockRequest, Buffer.from('test').toString('base64'))
-    expect(response).toEqual(true)
+  describe('should use correct template', () => {
+    test('sendFarmerApplicationEmail should use templateIdFarmerApplicationGenerationNewUser when newUser', async () => {
+      const mockBlob = 'mockBlob'
+      notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
+      notifyClient.sendEmail.mockResolvedValue(true)
+
+      const response = await sendFarmerApplicationEmail({ ...mockRequest, userType: NEW_USER }, mockBlob)
+
+      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(3)
+      expect(notifyClient.sendEmail).toHaveBeenCalledWith(
+        appConfig.notifyConfig.templateIdFarmerApplicationGenerationNewUser,
+        expect.anything(),
+        expect.anything()
+      )
+      expect(response).toEqual(true)
+    })
+
+    test('sendFarmerApplicationEmail should use templateIdFarmerApplicationGenerationExistingUser when not newUser', async () => {
+      const mockBlob = 'mockBlob'
+      notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
+      notifyClient.sendEmail.mockResolvedValue(true)
+
+      const response = await sendFarmerApplicationEmail({ ...mockRequest, userType: EXISTING_USER }, mockBlob)
+
+      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(3)
+      expect(notifyClient.sendEmail).toHaveBeenCalledWith(
+        appConfig.notifyConfig.templateIdFarmerApplicationGenerationExistingUser,
+        expect.anything(),
+        expect.anything()
+      )
+      expect(response).toEqual(true)
+    })
   })
 
-  test('send farmer application email - successful email send when org email does not exist', async () => {
-    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
-    notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
-    const response = await sendFarmerApplicationEmail({ ...mockRequest, orgEmail: undefined }, Buffer.from('test').toString('base64'))
-    expect(response).toEqual(true)
-  })
+  describe('should send to correct receipients', () => {
+    test('send to just email address when org email address not present', async () => {
+      delete appConfig.notifyConfig.carbonCopyEmailAddress
+      const mockBlob = 'mockBlob'
 
-  test('send farmer application email - error raised', async () => {
-    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
-    notifyClient.sendEmail.mockImplementation(() => { throw new Error() })
-    const response = await sendFarmerApplicationEmail(mockRequest, Buffer.from('test').toString('base64'))
-    expect(response).toEqual(false)
-  })
+      notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
+      notifyClient.sendEmail.mockResolvedValue(true)
 
-  test('send farmer application email - successful email send', async () => {
-    const mockBlob = 'mockBlob'
-    notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
-    notifyClient.sendEmail.mockResolvedValue(true)
+      const request = { ...mockRequest, orgEmail: undefined }
 
-    const response = await sendFarmerApplicationEmail(mockRequest, mockBlob)
+      const response = await sendFarmerApplicationEmail(request, mockBlob)
+      expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
+      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
+      expect(response).toEqual(true)
+    })
 
-    expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
-    expect(notifyClient.sendEmail).toHaveBeenCalledTimes(3)
-    expect(response).toEqual(true)
-  })
+    test('send to just orgEmail address when email address does not exist', async () => {
+      delete appConfig.notifyConfig.carbonCopyEmailAddress
+      const mockBlob = 'mockBlob'
 
-  test('sendFarmerApplicationEmail should use templateIdFarmerApplicationGenerationNewUser when newUser', async () => {
-    const mockBlob = 'mockBlob'
-    notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
-    notifyClient.sendEmail.mockResolvedValue(true)
+      notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
+      notifyClient.sendEmail.mockResolvedValue(true)
 
-    const response = await sendFarmerApplicationEmail({ ...mockRequest, userType: NEW_USER }, mockBlob)
+      const request = { ...mockRequest, email: undefined }
 
-    expect(notifyClient.sendEmail).toHaveBeenCalledTimes(3)
-    expect(notifyClient.sendEmail).toHaveBeenCalledWith(
-      appConfig.notifyConfig.templateIdFarmerApplicationGenerationNewUser,
-      expect.anything(),
-      expect.anything()
-    )
-    expect(response).toEqual(true)
-  })
+      const response = await sendFarmerApplicationEmail(request, mockBlob)
+      expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
+      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
+      expect(response).toEqual(true)
+    })
 
-  test('sendFarmerApplicationEmail should use templateIdFarmerApplicationGenerationExistingUser when not newUser', async () => {
-    const mockBlob = 'mockBlob'
-    notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
-    notifyClient.sendEmail.mockResolvedValue(true)
+    test('send only once when email address and orgEmail address both present but the same', async () => {
+      delete appConfig.notifyConfig.carbonCopyEmailAddress
+      const mockBlob = 'mockBlob'
 
-    const response = await sendFarmerApplicationEmail({ ...mockRequest, userType: EXISTING_USER }, mockBlob)
+      notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
+      notifyClient.sendEmail.mockResolvedValue(true)
 
-    expect(notifyClient.sendEmail).toHaveBeenCalledTimes(3)
-    expect(notifyClient.sendEmail).toHaveBeenCalledWith(
-      appConfig.notifyConfig.templateIdFarmerApplicationGenerationExistingUser,
-      expect.anything(),
-      expect.anything()
-    )
-    expect(response).toEqual(true)
-  })
+      const request = { ...mockRequest, orgEmail: 'admin@the-dairy.com' }
 
-  test('send farmer application email - successful email send when org email does not exist', async () => {
-    const mockBlob = 'mockBlob'
+      const response = await sendFarmerApplicationEmail(request, mockBlob)
+      expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
+      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
+      expect(response).toEqual(true)
+    })
 
-    notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
-    notifyClient.sendEmail.mockResolvedValue(true)
+    test('send to all addresses when CC available and email and orgEmail addresses present and unique', async () => {
+      appConfig.notifyConfig.carbonCopyEmailAddress = 'i_want_it_too@email.com'
+      const mockBlob = 'mockBlob'
 
-    const request = { ...mockRequest, orgEmail: undefined }
+      notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
+      notifyClient.sendEmail.mockResolvedValue(true)
 
-    const response = await sendFarmerApplicationEmail(request, mockBlob)
-    expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
-    expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
-    expect(response).toEqual(true)
+      const request = { ...mockRequest }
+
+      const response = await sendFarmerApplicationEmail(request, mockBlob)
+      expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
+      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(3)
+      expect(response).toEqual(true)
+    })
   })
 
   test('send farmer application email returns false when sendEmail throws an error', async () => {

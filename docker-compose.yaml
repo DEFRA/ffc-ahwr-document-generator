@@ -34,7 +34,7 @@ services:
       SFD_MESSAGE_ENABLED: ${SFD_MESSAGE_ENABLED:-false}
 
   ffc-ahwr-document-generator-postgres:
-    image: postgres:11.4-alpine
+    image: postgres:16.4-alpine
     environment:
       POSTGRES_DB: ffc_ahwr_document_generator
       POSTGRES_PASSWORD: ppp
