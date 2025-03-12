@@ -9,7 +9,6 @@ export const checkEmailDelivered = async () => {
 
 export const set = async (data, fileName) => {
   const { reference, sbi } = data
-  console.log('Updating document log', reference, sbi, fileName)
   return models.documentLog.create({ reference, sbi, data, fileName })
 }
 

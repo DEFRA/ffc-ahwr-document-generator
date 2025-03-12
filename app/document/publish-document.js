@@ -2,7 +2,7 @@ import { createFileName } from './create-filename.js'
 import { uploadBlob } from '../storage/uploadBlob.js'
 import { set } from '../repositories/document-log-repository.js'
 
-export const publishDocument = (pdfDocGenerator, data) => {
+export const publishDocument = (logger, pdfDocGenerator, data) => {
   const filename = createFileName(data)
   return new Promise((resolve, reject) => {
     const chunks = []
@@ -10,7 +10,7 @@ export const publishDocument = (pdfDocGenerator, data) => {
     pdfDocGenerator.on('data', chunk => chunks.push(chunk))
 
     pdfDocGenerator.on('end', async () => {
-      const blob = await uploadBlob(filename, chunks)
+      const blob = await uploadBlob(logger, filename, chunks)
       await set(data, filename)
       resolve({ filename, blob })
     })

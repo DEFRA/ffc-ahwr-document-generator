@@ -5,12 +5,12 @@ import { publishDocument } from './publish-document.js'
 
 const printer = new PdfPrinter(fonts)
 
-export const generateDocument = async (data) => {
+export const generateDocument = async (logger, data) => {
   const docDefinition = createDocumentDefinition(data)
-  console.log('Document definition created')
+  logger.info('Document definition created')
   const pdfDoc = printer.createPdfKitDocument(docDefinition)
-  console.log('Document PDF created')
-  const publishResponse = await publishDocument(pdfDoc, data)
-  console.log('Document published')
+  logger.info('Document PDF created')
+  const publishResponse = await publishDocument(logger, pdfDoc, data)
+  logger.info('Document published')
   return publishResponse
 }

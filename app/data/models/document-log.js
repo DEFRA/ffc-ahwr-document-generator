@@ -15,8 +15,8 @@ export const buildDocumentLog = (sequelize, DataTypes) => {
     fileName: DataTypes.STRING,
     completed: DataTypes.DATE,
     status: { type: DataTypes.STRING, defaultValue: DOCUMENT_STATUSES.DOCUMENT_CREATED },
-    createdAt: { type: DataTypes.DATE, defaultValue: Date.now() },
-    updatedAt: { type: DataTypes.DATE, defaultValue: null }
+    createdAt: { type: DataTypes.DATE },
+    updatedAt: { type: DataTypes.DATE }
   }, {
     freezeTableName: true,
     tableName: 'document_log'

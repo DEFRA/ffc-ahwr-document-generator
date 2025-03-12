@@ -8,6 +8,11 @@ jest.mock('.../../../app/email/update-email-status')
 jest.mock('.../../../app/email/notify-status')
 jest.mock('../../../app/repositories/document-log-repository')
 
+const mockLogger = {
+  info: jest.fn(),
+  error: jest.fn()
+}
+
 const emailReference = '123456789'
 
 describe('run notify monitor', () => {
@@ -28,7 +33,7 @@ describe('run notify monitor', () => {
     checkEmailDelivered.mockResolvedValue([{ emailReference }])
     checkDeliveryStatus.mockResolvedValue(NOTIFY_STATUSES.DELIVERED)
 
-    await start()
+    await start(mockLogger)
 
     expect(checkDeliveryStatus).toHaveBeenCalledTimes(0)
     expect(checkEmailDelivered).toHaveBeenCalledTimes(0)
@@ -39,8 +44,8 @@ describe('run notify monitor', () => {
     checkEmailDelivered.mockResolvedValue([{ emailReference }])
     checkDeliveryStatus.mockResolvedValue(NOTIFY_STATUSES.DELIVERED)
 
-    enableOrDisableSchedulerWork(true)
-    await start()
+    enableOrDisableSchedulerWork(mockLogger, true)
+    await start(mockLogger)
 
     expect(checkDeliveryStatus).toHaveBeenCalledTimes(1)
     expect(checkEmailDelivered).toHaveBeenCalledTimes(1)
@@ -50,8 +55,8 @@ describe('run notify monitor', () => {
   test('check for messages and skip null email reference when enableSchedule set to true', async () => {
     checkEmailDelivered.mockResolvedValue([{ emailReference: null }])
 
-    enableOrDisableSchedulerWork(true)
-    await start()
+    enableOrDisableSchedulerWork(mockLogger, true)
+    await start(mockLogger)
 
     expect(checkDeliveryStatus).toHaveBeenCalledTimes(0)
     expect(checkEmailDelivered).toHaveBeenCalledTimes(1)
@@ -62,8 +67,8 @@ describe('run notify monitor', () => {
     checkEmailDelivered.mockResolvedValue([{ emailReference }])
     checkDeliveryStatus.mockResolvedValue(NOTIFY_STATUSES.DELIVERED)
 
-    enableOrDisableSchedulerWork(false)
-    await start()
+    enableOrDisableSchedulerWork(mockLogger, false)
+    await start(mockLogger)
 
     expect(checkDeliveryStatus).toHaveBeenCalledTimes(0)
     expect(checkEmailDelivered).toHaveBeenCalledTimes(0)

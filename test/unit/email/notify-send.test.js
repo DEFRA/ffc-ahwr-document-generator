@@ -5,6 +5,11 @@ import { appConfig } from '../../../app/config'
 import { sendSFDEmail } from '../../../app/email/sfd-client'
 import { mockRequest } from '../../mocks/data'
 
+const mockLogger = {
+  info: jest.fn(),
+  error: jest.fn()
+}
+
 jest.mock('../../../app/repositories/document-log-repository', () => {
   return {
     update: jest.fn()
@@ -33,15 +38,15 @@ describe('sendEmail', () => {
   test('send email successfully', async () => {
     notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
     notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
-    const response = await sendEmail(mockEmailAddress, personalisation, notifyResponseId, templateId)
+    const response = await sendEmail(mockLogger, mockEmailAddress, personalisation, notifyResponseId, templateId)
 
     expect(response).toEqual(true)
     expect(sendSFDEmail).toHaveBeenCalledTimes(0)
   })
   test('send email successfully via SFD route', async () => {
     appConfig.sfdMessage.enabled = true
-    const response = await sendEmail(mockEmailAddress, personalisation, notifyResponseId, templateId)
-    expect(sendSFDEmail).toHaveBeenCalledWith(
+    const response = await sendEmail(mockLogger, mockEmailAddress, personalisation, notifyResponseId, templateId)
+    expect(sendSFDEmail).toHaveBeenCalledWith(mockLogger,
       'template-id', 'mockEmail@mock.com', { personalisation: { reference: '123abc' }, reference: '123456789' }, 'someCrn', 'someSbi'
     )
     expect(response).toEqual(true)
@@ -50,7 +55,7 @@ describe('sendEmail', () => {
   test('returns false when sending email fails', async () => {
     notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
     notifyClient.sendEmail.mockImplementation(() => { throw new Error() })
-    const response = await sendEmail(mockEmailAddress, personalisation, notifyResponseId, templateId)
+    const response = await sendEmail(mockLogger, mockEmailAddress, personalisation, notifyResponseId, templateId)
 
     expect(response).toEqual(false)
   })
@@ -67,7 +72,7 @@ describe('notify send application email messages', () => {
       notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
       notifyClient.sendEmail.mockResolvedValue(true)
 
-      const response = await sendFarmerApplicationEmail({ ...mockRequest, userType: NEW_USER }, mockBlob)
+      const response = await sendFarmerApplicationEmail(mockLogger, { ...mockRequest, userType: NEW_USER }, mockBlob)
 
       expect(notifyClient.sendEmail).toHaveBeenCalledTimes(3)
       expect(notifyClient.sendEmail).toHaveBeenCalledWith(
@@ -83,7 +88,7 @@ describe('notify send application email messages', () => {
       notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
       notifyClient.sendEmail.mockResolvedValue(true)
 
-      const response = await sendFarmerApplicationEmail({ ...mockRequest, userType: EXISTING_USER }, mockBlob)
+      const response = await sendFarmerApplicationEmail(mockLogger, { ...mockRequest, userType: EXISTING_USER }, mockBlob)
 
       expect(notifyClient.sendEmail).toHaveBeenCalledTimes(3)
       expect(notifyClient.sendEmail).toHaveBeenCalledWith(
@@ -105,7 +110,7 @@ describe('notify send application email messages', () => {
 
       const request = { ...mockRequest, orgEmail: undefined }
 
-      const response = await sendFarmerApplicationEmail(request, mockBlob)
+      const response = await sendFarmerApplicationEmail(mockLogger, request, mockBlob)
       expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
       expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
       expect(response).toEqual(true)
@@ -120,7 +125,7 @@ describe('notify send application email messages', () => {
 
       const request = { ...mockRequest, email: undefined }
 
-      const response = await sendFarmerApplicationEmail(request, mockBlob)
+      const response = await sendFarmerApplicationEmail(mockLogger, request, mockBlob)
       expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
       expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
       expect(response).toEqual(true)
@@ -135,7 +140,7 @@ describe('notify send application email messages', () => {
 
       const request = { ...mockRequest, orgEmail: 'admin@the-dairy.com' }
 
-      const response = await sendFarmerApplicationEmail(request, mockBlob)
+      const response = await sendFarmerApplicationEmail(mockLogger, request, mockBlob)
       expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
       expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
       expect(response).toEqual(true)
@@ -150,7 +155,7 @@ describe('notify send application email messages', () => {
 
       const request = { ...mockRequest }
 
-      const response = await sendFarmerApplicationEmail(request, mockBlob)
+      const response = await sendFarmerApplicationEmail(mockLogger, request, mockBlob)
       expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
       expect(notifyClient.sendEmail).toHaveBeenCalledTimes(3)
       expect(response).toEqual(true)
@@ -163,7 +168,7 @@ describe('notify send application email messages', () => {
     notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
     notifyClient.sendEmail.mockRejectedValue(new Error())
 
-    const response = await sendFarmerApplicationEmail(mockRequest, mockBlob)
+    const response = await sendFarmerApplicationEmail(mockLogger, mockRequest, mockBlob)
 
     expect(response).toEqual(false)
   })

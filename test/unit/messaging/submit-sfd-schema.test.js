@@ -1,5 +1,8 @@
 import { validateSFDSchema } from '../../../app/messaging/submit-sfd-schema'
 
+const mockLogger = {
+  warn: jest.fn()
+}
 describe('validateSFDSchema', () => {
   const validEvent = {
     crn: '1234567890',
@@ -24,10 +27,10 @@ describe('validateSFDSchema', () => {
   }
 
   test('returns true when event valid', () => {
-    expect(validateSFDSchema(validEvent)).toBeTruthy()
+    expect(validateSFDSchema(mockLogger, validEvent)).toBeTruthy()
   })
 
   test('returns false when event invalid', () => {
-    expect(validateSFDSchema(invalidEvent)).toBeFalsy()
+    expect(validateSFDSchema(mockLogger, invalidEvent)).toBeFalsy()
   })
 })

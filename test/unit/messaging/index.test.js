@@ -3,6 +3,10 @@ import { startMessaging } from '../../../app/messaging'
 import { MessageReceiver } from 'ffc-messaging'
 
 const mockSubscribe = jest.fn().mockResolvedValue(true)
+const mockLogger = {
+  info: jest.fn(),
+  error: jest.fn()
+}
 jest.mock('ffc-messaging')
 MessageReceiver.subscribe = mockSubscribe
 
@@ -19,7 +23,7 @@ jest.mock('../../../app/messaging/process-document-request', () => ({
 
 describe('startMessaging', () => {
   test('it instantiates the message receiver and subscribes to messages', async () => {
-    await startMessaging()
+    await startMessaging(mockLogger)
     expect(constructorSpy).toHaveBeenCalledWith(appConfig.messageQueueConfig.applicationDocCreationRequestQueue, expect.any(Function))
     expect(mockSubscribe).toHaveBeenCalled()
   })

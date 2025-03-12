@@ -19,6 +19,10 @@ jest.mock('../../../app/storage/getBlobServiceClient', () => ({
   getBlobServiceClient: jest.fn()
 }))
 
+const mockLogger = {
+  info: jest.fn()
+}
+
 describe('uploadBlob', () => {
   test('it initialises the containers and uploads the document', async () => {
     const mockCreateContainers = jest.fn()
@@ -38,7 +42,7 @@ describe('uploadBlob', () => {
     const fileName = 'file-name-test'
     const contents = [Buffer.from('file-contents-test')]
 
-    const result = await uploadBlob(fileName, contents)
+    const result = await uploadBlob(mockLogger, fileName, contents)
 
     expect(getBlobServiceClient).toHaveBeenCalledWith(true, 'fake-connection-string', 'fake-storage-account')
     expect(mockGetContainerClient).toHaveBeenCalledWith('fake-document-container')
@@ -66,7 +70,7 @@ describe('uploadBlob', () => {
     const fileName = 'file-name-test'
     const contents = [Buffer.from('file-contents-test')]
 
-    const result = await uploadBlob(fileName, contents)
+    const result = await uploadBlob(mockLogger, fileName, contents)
 
     expect(getBlobServiceClient).toHaveBeenCalledWith(true, 'fake-connection-string', 'fake-storage-account')
     expect(mockGetContainerClient).toHaveBeenCalledWith('fake-document-container')

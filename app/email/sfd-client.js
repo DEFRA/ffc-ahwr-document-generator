@@ -5,7 +5,7 @@ import { CLAIM_STATES } from '../constants.js'
 
 const { sfdRequestMsgType, messageQueueConfig: { sfdMessageQueue } } = appConfig
 
-export const sendSFDEmail = async (templateId, email, emailInput, crn, sbi) => {
+export const sendSFDEmail = async (logger, templateId, email, emailInput, crn, sbi) => {
   const { personalisation: { reference } } = emailInput
   const customParams = { ...emailInput.personalisation }
 
@@ -19,7 +19,7 @@ export const sendSFDEmail = async (templateId, email, emailInput, crn, sbi) => {
     dateTime: new Date().toISOString()
   }
 
-  if (validateSFDSchema(sfdMessage)) {
+  if (validateSFDSchema(logger, sfdMessage)) {
     return sendMessage(sfdMessage, sfdRequestMsgType, sfdMessageQueue)
   }
 

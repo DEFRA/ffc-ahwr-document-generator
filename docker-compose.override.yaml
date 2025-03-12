@@ -7,6 +7,8 @@ services:
       target: development
     image: ffc-ahwr-document-generator-development
     container_name: ffc-ahwr-document-generator-development
+    environment:
+      USE_PRETTY_PRINT: ${USE_PRETTY_PRINT:-true}
     ports:
       - "3006:3000"
       - "9236:9229"

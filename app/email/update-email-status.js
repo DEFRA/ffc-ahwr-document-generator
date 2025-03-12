@@ -5,7 +5,7 @@ import { update } from '../repositories/document-log-repository.js'
 const { DELIVERED, PERMANENT_FAILURE, TEMPORARY_FAILURE, TECHNICAL_FAILURE } = NOTIFY_STATUSES
 const { EMAIL_DELIVERED, INVALID_EMAIL, DELIVERY_FAILED, NOTIFY_ERROR_RESEND } = DOCUMENT_STATUSES
 
-export const updateEmailStatus = async (documentLog, status) => {
+export const updateEmailStatus = async (logger, documentLog, status) => {
   const { reference } = documentLog
 
   switch (status) {
@@ -20,10 +20,10 @@ export const updateEmailStatus = async (documentLog, status) => {
       break
     case TECHNICAL_FAILURE:
       await update(reference, { status: NOTIFY_ERROR_RESEND })
-      await sendFarmerApplicationEmail(documentLog.data)
+      await sendFarmerApplicationEmail(logger.child({}), documentLog.data)
       break
     default:
-      console.error('Unknown status')
+      logger.error('Unknown status')
       break
   }
 }

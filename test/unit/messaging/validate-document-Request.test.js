@@ -1,5 +1,8 @@
 import { validateDocumentRequest } from '../../../app/messaging/document-request-schema'
 
+const mockLogger = {
+  error: jest.fn()
+}
 describe('validate message body of the document request', () => {
   let documentRequest
   let endemicsDocumentRequest
@@ -29,47 +32,47 @@ describe('validate message body of the document request', () => {
     documentRequest.whichSpecies = null
     documentRequest.userType = 'newUser'
 
-    const validationResponse = validateDocumentRequest(documentRequest)
+    const validationResponse = validateDocumentRequest(mockLogger, documentRequest)
     expect(validationResponse).toEqual(false)
   })
 
   test('document request message is invalid and returns false - empty request', async () => {
     documentRequest = {}
-    const validationResponse = validateDocumentRequest(documentRequest)
+    const validationResponse = validateDocumentRequest(mockLogger, documentRequest)
     expect(validationResponse).toEqual(false)
   })
 
   test('document request message is invalid and returns false - no feference', async () => {
     documentRequest.reference = null
-    const validationResponse = validateDocumentRequest(documentRequest)
+    const validationResponse = validateDocumentRequest(mockLogger, documentRequest)
     expect(validationResponse).toEqual(false)
   })
 
   test('document request message is invalid and returns false - no sbi', async () => {
     documentRequest.sbi = null
-    const validationResponse = validateDocumentRequest(documentRequest)
+    const validationResponse = validateDocumentRequest(mockLogger, documentRequest)
     expect(validationResponse).toEqual(false)
   })
 
   test('document request message is invalid and returns false - no whichSpecies', async () => {
     documentRequest.sbi = null
-    const validationResponse = validateDocumentRequest(documentRequest)
+    const validationResponse = validateDocumentRequest(mockLogger, documentRequest)
     expect(validationResponse).toEqual(false)
   })
 
   test('document request message is invalid and returns false - no startDate', async () => {
     documentRequest.startDate = null
-    const validationResponse = validateDocumentRequest(documentRequest)
+    const validationResponse = validateDocumentRequest(mockLogger, documentRequest)
     expect(validationResponse).toEqual(false)
   })
 
   test('document request message is invalid and returns false', async () => {
     endemicsDocumentRequest.userType = ''
-    const validationResponse = validateDocumentRequest(endemicsDocumentRequest)
+    const validationResponse = validateDocumentRequest(mockLogger, endemicsDocumentRequest)
     expect(validationResponse).toBeFalsy()
   })
 
   test('document request message is valid and returns true', async () => {
-    expect(validateDocumentRequest(endemicsDocumentRequest)).toEqual(true)
+    expect(validateDocumentRequest(mockLogger, endemicsDocumentRequest)).toEqual(true)
   })
 })

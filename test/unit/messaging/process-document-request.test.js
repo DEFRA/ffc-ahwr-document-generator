@@ -15,6 +15,12 @@ jest.mock('../../../app/getDirName', () => ({
   getDirName: () => 'dir/'
 }))
 
+const mockLogger = {
+  error: jest.fn(),
+  info: jest.fn(),
+  setBindings: jest.fn()
+}
+
 generateDocument.mockImplementation(jest.fn().mockResolvedValue({ blob: 'something' }))
 
 let receiver
@@ -37,7 +43,7 @@ describe('process document request message', () => {
       body: mockDocumentRequest
     }
 
-    await processDocumentRequest(message, receiver)
+    await processDocumentRequest(mockLogger, message, receiver)
     expect(receiver.completeMessage).toHaveBeenCalledWith(message)
   })
 
@@ -46,7 +52,7 @@ describe('process document request message', () => {
     const message = {
       body: mockDocumentRequest
     }
-    await processDocumentRequest(message, receiver)
+    await processDocumentRequest(mockLogger, message, receiver)
 
     expect(validateDocumentRequest).toBeCalled()
     expect(receiver.deadLetterMessage).toHaveBeenCalledWith(message)
@@ -59,8 +65,8 @@ describe('process document request message', () => {
         enableSchedule: false
       }
     }
-    await processDocumentRequest(message, receiver)
-    expect(enableOrDisableSchedulerWork).toHaveBeenCalledWith(false)
+    await processDocumentRequest(mockLogger, message, receiver)
+    expect(enableOrDisableSchedulerWork).toHaveBeenCalledWith(mockLogger, false)
     expect(validateDocumentRequest).not.toHaveBeenCalled()
     expect(receiver.completeMessage).toHaveBeenCalledWith(message)
   })
@@ -73,7 +79,7 @@ describe('process document request message', () => {
         enableSchedule: 'bananas'
       }
     }
-    await processDocumentRequest(message, receiver)
+    await processDocumentRequest(mockLogger, message, receiver)
     expect(enableOrDisableSchedulerWork).not.toHaveBeenCalled()
     expect(receiver.deadLetterMessage).toHaveBeenCalledWith(message)
   })

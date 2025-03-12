@@ -7,37 +7,37 @@ import { updateEmailStatus } from './update-email-status.js'
 // We do have the option to switch back on should we really want to
 let schedulerEnabled = false
 
-export const start = async () => {
+export const start = async (logger) => {
   try {
     if (schedulerEnabled) {
-      console.log('Checking for messages')
+      logger.info('Checking for messages')
       const documentLogs = await checkEmailDelivered()
-      console.log('found', documentLogs.length, 'messages')
+      logger.info(`found ${documentLogs.length} messages`)
 
       for (const documentLog of documentLogs) {
         const emailReference = documentLog.emailReference
         if (!emailReference) {
           continue
         }
-        console.log(`Checking message with email reference ${emailReference}.`)
+        logger.info(`Checking message with email reference ${emailReference}.`)
         const status = await checkDeliveryStatus(emailReference)
-        await updateEmailStatus(documentLog, status)
+        await updateEmailStatus(logger, documentLog, status)
       }
     } else {
-      console.log('sleeping till next notify interval as scheduler is disabled')
+      logger.info('sleeping till next notify interval as scheduler is disabled')
     }
   } catch (err) {
-    console.error(err.message)
+    logger.error(err.message)
   } finally {
     setTimeout(start, Number(appConfig.notifyConfig.notifyCheckInterval))
   }
 }
 
-export const enableOrDisableSchedulerWork = (enableOrDisable) => {
+export const enableOrDisableSchedulerWork = (logger, enableOrDisable) => {
   schedulerEnabled = enableOrDisable
   if (schedulerEnabled) {
-    console.log('Notify scheduler is enabled, will continue to check for message status from next interval')
+    logger.info('Notify scheduler is enabled, will continue to check for message status from next interval')
   } else {
-    console.log('Notify scheduler is disabled, will not check for message status until it is enabled again')
+    logger.info('Notify scheduler is disabled, will not check for message status until it is enabled again')
   }
 }

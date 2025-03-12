@@ -2,13 +2,19 @@ import { sendSFDEmail } from '../../../app/email/sfd-client'
 import { sendMessage } from '../../../app/messaging/send-message'
 jest.mock('../../../app/messaging/send-message')
 
+const mockLogger = {
+  info: jest.fn(),
+  error: jest.fn(),
+  warn: jest.fn()
+}
+
 describe('sendSFDEmail', () => {
   beforeEach(() => {
     jest.resetAllMocks()
   })
 
   test('send SFD request successfully', async () => {
-    await sendSFDEmail('99ef9794-67eb-4f18-bb38-541f30f955f8', 'hi@bye.com', {
+    await sendSFDEmail(mockLogger, '99ef9794-67eb-4f18-bb38-541f30f955f8', 'hi@bye.com', {
       reference: 'someRef',
       personalisation: {
         someValue: 'someVal',
@@ -33,7 +39,7 @@ describe('sendSFDEmail', () => {
   })
 
   test('send SFD request fail', async () => {
-    await sendSFDEmail('99ef9794-67eb-4f18-bb38-541f30f955f8', 'hi@bye.com', {
+    await sendSFDEmail(mockLogger, '99ef9794-67eb-4f18-bb38-541f30f955f8', 'hi@bye.com', {
       reference: 'someRef',
       personalisation: {
         someValue: 'someVal',
