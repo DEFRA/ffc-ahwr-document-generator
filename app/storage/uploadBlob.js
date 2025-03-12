@@ -7,14 +7,13 @@ const { createContainers, documentContainer } = appConfig.storageConfig
 
 const initialiseContainers = async (container) => {
   if (createContainers && !containersInitialisedState) {
-    console.log('Making sure blob containers exist')
     await container.createIfNotExists()
 
     containersInitialisedState = true
   }
 }
 
-export const uploadBlob = async (filename, contents) => {
+export const uploadBlob = async (logger, filename, contents) => {
   const {
     connectionString,
     useConnectionString,
@@ -27,7 +26,7 @@ export const uploadBlob = async (filename, contents) => {
   const blob = container.getBlockBlobClient(filename)
   const result = Buffer.concat(contents)
   await blob.upload(result, result.length)
-  console.log(`Generated document: ${filename}`)
+  logger.info(`Generated document: ${filename}`)
 
   return result
 }

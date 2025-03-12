@@ -10,7 +10,11 @@ jest.mock('../../../app/email/notify-send')
 const { DELIVERED, PERMANENT_FAILURE, TEMPORARY_FAILURE, TECHNICAL_FAILURE } = NOTIFY_STATUSES
 const { EMAIL_DELIVERED, INVALID_EMAIL, DELIVERY_FAILED, NOTIFY_ERROR_RESEND } = DOCUMENT_STATUSES
 
-const consoleError = jest.spyOn(console, 'error')
+const mockLogger = {
+  info: jest.fn(),
+  error: jest.fn(),
+  child: jest.fn()
+}
 
 describe('update email status', () => {
   beforeEach(() => {
@@ -24,28 +28,28 @@ describe('update email status', () => {
   })
 
   test('update email status - delivered', async () => {
-    await updateEmailStatus(mockRequest, DELIVERED)
+    await updateEmailStatus(mockLogger, mockRequest, DELIVERED)
     expect(update).toHaveBeenCalledWith(mockRequest.reference, { status: EMAIL_DELIVERED, completed: new Date() })
   })
 
   test('update email status - permanent failure', async () => {
-    await updateEmailStatus(mockRequest, PERMANENT_FAILURE)
+    await updateEmailStatus(mockLogger, mockRequest, PERMANENT_FAILURE)
     expect(update).toHaveBeenCalledWith(mockRequest.reference, { status: INVALID_EMAIL, completed: new Date() })
   })
 
   test('update email status - temporary failure', async () => {
-    await updateEmailStatus(mockRequest, TEMPORARY_FAILURE)
+    await updateEmailStatus(mockLogger, mockRequest, TEMPORARY_FAILURE)
     expect(update).toHaveBeenCalledWith(mockRequest.reference, { status: DELIVERY_FAILED, completed: new Date() })
   })
 
   test('update email status - technical failure', async () => {
-    await updateEmailStatus(mockRequest, TECHNICAL_FAILURE)
+    await updateEmailStatus(mockLogger, mockRequest, TECHNICAL_FAILURE)
     expect(update).toHaveBeenCalledWith(mockRequest.reference, { status: NOTIFY_ERROR_RESEND })
     expect(sendFarmerApplicationEmail).toHaveBeenCalledTimes(1)
   })
 
   test('update email status - unkown', async () => {
-    await updateEmailStatus(mockRequest, 'unknown')
-    expect(consoleError).toHaveBeenCalledTimes(1)
+    await updateEmailStatus(mockLogger, mockRequest, 'unknown')
+    expect(mockLogger.error).toHaveBeenCalledTimes(1)
   })
 })

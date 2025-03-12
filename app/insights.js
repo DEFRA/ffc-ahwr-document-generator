@@ -1,13 +1,12 @@
 import appInsights from 'applicationinsights'
 
-export const setup = () => {
+export const setup = (logger) => {
   if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
     appInsights.setup().start()
-    console.log('App Insights Running')
+    logger.info('App Insights Running')
     const cloudRoleTag = appInsights.defaultClient.context.keys.cloudRole
-    const appName = process.env.APPINSIGHTS_CLOUDROLE ?? ''
-    appInsights.defaultClient.context.tags[cloudRoleTag] = appName
+    appInsights.defaultClient.context.tags[cloudRoleTag] = process.env.APPINSIGHTS_CLOUDROLE ?? ''
   } else {
-    console.log('App Insights Not Running!')
+    logger.info('App Insights Not Running!')
   }
 }

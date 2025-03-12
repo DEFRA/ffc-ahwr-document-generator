@@ -12,8 +12,7 @@ const {
   templateIdFarmerApplicationGenerationExistingUser
 } = notifyConfig
 
-export const send = async (templateId, email, personalisation) => {
-  console.log(`Received email to send to ${email} for ${personalisation.reference}`)
+const send = async (logger, templateId, email, personalisation) => {
   // sbi and crn were added into personalisation object to get them into here without changing upstream method signatures
   // for the time being we'll pull them out here and send into SFD route where they are needed, and make sure they don't
   // go into the old route where they aren't needed
@@ -25,7 +24,7 @@ export const send = async (templateId, email, personalisation) => {
 
   try {
     if (sfdMessage.enabled) {
-      return sendSFDEmail(
+      return sendSFDEmail(logger,
         templateId,
         email,
         copyOfPersonalisation,
@@ -43,19 +42,19 @@ export const send = async (templateId, email, personalisation) => {
   }
 }
 
-export const sendEmail = async (email, personalisation, reference, templateId) => {
+export const sendEmail = async (logger, email, personalisation, reference, templateId) => {
   let success = false
   try {
-    const response = await send(templateId, email, { personalisation, reference })
+    const response = await send(logger, templateId, email, { personalisation, reference })
 
     if (!sfdMessage.enabled) {
       // If it IS enabled we don't get any of this info as the message proxy is doing the send and audit
       // otherwise do usual audit here
       const emailReference = response.data?.id
-      console.log(`Email sent to ${email} for ${reference}`)
-      update(reference, { emailReference, status: DOCUMENT_STATUSES.EMAIL_CREATED })
+      logger.info(`Email sent for ${reference}`)
+      await update(reference, { emailReference, status: DOCUMENT_STATUSES.EMAIL_CREATED })
     } else {
-      console.log(`Request sent to sfd message proxy for ${reference}`)
+      logger.info(`Request sent to sfd message proxy for ${reference}`)
     }
 
     appInsights.defaultClient.trackEvent({
@@ -69,33 +68,33 @@ export const sendEmail = async (email, personalisation, reference, templateId) =
     })
     success = true
   } catch (e) {
-    update(reference, { status: NOTIFY_STATUSES.SEND_FAILED })
-    console.error(`Error occurred sending email to ${email} for ${reference}. Error: ${JSON.stringify(e.response?.data)}`)
+    await update(reference, { status: NOTIFY_STATUSES.SEND_FAILED })
+    logger.error(`Error occurred sending email to ${email} for ${reference}. Error: ${JSON.stringify(e.response?.data)}`)
     appInsights.defaultClient.trackException({ exception: e })
   }
   return success
 }
 
-export const sendCarbonCopy = async (personalisation, reference, templateId) => {
+const sendCarbonCopy = async (logger, personalisation, reference, templateId) => {
   const { carbonCopyEmailAddress } = notifyConfig
   try {
     if (carbonCopyEmailAddress) {
       await send(
+        logger,
         templateId,
         carbonCopyEmailAddress,
         { personalisation, reference }
       )
-      console.log(`Carbon copy email sent to ${carbonCopyEmailAddress} for ${reference}`)
+      logger.info(`Carbon copy email sent for ${reference}`)
     }
   } catch (e) {
-    console.error(`Error occurred sending carbon email to ${carbonCopyEmailAddress} for ${reference}. Error: ${JSON.stringify(e.response?.data)}`)
+    logger.error(`Error occurred sending carbon email for ${reference}. Error: ${JSON.stringify(e.response?.data)}`)
   }
 }
 
-export const sendFarmerApplicationEmail = async (data, blob) => {
-  console.log(`Sending email for ${data.reference} - ${data.userType} - ${data.email} - ${data.orgEmail}`)
+export const sendFarmerApplicationEmail = async (logger, data, blob) => {
   const filename = createFileName(data)
-  console.log(`File contents for ${filename} downloaded`)
+  logger.info(`File contents for ${filename} downloaded`)
   const personalisation = {
     name: data.name,
     reference: data.reference,
@@ -113,17 +112,17 @@ export const sendFarmerApplicationEmail = async (data, blob) => {
   let orgEmailSuccessFullySent = true
   let emailSuccessFullySent = true
 
-  sendCarbonCopy(personalisation, data.reference, emailTemplateId)
+  await sendCarbonCopy(logger, personalisation, data.reference, emailTemplateId)
 
   if (orgEmail) {
-    orgEmailSuccessFullySent = await sendEmail(orgEmail, personalisation, data.reference, emailTemplateId)
+    orgEmailSuccessFullySent = await sendEmail(logger, orgEmail, personalisation, data.reference, emailTemplateId)
   }
 
   if (email && email !== orgEmail) {
-    emailSuccessFullySent = await sendEmail(email, personalisation, data.reference, emailTemplateId)
+    emailSuccessFullySent = await sendEmail(logger, email, personalisation, data.reference, emailTemplateId)
   }
 
-  console.log(`Email sent to orgEmail: ${orgEmailSuccessFullySent}, email: ${emailSuccessFullySent}`)
+  logger.info(`Email sent to orgEmail: ${orgEmailSuccessFullySent}, email: ${emailSuccessFullySent}`)
 
   return orgEmailSuccessFullySent && emailSuccessFullySent
 }

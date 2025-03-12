@@ -20,11 +20,11 @@ const submitSFDSchema = joi.object({
   dateTime: joi.date().required()
 })
 
-export const validateSFDSchema = (event) => {
+export const validateSFDSchema = (logger, event) => {
   const validate = submitSFDSchema.validate(event)
 
   if (validate.error) {
-    console.log('Submit SFD message validation error:', util.inspect(validate.error, false, null, true))
+    logger.warn('Submit SFD message validation error:', util.inspect(validate.error, false, null, true))
     return false
   }
   return true

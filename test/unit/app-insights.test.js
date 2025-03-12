@@ -5,6 +5,10 @@ jest.mock('applicationinsights', () => ({
   setup: jest.fn()
 }))
 
+const mockLogger = {
+  info: jest.fn()
+}
+
 describe('App Insight', () => {
   const startMock = jest.fn()
   const setupMock = jest.fn(() => {
@@ -42,7 +46,7 @@ describe('App Insight', () => {
     process.env.APPINSIGHTS_CLOUDROLE = appName
     process.env.APPLICATIONINSIGHTS_CONNECTION_STRING = 'something'
 
-    insights.setup()
+    insights.setup(mockLogger)
 
     expect(setupMock).toHaveBeenCalledTimes(1)
     expect(startMock).toHaveBeenCalledTimes(1)
@@ -52,7 +56,7 @@ describe('App Insight', () => {
   test('when started and no cloudrole set, then app name is blank', () => {
     process.env.APPLICATIONINSIGHTS_CONNECTION_STRING = 'something'
 
-    insights.setup()
+    insights.setup(mockLogger)
 
     expect(setupMock).toHaveBeenCalledTimes(1)
     expect(startMock).toHaveBeenCalledTimes(1)

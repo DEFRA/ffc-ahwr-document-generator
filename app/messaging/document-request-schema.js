@@ -12,11 +12,11 @@ const eventSchema = joi.object({
   farmerName: joi.string().optional()
 })
 
-export const validateDocumentRequest = (event) => {
+export const validateDocumentRequest = (logger, event) => {
   const validate = eventSchema.validate(event)
 
   if (validate.error) {
-    console.log('Document request validation error', JSON.stringify(validate.error))
+    logger.error(`Document request validation error: ${JSON.stringify(validate.error)}`)
     return false
   }
 

@@ -6,12 +6,15 @@ const { applicationDocCreationRequestQueue } = appConfig.messageQueueConfig
 
 let documentGenerationReceiver
 
-export const startMessaging = async () => {
-  const documentGenerationAction = (message) => processDocumentRequest(message, documentGenerationReceiver)
+export const startMessaging = async (logger) => {
+  const documentGenerationAction = (message) => {
+    const childLogger = logger.child({})
+    processDocumentRequest(childLogger, message, documentGenerationReceiver)
+  }
   documentGenerationReceiver = new MessageReceiver(applicationDocCreationRequestQueue, documentGenerationAction)
   await documentGenerationReceiver.subscribe()
 
-  console.info('Ready to receive messages')
+  logger.info('Ready to receive messages')
 }
 
 export const stopMessaging = async () => {
