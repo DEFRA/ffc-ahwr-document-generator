@@ -6,8 +6,13 @@ import { updateEmailStatus } from './update-email-status.js'
 // Going to default to false as the underlying check is fundamentally broken
 // We do have the option to switch back on should we really want to
 let schedulerEnabled = false
+let logger
 
-export const start = async (logger) => {
+export const setLoggerInstance = (loggerInstance) => {
+  logger = loggerInstance
+}
+
+export const start = async () => {
   try {
     if (schedulerEnabled) {
       logger.info('Checking for messages')

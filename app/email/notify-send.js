@@ -69,7 +69,7 @@ export const sendEmail = async (logger, email, personalisation, reference, templ
     success = true
   } catch (e) {
     await update(reference, { status: NOTIFY_STATUSES.SEND_FAILED })
-    logger.error(`Error occurred sending email to ${email} for ${reference}. Error: ${JSON.stringify(e.response?.data)}`)
+    logger.error(`Error occurred sending email for ${reference}. Error: ${JSON.stringify(e.response?.data)}`)
     appInsights.defaultClient.trackException({ exception: e })
   }
   return success
