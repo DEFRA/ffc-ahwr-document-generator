@@ -1,11 +1,11 @@
-import { start, enableOrDisableSchedulerWork } from '../../../app/email/notify-monitor'
+import { start, enableOrDisableSchedulerWork, setLoggerInstance } from '../../../app/email/notify-monitor'
 import { NOTIFY_STATUSES } from '../../../app/constants'
 import { checkEmailDelivered } from '../../../app/repositories/document-log-repository'
 import { checkDeliveryStatus } from '../../../app/email/notify-status'
 import { updateEmailStatus } from '../../../app/email/update-email-status'
 
-jest.mock('.../../../app/email/update-email-status')
-jest.mock('.../../../app/email/notify-status')
+jest.mock('../../../app/email/update-email-status')
+jest.mock('../../../app/email/notify-status')
 jest.mock('../../../app/repositories/document-log-repository')
 
 const mockLogger = {
@@ -18,6 +18,7 @@ const emailReference = '123456789'
 describe('run notify monitor', () => {
   beforeEach(() => {
     jest.useFakeTimers()
+    setLoggerInstance(mockLogger)
   })
 
   afterEach(() => {
@@ -33,7 +34,7 @@ describe('run notify monitor', () => {
     checkEmailDelivered.mockResolvedValue([{ emailReference }])
     checkDeliveryStatus.mockResolvedValue(NOTIFY_STATUSES.DELIVERED)
 
-    await start(mockLogger)
+    await start()
 
     expect(checkDeliveryStatus).toHaveBeenCalledTimes(0)
     expect(checkEmailDelivered).toHaveBeenCalledTimes(0)
@@ -45,7 +46,7 @@ describe('run notify monitor', () => {
     checkDeliveryStatus.mockResolvedValue(NOTIFY_STATUSES.DELIVERED)
 
     enableOrDisableSchedulerWork(mockLogger, true)
-    await start(mockLogger)
+    await start()
 
     expect(checkDeliveryStatus).toHaveBeenCalledTimes(1)
     expect(checkEmailDelivered).toHaveBeenCalledTimes(1)
@@ -56,7 +57,7 @@ describe('run notify monitor', () => {
     checkEmailDelivered.mockResolvedValue([{ emailReference: null }])
 
     enableOrDisableSchedulerWork(mockLogger, true)
-    await start(mockLogger)
+    await start()
 
     expect(checkDeliveryStatus).toHaveBeenCalledTimes(0)
     expect(checkEmailDelivered).toHaveBeenCalledTimes(1)
@@ -68,7 +69,7 @@ describe('run notify monitor', () => {
     checkDeliveryStatus.mockResolvedValue(NOTIFY_STATUSES.DELIVERED)
 
     enableOrDisableSchedulerWork(mockLogger, false)
-    await start(mockLogger)
+    await start()
 
     expect(checkDeliveryStatus).toHaveBeenCalledTimes(0)
     expect(checkEmailDelivered).toHaveBeenCalledTimes(0)

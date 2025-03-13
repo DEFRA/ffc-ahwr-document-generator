@@ -1,11 +1,12 @@
 import { setup } from './insights.js'
 import { startMessaging, stopMessaging } from './messaging/index.js'
-import { start as startNotifyMonitor } from './email/notify-monitor.js'
+import { setLoggerInstance, start as startNotifyMonitor } from './email/notify-monitor.js'
 import { createServer } from './server.js'
 
 const init = async () => {
   const server = await createServer()
   await startMessaging(server.logger)
+  setLoggerInstance(server.logger)
   await startNotifyMonitor(server.logger)
 
   await server.start()
