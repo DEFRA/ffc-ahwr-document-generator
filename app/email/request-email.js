@@ -16,12 +16,14 @@ const AddressType = {
   CC: 'CC'
 }
 
-const sendEmailRequest = async (logger, email, personalisation, reference, crn, sbi, templateId, addressType) => {
+const sendEmailRequest = async (requestParams) => {
+  const { logger, emailAddress, personalisation, reference, crn, sbi, templateId, addressType } = requestParams
+
   let success = false
   try {
     await sendSFDEmailMessage(logger,
       templateId,
-      email,
+      emailAddress,
       personalisation,
       reference,
       crn,
@@ -63,21 +65,23 @@ export const requestFarmerApplicationEmail = async (logger, data, blob) => {
 
   const { email, orgEmail } = data
 
-  const emailTemplateId = data.userType === NEW_USER ? templateIdFarmerApplicationGenerationNewUser : templateIdFarmerApplicationGenerationExistingUser
+  const templateId = data.userType === NEW_USER ? templateIdFarmerApplicationGenerationNewUser : templateIdFarmerApplicationGenerationExistingUser
   let orgEmailSuccessFullySent = true
   let emailSuccessFullySent = true
   let ccEmailSuccessFullySent = true
 
+  const requestParams = { logger, personalisation, reference, crn, sbi, templateId }
+
   if (carbonCopyEmailAddress) {
-    ccEmailSuccessFullySent = await sendEmailRequest(logger, carbonCopyEmailAddress, personalisation, reference, crn, sbi, emailTemplateId, AddressType.CC)
+    ccEmailSuccessFullySent = await sendEmailRequest({ ...requestParams, emailAddress: carbonCopyEmailAddress, addressType: AddressType.CC })
   }
 
   if (orgEmail) {
-    orgEmailSuccessFullySent = await sendEmailRequest(logger, orgEmail, personalisation, reference, crn, sbi, emailTemplateId, AddressType.ORG_EMAIL)
+    orgEmailSuccessFullySent = await sendEmailRequest({ ...requestParams, emailAddress: orgEmail, addressType: AddressType.ORG_EMAIL })
   }
 
   if (email && email !== orgEmail) {
-    emailSuccessFullySent = await sendEmailRequest(logger, email, personalisation, reference, crn, sbi, emailTemplateId, AddressType.EMAIL)
+    emailSuccessFullySent = await sendEmailRequest({ ...requestParams, emailAddress: email, addressType: AddressType.EMAIL })
   }
 
   const allRequestsSuccessful = orgEmailSuccessFullySent && emailSuccessFullySent && ccEmailSuccessFullySent
