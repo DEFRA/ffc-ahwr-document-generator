@@ -77,7 +77,7 @@ export const requestFarmerApplicationEmail = async (logger, data, blob) => {
   }
 
   if (email && email !== orgEmail) {
-    emailSuccessFullySent = await sendEmailRequest(logger, email, personalisation, reference, crn, sbi, emailTemplateId, AddressType.CC)
+    emailSuccessFullySent = await sendEmailRequest(logger, email, personalisation, reference, crn, sbi, emailTemplateId, AddressType.EMAIL)
   }
 
   const allRequestsSuccessful = orgEmailSuccessFullySent && emailSuccessFullySent && ccEmailSuccessFullySent
