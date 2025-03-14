@@ -40,7 +40,6 @@ container:
   azureStorageAccountName:
   carbonCopyEmailAddress:
   imagePullPolicy: IfNotPresent
-  notifyApiKey:
   notifyTemplateIdFarmerApplicationCompleteNewUser:
   notifyTemplateIdFarmerApplicationCompleteExistingUser:
   termsAndConditionsUrl:
@@ -52,7 +51,6 @@ container:
   applyServiceUri:
   claimServiceUri:
   sfdMessageQueueAddress: ffc-ahwr-sfd-message
-  sfdMessageEnabledForAgreements: false
 
 postgresService:
   postgresDb: ffc_ahwr_document_generator

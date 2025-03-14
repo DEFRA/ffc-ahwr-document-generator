@@ -1,9 +1,9 @@
 import { NEW_USER, EXISTING_USER } from '../../../app/constants'
-import { notifyClient } from '../../../app/email/notify-client'
-import { sendFarmerApplicationEmail, sendEmail } from '../../../app/email/notify-send'
+import { requestFarmerApplicationEmail } from '../../../app/email/request-email.js'
 import { appConfig } from '../../../app/config'
-import { sendSFDEmail } from '../../../app/email/sfd-client'
+import { sendSFDEmailMessage } from '../../../app/email/sfd-client'
 import { mockRequest } from '../../mocks/data'
+import { update } from '../../../app/repositories/document-log-repository.js'
 
 const mockLogger = {
   info: jest.fn(),
@@ -16,50 +16,27 @@ jest.mock('../../../app/repositories/document-log-repository', () => {
   }
 })
 
-jest.mock('../../../app/email/notify-client')
 jest.mock('../../../app/email/sfd-client')
 jest.mock('applicationinsights', () => ({ defaultClient: { trackException: jest.fn(), trackEvent: jest.fn() }, dispose: jest.fn() }))
 
-const notifyResponseId = '123456789'
-let personalisation = { reference: '123abc', crn: 'someCrn', sbi: 'someSbi' }
-const templateId = 'template-id'
-const mockEmailAddress = 'mockEmail@mock.com'
+const stockPersonalisations = {
+  claim_guidance_uri: 'http://localhost/claim-guidance-for-farmers',
+  claim_uri: 'http://localhost',
+  guidance_uri: 'http://localhost/guidance-for-farmers',
+  name: mockRequest.name,
+  reference: mockRequest.reference
+}
 
-describe('sendEmail', () => {
-  beforeEach(() => {
-    appConfig.sfdMessage.enabled = false
-    personalisation = { reference: '123abc', crn: 'someCrn', sbi: 'someSbi' }
-  })
-
-  afterEach(() => {
-    jest.resetAllMocks()
-  })
-
-  test('send email successfully', async () => {
-    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
-    notifyClient.sendEmail.mockResolvedValue({ data: { id: notifyResponseId } })
-    const response = await sendEmail(mockLogger, mockEmailAddress, personalisation, notifyResponseId, templateId)
-
-    expect(response).toEqual(true)
-    expect(sendSFDEmail).toHaveBeenCalledTimes(0)
-  })
-  test('send email successfully via SFD route', async () => {
-    appConfig.sfdMessage.enabled = true
-    const response = await sendEmail(mockLogger, mockEmailAddress, personalisation, notifyResponseId, templateId)
-    expect(sendSFDEmail).toHaveBeenCalledWith(mockLogger,
-      'template-id', 'mockEmail@mock.com', { personalisation: { reference: '123abc' }, reference: '123456789' }, 'someCrn', 'someSbi'
-    )
-    expect(response).toEqual(true)
-  })
-
-  test('returns false when sending email fails', async () => {
-    notifyClient.prepareUpload.mockReturnValue(Buffer.from('test').toString('base64'))
-    notifyClient.sendEmail.mockImplementation(() => { throw new Error() })
-    const response = await sendEmail(mockLogger, mockEmailAddress, personalisation, notifyResponseId, templateId)
-
-    expect(response).toEqual(false)
-  })
-})
+function getExpectedLinkToFile (blobContent) {
+  return {
+    link_to_file: {
+      confirm_email_before_download: null,
+      file: blobContent,
+      is_csv: false,
+      retention_period: null
+    }
+  }
+}
 
 describe('notify send application email messages', () => {
   beforeEach(() => {
@@ -69,107 +46,109 @@ describe('notify send application email messages', () => {
   describe('should use correct template', () => {
     test('sendFarmerApplicationEmail should use templateIdFarmerApplicationGenerationNewUser when newUser', async () => {
       const mockBlob = 'mockBlob'
-      notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
-      notifyClient.sendEmail.mockResolvedValue(true)
 
-      const response = await sendFarmerApplicationEmail(mockLogger, { ...mockRequest, userType: NEW_USER }, mockBlob)
+      const response = await requestFarmerApplicationEmail(mockLogger, { ...mockRequest, userType: NEW_USER }, mockBlob)
 
-      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(3)
-      expect(notifyClient.sendEmail).toHaveBeenCalledWith(
-        appConfig.notifyConfig.templateIdFarmerApplicationGenerationNewUser,
-        expect.anything(),
-        expect.anything()
+      expect(sendSFDEmailMessage).toHaveBeenCalledWith(mockLogger,
+        appConfig.templateIdFarmerApplicationGenerationNewUser,
+        mockRequest.email,
+        { ...stockPersonalisations, ...getExpectedLinkToFile(mockBlob) },
+        mockRequest.reference,
+        undefined,
+        mockRequest.sbi
       )
       expect(response).toEqual(true)
     })
 
-    test('sendFarmerApplicationEmail should use templateIdFarmerApplicationGenerationExistingUser when not newUser', async () => {
+    test('sendFarmerApplicationEmail should use templateIdFarmerApplicationGenerationExistingUser when existing user', async () => {
       const mockBlob = 'mockBlob'
-      notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
-      notifyClient.sendEmail.mockResolvedValue(true)
 
-      const response = await sendFarmerApplicationEmail(mockLogger, { ...mockRequest, userType: EXISTING_USER }, mockBlob)
+      const response = await requestFarmerApplicationEmail(mockLogger, { ...mockRequest, userType: EXISTING_USER }, mockBlob)
 
-      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(3)
-      expect(notifyClient.sendEmail).toHaveBeenCalledWith(
-        appConfig.notifyConfig.templateIdFarmerApplicationGenerationExistingUser,
-        expect.anything(),
-        expect.anything()
+      expect(sendSFDEmailMessage).toHaveBeenCalledWith(mockLogger,
+        appConfig.templateIdFarmerApplicationGenerationExistingUser,
+        mockRequest.email,
+        { ...stockPersonalisations, ...getExpectedLinkToFile(mockBlob) },
+        mockRequest.reference,
+        undefined,
+        mockRequest.sbi
       )
       expect(response).toEqual(true)
     })
   })
 
-  describe('should send to correct receipients', () => {
+  describe('should send to correct recipients', () => {
+    function expectSendSFDEmailCalledForAddress (emailAddress) {
+      expect(sendSFDEmailMessage).toHaveBeenCalledWith(expect.anything(),
+        expect.anything(),
+        emailAddress,
+        expect.anything(),
+        expect.anything(),
+        undefined,
+        expect.anything()
+      )
+    }
+
     test('send to just email address when org email address not present', async () => {
-      delete appConfig.notifyConfig.carbonCopyEmailAddress
+      delete appConfig.carbonCopyEmailAddress
       const mockBlob = 'mockBlob'
 
-      notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
-      notifyClient.sendEmail.mockResolvedValue(true)
+      await requestFarmerApplicationEmail(mockLogger, { ...mockRequest, orgEmail: undefined }, mockBlob)
 
-      const request = { ...mockRequest, orgEmail: undefined }
+      expect(sendSFDEmailMessage).toHaveBeenCalledTimes(1)
+      expectSendSFDEmailCalledForAddress(mockRequest.email)
 
-      const response = await sendFarmerApplicationEmail(mockLogger, request, mockBlob)
-      expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
-      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
-      expect(response).toEqual(true)
+      expect(update).toHaveBeenCalledWith(mockRequest.reference, { status: 'email-requested' })
     })
 
     test('send to just orgEmail address when email address does not exist', async () => {
-      delete appConfig.notifyConfig.carbonCopyEmailAddress
+      delete appConfig.carbonCopyEmailAddress
       const mockBlob = 'mockBlob'
 
-      notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
-      notifyClient.sendEmail.mockResolvedValue(true)
+      await requestFarmerApplicationEmail(mockLogger, { ...mockRequest, email: undefined }, mockBlob)
 
-      const request = { ...mockRequest, email: undefined }
+      expect(sendSFDEmailMessage).toHaveBeenCalledTimes(1)
+      expectSendSFDEmailCalledForAddress(mockRequest.orgEmail)
 
-      const response = await sendFarmerApplicationEmail(mockLogger, request, mockBlob)
-      expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
-      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
-      expect(response).toEqual(true)
+      expect(update).toHaveBeenCalledWith(mockRequest.reference, { status: 'email-requested' })
     })
 
     test('send only once when email address and orgEmail address both present but the same', async () => {
-      delete appConfig.notifyConfig.carbonCopyEmailAddress
+      delete appConfig.carbonCopyEmailAddress
       const mockBlob = 'mockBlob'
 
-      notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
-      notifyClient.sendEmail.mockResolvedValue(true)
+      await requestFarmerApplicationEmail(mockLogger, { ...mockRequest, orgEmail: mockRequest.email }, mockBlob)
 
-      const request = { ...mockRequest, orgEmail: 'admin@the-dairy.com' }
+      expect(sendSFDEmailMessage).toHaveBeenCalledTimes(1)
+      expectSendSFDEmailCalledForAddress(mockRequest.email)
 
-      const response = await sendFarmerApplicationEmail(mockLogger, request, mockBlob)
-      expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
-      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(1)
-      expect(response).toEqual(true)
+      expect(update).toHaveBeenCalledWith(mockRequest.reference, { status: 'email-requested' })
     })
 
     test('send to all addresses when CC available and email and orgEmail addresses present and unique', async () => {
-      appConfig.notifyConfig.carbonCopyEmailAddress = 'i_want_it_too@email.com'
+      appConfig.carbonCopyEmailAddress = 'cc@address.com'
       const mockBlob = 'mockBlob'
 
-      notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
-      notifyClient.sendEmail.mockResolvedValue(true)
+      await requestFarmerApplicationEmail(mockLogger, mockRequest, mockBlob)
 
-      const request = { ...mockRequest }
+      expect(sendSFDEmailMessage).toHaveBeenCalledTimes(3)
+      expectSendSFDEmailCalledForAddress(mockRequest.email)
+      expectSendSFDEmailCalledForAddress(mockRequest.orgEmail)
+      expectSendSFDEmailCalledForAddress(appConfig.carbonCopyEmailAddress)
 
-      const response = await sendFarmerApplicationEmail(mockLogger, request, mockBlob)
-      expect(notifyClient.prepareUpload).toHaveBeenCalledWith(mockBlob)
-      expect(notifyClient.sendEmail).toHaveBeenCalledTimes(3)
-      expect(response).toEqual(true)
+      expect(update).toHaveBeenCalledWith(mockRequest.reference, { status: 'email-requested' })
     })
   })
 
   test('send farmer application email returns false when sendEmail throws an error', async () => {
+    delete appConfig.carbonCopyEmailAddress
     const mockBlob = 'mockBlob'
+    sendSFDEmailMessage.mockRejectedValueOnce(new Error())
 
-    notifyClient.prepareUpload.mockReturnValue('mockLinkToFile')
-    notifyClient.sendEmail.mockRejectedValue(new Error())
+    const response = await requestFarmerApplicationEmail(mockLogger, mockRequest, mockBlob)
 
-    const response = await sendFarmerApplicationEmail(mockLogger, mockRequest, mockBlob)
-
+    expect(sendSFDEmailMessage).toHaveBeenCalledTimes(2)
     expect(response).toEqual(false)
+    expect(update).toHaveBeenCalledWith(mockRequest.reference, { status: 'email-request-failed' })
   })
 })

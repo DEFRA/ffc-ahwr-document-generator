@@ -1,4 +1,4 @@
-import { checkEmailDelivered } from '../../../app/repositories/document-log-repository.js'
+import { set, update } from '../../../app/repositories/document-log-repository.js'
 import { buildData } from '../../../app/data/index.js'
 
 jest.mock('../../../app/data/index', () => {
@@ -6,7 +6,6 @@ jest.mock('../../../app/data/index', () => {
     buildData: {
       models: {
         documentLog: {
-          findAll: jest.fn(),
           create: jest.fn(),
           update: jest.fn()
         }
@@ -20,10 +19,16 @@ describe('Document Log repository test', () => {
     jest.clearAllMocks()
   })
 
-  test('Should query for outstanding email status rows using expected query criteria', async () => {
-    buildData.models.documentLog.findAll.mockResolvedValueOnce([])
-    await checkEmailDelivered()
+  test('Set calls through to create model function', async () => {
+    const data = { reference: 'reference', sbi: 'sbi', other: 'someData' }
+    await set({ reference: 'reference', sbi: 'sbi', other: 'someData' }, 'fileName')
 
-    expect(buildData.models.documentLog.findAll).toHaveBeenCalledWith({ where: { completed: null, status: 'email-created' } })
+    expect(buildData.models.documentLog.create).toHaveBeenCalledWith({ data, reference: 'reference', sbi: 'sbi', fileName: 'fileName' })
+  })
+
+  test('Should update the status of record', async () => {
+    await update('reference', { sbi: 'sbi' })
+
+    expect(buildData.models.documentLog.update).toHaveBeenCalledWith({ sbi: 'sbi' }, { where: { reference: 'reference' } })
   })
 })

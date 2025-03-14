@@ -1,5 +1,4 @@
-import { sendFarmerApplicationEmail } from '../../../app/email/notify-send'
-import { enableOrDisableSchedulerWork } from '../../../app/email/notify-monitor.js'
+import { requestFarmerApplicationEmail } from '../../../app/email/request-email.js'
 import { validateDocumentRequest } from '../../../app/messaging/document-request-schema'
 import { mockDocumentRequest } from '../../mocks/data'
 import { processDocumentRequest } from '../../../app/messaging/process-document-request'
@@ -7,8 +6,7 @@ import { generateDocument } from '../../../app/document'
 
 jest.mock('ffc-messaging')
 jest.mock('../../../app/data')
-jest.mock('../../../app/email/notify-send')
-jest.mock('../../../app/email/notify-monitor')
+jest.mock('../../../app/email/request-email.js')
 jest.mock('../../../app/messaging/document-request-schema')
 jest.mock('../../../app/document')
 jest.mock('../../../app/getDirName', () => ({
@@ -28,7 +26,7 @@ let receiver
 describe('process document request message', () => {
   beforeEach(() => {
     jest.resetAllMocks()
-    sendFarmerApplicationEmail.mockImplementation()
+    requestFarmerApplicationEmail.mockImplementation()
     receiver = {
       completeMessage: jest.fn(),
       deadLetterMessage: jest.fn()
@@ -55,32 +53,6 @@ describe('process document request message', () => {
     await processDocumentRequest(mockLogger, message, receiver)
 
     expect(validateDocumentRequest).toBeCalled()
-    expect(receiver.deadLetterMessage).toHaveBeenCalledWith(message)
-  })
-
-  test('passes enableDisable message through to notify monitor when receiving', async () => {
-    enableOrDisableSchedulerWork.mockImplementationOnce(() => {})
-    const message = {
-      body: {
-        enableSchedule: false
-      }
-    }
-    await processDocumentRequest(mockLogger, message, receiver)
-    expect(enableOrDisableSchedulerWork).toHaveBeenCalledWith(mockLogger, false)
-    expect(validateDocumentRequest).not.toHaveBeenCalled()
-    expect(receiver.completeMessage).toHaveBeenCalledWith(message)
-  })
-
-  test('failing validation on enableDisable message schema will call through to regular schema validation before failing', async () => {
-    enableOrDisableSchedulerWork.mockImplementationOnce(() => {})
-    validateDocumentRequest.mockImplementation(() => { throw new Error() })
-    const message = {
-      body: {
-        enableSchedule: 'bananas'
-      }
-    }
-    await processDocumentRequest(mockLogger, message, receiver)
-    expect(enableOrDisableSchedulerWork).not.toHaveBeenCalled()
     expect(receiver.deadLetterMessage).toHaveBeenCalledWith(message)
   })
 })
