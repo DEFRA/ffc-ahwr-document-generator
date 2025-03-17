@@ -1,7 +1,6 @@
 import Joi from 'joi'
 import { dbConfig } from './db.js'
 import { messageQueueConfig } from './message-queue.js'
-import { notifyConfig } from './notify.js'
 import { storageConfig } from './storage.js'
 
 const buildConfig = () => {
@@ -13,9 +12,9 @@ const buildConfig = () => {
     applyServiceUri: Joi.string(),
     claimServiceUri: Joi.string(),
     sfdRequestMsgType: Joi.string(),
-    sfdMessage: {
-      enabled: Joi.bool()
-    }
+    carbonCopyEmailAddress: Joi.string().email().allow(null, ''),
+    templateIdFarmerApplicationGenerationNewUser: Joi.string().uuid(),
+    templateIdFarmerApplicationGenerationExistingUser: Joi.string().uuid()
   })
 
   const config = {
@@ -26,9 +25,9 @@ const buildConfig = () => {
     applyServiceUri: process.env.APPLY_SERVICE_URI || '#',
     claimServiceUri: process.env.CLAIM_SERVICE_URI || '#',
     sfdRequestMsgType: 'uk.gov.ffc.ahwr.sfd.request',
-    sfdMessage: {
-      enabled: process.env.SFD_MESSAGE_ENABLED === 'true'
-    }
+    carbonCopyEmailAddress: process.env.CARBON_COPY_EMAIL_ADDRESS,
+    templateIdFarmerApplicationGenerationNewUser: process.env.NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_NEW_USER,
+    templateIdFarmerApplicationGenerationExistingUser: process.env.NOTIFY_TEMPLATE_ID_FARMER_APPLICATION_COMPLETE_EXISTING_USER
   }
 
   const { error } = schema.validate(config, { abortEarly: false })
@@ -41,7 +40,6 @@ const buildConfig = () => {
     ...config,
     dbConfig,
     messageQueueConfig,
-    notifyConfig,
     storageConfig
   }
 }
