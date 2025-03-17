@@ -43,7 +43,7 @@ const sendEmailRequest = async (requestParams) => {
     })
     success = true
   } catch (e) {
-    logger.error(`Error occurred requesting email send for ${reference}. Error: ${JSON.stringify(e.response?.data)}`)
+    logger.error(`Error occurred requesting email send for ${reference}. Error: ${e}`)
     appInsights.defaultClient.trackException({ exception: e })
   }
   return success

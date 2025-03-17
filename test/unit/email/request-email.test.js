@@ -143,7 +143,7 @@ describe('notify send application email messages', () => {
   test('send farmer application email returns false when sendEmail throws an error', async () => {
     delete appConfig.carbonCopyEmailAddress
     const mockBlob = 'mockBlob'
-    sendSFDEmailMessage.mockRejectedValueOnce(new Error())
+    sendSFDEmailMessage.mockRejectedValueOnce(new Error('SFD validation failed'))
 
     const response = await requestFarmerApplicationEmail(mockLogger, mockRequest, mockBlob)
 

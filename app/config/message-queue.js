@@ -25,7 +25,7 @@ const buildConfig = () => {
   })
 
   const sharedConfig = {
-    appInsights: appInsights,
+    appInsights,
     host: process.env.MESSAGE_QUEUE_HOST,
     password: process.env.MESSAGE_QUEUE_PASSWORD,
     username: process.env.MESSAGE_QUEUE_USER,
