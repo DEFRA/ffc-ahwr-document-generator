@@ -66,29 +66,25 @@ export const requestFarmerApplicationEmail = async (logger, data, blob) => {
   const { email, orgEmail } = data
 
   const templateId = data.userType === NEW_USER ? templateIdFarmerApplicationGenerationNewUser : templateIdFarmerApplicationGenerationExistingUser
-  let orgEmailSuccessFullySent = true
-  let emailSuccessFullySent = true
-  let ccEmailSuccessFullySent = true
+  let allEmailsRequested = true
 
   const requestParams = { logger, personalisation, reference, crn, sbi, templateId }
 
   if (carbonCopyEmailAddress) {
-    ccEmailSuccessFullySent = await sendEmailRequest({ ...requestParams, emailAddress: carbonCopyEmailAddress, addressType: AddressType.CC })
+    allEmailsRequested = await sendEmailRequest({ ...requestParams, emailAddress: carbonCopyEmailAddress, addressType: AddressType.CC })
   }
 
   if (orgEmail) {
-    orgEmailSuccessFullySent = await sendEmailRequest({ ...requestParams, emailAddress: orgEmail, addressType: AddressType.ORG_EMAIL })
+    allEmailsRequested = await sendEmailRequest({ ...requestParams, emailAddress: orgEmail, addressType: AddressType.ORG_EMAIL }) && allEmailsRequested
   }
 
   if (email && email !== orgEmail) {
-    emailSuccessFullySent = await sendEmailRequest({ ...requestParams, emailAddress: email, addressType: AddressType.EMAIL })
+    allEmailsRequested = await sendEmailRequest({ ...requestParams, emailAddress: email, addressType: AddressType.EMAIL }) && allEmailsRequested
   }
 
-  const allRequestsSuccessful = orgEmailSuccessFullySent && emailSuccessFullySent && ccEmailSuccessFullySent
+  await update(reference, { status: allEmailsRequested ? DOCUMENT_STATUSES.EMAIL_REQUESTED : DOCUMENT_STATUSES.REQUEST_FAILED })
 
-  await update(reference, { status: allRequestsSuccessful ? DOCUMENT_STATUSES.EMAIL_REQUESTED : DOCUMENT_STATUSES.REQUEST_FAILED })
-
-  return allRequestsSuccessful
+  return allEmailsRequested
 }
 
 function prepareUpload (blob) {
