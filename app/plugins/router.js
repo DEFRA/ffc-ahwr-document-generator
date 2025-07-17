@@ -1,8 +1,8 @@
 import { healthyRoute } from '../routes/healthy.js'
 import { healthzRoute } from '../routes/healthz.js'
-import { piiRedactRequestHandlers } from '../routes/redact-pii.js'
+import { redactPiiRequestHandlers } from '../routes/redact-pii.js'
 
-const routes = [healthyRoute, healthzRoute, ...piiRedactRequestHandlers]
+const routes = [healthyRoute, healthzRoute, ...redactPiiRequestHandlers]
 
 export const routerPlugin = {
   plugin: {
