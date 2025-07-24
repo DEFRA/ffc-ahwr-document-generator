@@ -1,4 +1,4 @@
-import { set, update } from '../../../app/repositories/document-log-repository.js'
+import { redactPII, set, update } from '../../../app/repositories/document-log-repository.js'
 import { buildData } from '../../../app/data/index.js'
 
 jest.mock('../../../app/data/index', () => {
@@ -30,5 +30,31 @@ describe('Document Log repository test', () => {
     await update('reference', { sbi: 'sbi' })
 
     expect(buildData.models.documentLog.update).toHaveBeenCalledWith({ sbi: 'sbi' }, { where: { reference: 'reference' } })
+  })
+
+  test('Should redact PII in document log and log update', async () => {
+    const mockLogger = { info: jest.fn() }
+    buildData.models.documentLog.update.mockResolvedValue([1, [{ id: 1 }]])
+
+    await redactPII('AHWR-123', mockLogger)
+
+    expect(buildData.models.documentLog.update).toHaveBeenCalledWith(
+      { data: expect.any(Object) },
+      {
+        where: { reference: 'AHWR-123' },
+        returning: true
+      }
+    )
+
+    expect(mockLogger.info).toHaveBeenCalledWith('Redacted PII in 1 message(s) for agreementReference: AHWR-123')
+  })
+
+  test('Should log when no messages are updated', async () => {
+    const mockLogger = { info: jest.fn() }
+    buildData.models.documentLog.update.mockResolvedValue([1, []])
+
+    await redactPII('AHWR-123', mockLogger)
+
+    expect(mockLogger.info).toHaveBeenCalledWith('No messages updated for agreementReference: AHWR-123')
   })
 })

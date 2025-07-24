@@ -11,7 +11,7 @@ export const redactPiiRequestHandlers = [
 
       request.payload.agreementsToRedact.forEach(agreementToRedact => {
         deleteBlob(`${agreementToRedact.data.sbi}/${agreementToRedact.reference}.pdf`, request.logger)
-        redactPII(agreementToRedact.reference)
+        redactPII(agreementToRedact.reference, request.logger)
       })
 
       return h.response().code(HttpStatus.OK)

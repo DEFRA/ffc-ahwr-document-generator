@@ -1,3 +1,4 @@
+import { REDACT_PII_VALUES } from 'ffc-ahwr-common-library'
 import { buildData } from '../data/index.js'
 import { Sequelize } from 'sequelize'
 
@@ -13,30 +14,22 @@ export const update = async (reference, data) => {
     { where: { reference } })
 }
 
-export const redactPII = async (applicationReference) => {
-  // TODO 1067 move to shared lib
-  const REDACT_PII_VALUES = {
-    REDACTED_NAME: 'REDACTED_NAME',
-    REDACTED_EMAIL: 'redacted.email@example.com',
-    REDACTED_ORG_EMAIL: 'redacted.org.email@example.com',
-    REDACTED_FARMER_NAME: 'REDACTED_FARMER_NAME'
-  }
-
+export const redactPII = async (agreementReference, logger) => {
   // TODO adds field that ok? no do seperate update
   const data = Sequelize.fn(
     'jsonb_set',
     Sequelize.fn(
       'jsonb_set',
+      Sequelize.fn(
+        'jsonb_set',
         Sequelize.fn(
           'jsonb_set',
-          Sequelize.fn(
-            'jsonb_set',
-            Sequelize.col('data'),
-            Sequelize.literal('\'{name}\''),
-            Sequelize.literal(`'"${REDACT_PII_VALUES.REDACTED_NAME}"'`)
-          ),
-          Sequelize.literal('\'{email}\''),
-          Sequelize.literal(`'"${REDACT_PII_VALUES.REDACTED_EMAIL}"'`)
+          Sequelize.col('data'),
+          Sequelize.literal('\'{name}\''),
+          Sequelize.literal(`'"${REDACT_PII_VALUES.REDACTED_NAME}"'`)
+        ),
+        Sequelize.literal('\'{email}\''),
+        Sequelize.literal(`'"${REDACT_PII_VALUES.REDACTED_EMAIL}"'`)
       ),
       Sequelize.literal('\'{orgEmail}\''),
       Sequelize.literal(`'"${REDACT_PII_VALUES.REDACTED_ORG_EMAIL}"'`)
@@ -45,14 +38,17 @@ export const redactPII = async (applicationReference) => {
     Sequelize.literal(`'"${REDACT_PII_VALUES.REDACTED_FARMER_NAME}"'`)
   )
 
-  // TODO 1067 add logging to say what was updated? 
-  // eslint-disable-next-line no-unused-vars
-  // const [_, updates] = await models.documentLog.update(
-  await models.documentLog.update(
+  const [, updatedRows] = await models.documentLog.update(
     { data },
     {
-      where: { reference: applicationReference },
+      where: { reference: agreementReference },
       returning: true
     }
   )
+
+  if (updatedRows.length > 0) {
+    logger.info(`Redacted PII in ${updatedRows.length} message(s) for agreementReference: ${agreementReference}`)
+  } else {
+    logger.info(`No messages updated for agreementReference: ${agreementReference}`)
+  }
 }

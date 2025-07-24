@@ -20,5 +20,5 @@ export const deleteBlob = async (filename, logger) => {
   } catch (err) {
     logger.error({ err }, `Unable to delete blob: ${documentContainer}/${filename}`)
     throw err
-  } 
+  }
 }
