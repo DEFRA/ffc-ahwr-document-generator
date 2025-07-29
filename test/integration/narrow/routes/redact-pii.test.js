@@ -6,7 +6,7 @@ import { deleteBlob } from '../../../../app/storage/deleteBlob'
 jest.mock('../../../../app/repositories/document-log-repository')
 jest.mock('../../../../app/storage/deleteBlob')
 
-const mockAgreementsToRedact = [{ reference: 'FAKE-REF-1', data: { sbi: 'FAKE-SBI-1' }, redactID: 'FAKE-REDACT-ID-1' }]
+const mockAgreementsToRedact = [{ reference: 'FAKE-REF-1', sbi: 'FAKE-SBI-1' }]
 
 describe('redact-pii', () => {
   let server
