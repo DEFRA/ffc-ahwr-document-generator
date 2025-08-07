@@ -33,6 +33,9 @@ module.exports = {
   transform: {
     '^.+\\.[t|j]sx?$': 'babel-jest'
   },
+  transformIgnorePatterns: [
+    '/node_modules/(?!(ffc-ahwr-common-library)/)'
+  ],
   testPathIgnorePatterns: [],
   verbose: true,
   setupFilesAfterEnv: [
