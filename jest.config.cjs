@@ -36,6 +36,7 @@ module.exports = {
   transformIgnorePatterns: [
     '/node_modules/(?!(ffc-ahwr-common-library)/)'
   ],
+  testPathIgnorePatterns: [],
   verbose: true,
   setupFilesAfterEnv: [
     '<rootDir>/test/setup.js'

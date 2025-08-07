@@ -1,5 +1,6 @@
-import { set, update } from '../../../app/repositories/document-log-repository.js'
+import { redactPII, set, update } from '../../../app/repositories/document-log-repository.js'
 import { buildData } from '../../../app/data/index.js'
+import { Sequelize, Op } from 'sequelize'
 
 jest.mock('../../../app/data/index', () => {
   return {
@@ -30,5 +31,62 @@ describe('Document Log repository test', () => {
     await update('reference', { sbi: 'sbi' })
 
     expect(buildData.models.documentLog.update).toHaveBeenCalledWith({ sbi: 'sbi' }, { where: { reference: 'reference' } })
+  })
+
+  test('Should redact PII in document log and log update', async () => {
+    const mockLogger = { info: jest.fn() }
+    buildData.models.documentLog.update.mockResolvedValue([1, [{ id: 1 }]])
+
+    await redactPII('AHWR-123', mockLogger)
+
+    expect(buildData.models.documentLog.update).toHaveBeenCalledWith(
+      { data: expect.any(Object) },
+      {
+        where: {
+          reference: 'AHWR-123',
+          [Op.and]: Sequelize.literal("data->>'name' IS NOT NULL")
+        }
+      }
+    )
+    expect(buildData.models.documentLog.update).toHaveBeenCalledWith(
+      { data: expect.any(Object) },
+      {
+        where: {
+          reference: 'AHWR-123',
+          [Op.and]: Sequelize.literal("data->>'email' IS NOT NULL")
+        }
+      }
+    )
+    expect(buildData.models.documentLog.update).toHaveBeenCalledWith(
+      { data: expect.any(Object) },
+      {
+        where: {
+          reference: 'AHWR-123',
+          [Op.and]: Sequelize.literal("data->>'orgEmail' IS NOT NULL")
+        }
+      }
+    )
+    expect(buildData.models.documentLog.update).toHaveBeenCalledWith(
+      { data: expect.any(Object) },
+      {
+        where: {
+          reference: 'AHWR-123',
+          [Op.and]: Sequelize.literal("data->>'farmerName' IS NOT NULL")
+        }
+      }
+    )
+
+    expect(mockLogger.info).toHaveBeenCalledWith("Redacted field 'name' in 1 message(s) for agreementReference: AHWR-123")
+    expect(mockLogger.info).toHaveBeenCalledWith("Redacted field 'email' in 1 message(s) for agreementReference: AHWR-123")
+    expect(mockLogger.info).toHaveBeenCalledWith("Redacted field 'orgEmail' in 1 message(s) for agreementReference: AHWR-123")
+  })
+
+  test('Should log when no messages are updated', async () => {
+    const mockLogger = { info: jest.fn() }
+    buildData.models.documentLog.update.mockResolvedValue([0])
+
+    await redactPII('AHWR-123', mockLogger)
+
+    expect(mockLogger.info).toHaveBeenCalledWith('No messages updated for agreementReference: AHWR-123')
   })
 })
