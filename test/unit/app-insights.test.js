@@ -9,7 +9,7 @@ const mockLogger = {
   info: jest.fn()
 }
 
-describe('App Insight', () => {
+describe('App Insights', () => {
   const startMock = jest.fn()
   const setupMock = jest.fn(() => {
     return {
@@ -61,5 +61,14 @@ describe('App Insight', () => {
     expect(setupMock).toHaveBeenCalledTimes(1)
     expect(startMock).toHaveBeenCalledTimes(1)
     expect(tags[cloudRoleTag]).toEqual('')
+  })
+
+  test('not started when no connection string', () => {
+    delete process.env.APPLICATIONINSIGHTS_CONNECTION_STRING
+
+    insights.setup(mockLogger)
+
+    expect(setupMock).toHaveBeenCalledTimes(0)
+    expect(startMock).toHaveBeenCalledTimes(0)
   })
 })
