@@ -16,7 +16,7 @@ describe('Main Config Validation', () => {
     process.env.CARBON_COPY_EMAIL_ADDRESS = 'some-string'
 
     // Validate config
-    expect(buildConfig()).toThrow('The application config is invalid. "carbonCopyEmailAddress" must be a valid email')
+    expect(() => buildConfig()).toThrow('The application config is invalid. "carbonCopyEmailAddress" must be a valid email')
   })
 
   test('should validate the config object successfully picking up defaults', () => {
