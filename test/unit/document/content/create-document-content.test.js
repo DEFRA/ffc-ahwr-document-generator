@@ -41,3 +41,13 @@ describe('generate document content', () => {
     expect(result[1].stack[4].layout.vLineWidth(0, {})).toBe(0)
   })
 })
+
+describe('generate document content for specific scheme', () => {
+  test('returns default content for ahwr scheme', () => {
+    const data = { scheme: 'ahwr', ...mockRequest }
+    const result = createContent(data)
+    expect(result.length).toBeGreaterThan(0)
+    expect(result[0].stack[1].text).toBe('Agreement summary: get funding to improve animal health and welfare')
+    expect(result[1].stack[1].ul[0].text).toBe('animal health and welfare reviews')
+  })
+})

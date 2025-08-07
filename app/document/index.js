@@ -8,7 +8,7 @@ const printer = new PdfPrinter(fonts)
 export const generateDocument = async (logger, data) => {
   const docDefinition = createDocumentDefinition(data)
   logger.info('Document definition created')
-  const pdfDoc = printer.createPdfKitDocument(docDefinition)
+  const pdfDoc = printer.createPdfKitDocument(docDefinition, {})
   logger.info('Document PDF created')
   const publishResponse = await publishDocument(logger, pdfDoc, data)
   logger.info('Document published')

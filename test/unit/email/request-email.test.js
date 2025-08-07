@@ -75,6 +75,26 @@ describe('notify send application email messages', () => {
       )
       expect(response).toEqual(true)
     })
+
+    test('sendFarmerApplicationEmail should use specific templateId when passed in', async () => {
+      const mockBlob = 'mockBlob'
+
+      const response = await requestFarmerApplicationEmail(mockLogger, {
+        ...mockRequest,
+        templateId: appConfig.templateIdFarmerApplicationGenerationExistingUser,
+        scheme: 'ahwr'
+      }, mockBlob)
+
+      expect(sendSFDEmailMessage).toHaveBeenCalledWith(mockLogger,
+        appConfig.templateIdFarmerApplicationGenerationExistingUser,
+        mockRequest.email,
+        { ...stockPersonalisations, ...getExpectedLinkToFile(mockBlob) },
+        mockRequest.reference,
+        undefined,
+        mockRequest.sbi
+      )
+      expect(response).toEqual(true)
+    })
   })
 
   describe('should send to correct recipients', () => {
