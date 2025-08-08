@@ -35,7 +35,7 @@ describe('process document request message', () => {
 
   test('completes message on success', async () => {
     validateDocumentRequest.mockReturnValue(true)
-    generateDocument.mockImplementation(jest.fn().mockResolvedValue('filename', Buffer.from('test').toString('base64')))
+    generateDocument.mockImplementation(jest.fn().mockResolvedValue({ blob: Buffer.from('test').toString('base64') }))
 
     const message = {
       body: mockDocumentRequest
@@ -45,8 +45,19 @@ describe('process document request message', () => {
     expect(receiver.completeMessage).toHaveBeenCalledWith(message)
   })
 
-  test('deadletters message on error', async () => {
+  test('dead-letters message on error', async () => {
     validateDocumentRequest.mockImplementation(() => { throw new Error() })
+    const message = {
+      body: mockDocumentRequest
+    }
+    await processDocumentRequest(mockLogger, message, receiver)
+
+    expect(validateDocumentRequest).toBeCalled()
+    expect(receiver.deadLetterMessage).toHaveBeenCalledWith(message)
+  })
+
+  test('dead-letters message on validation fail', async () => {
+    validateDocumentRequest.mockReturnValueOnce(false)
     const message = {
       body: mockDocumentRequest
     }

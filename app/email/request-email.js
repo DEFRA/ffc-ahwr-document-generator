@@ -1,4 +1,3 @@
-import { createFileName } from '../document/create-filename.js'
 import { appConfig } from '../config/index.js'
 import { DOCUMENT_STATUSES, NEW_USER } from '../constants.js'
 import { update } from '../repositories/document-log-repository.js'
@@ -51,24 +50,11 @@ const sendEmailRequest = async (requestParams) => {
 
 export const requestFarmerApplicationEmail = async (logger, data, blob) => {
   const { carbonCopyEmailAddress } = appConfig
-  const { crn, sbi, name, reference } = data
-  const filename = createFileName(data)
-  logger.info(`File contents for ${filename} downloaded`)
-  const personalisation = {
-    name,
-    reference,
-    link_to_file: prepareUpload(blob),
-    guidance_uri: `${applyServiceUri}/guidance-for-farmers`,
-    claim_guidance_uri: `${applyServiceUri}/claim-guidance-for-farmers`,
-    claim_uri: claimServiceUri
-  }
+  const { crn, sbi, reference, email, orgEmail, scheme } = data
 
-  const { email, orgEmail } = data
-
-  const templateId = data.userType === NEW_USER ? templateIdFarmerApplicationGenerationNewUser : templateIdFarmerApplicationGenerationExistingUser
   let allEmailsRequested = true
 
-  const requestParams = { logger, personalisation, reference, crn, sbi, templateId }
+  const requestParams = { logger, crn, sbi, ...generateRequestParams(scheme, reference, data, blob) }
 
   if (carbonCopyEmailAddress) {
     allEmailsRequested = await sendEmailRequest({ ...requestParams, emailAddress: carbonCopyEmailAddress, addressType: AddressType.CC })
@@ -87,6 +73,27 @@ export const requestFarmerApplicationEmail = async (logger, data, blob) => {
   return allEmailsRequested
 }
 
+const generateRequestParams = (scheme, reference, data, blob) => {
+  return customisedEmailRequestMap.get(scheme ?? 'default')(reference, data, blob)
+}
+
+const generateDefaultRequestParams = (reference, data, blob) => {
+  const { name, userType, templateId } = data
+
+  const personalisation = {
+    name,
+    reference,
+    link_to_file: prepareUpload(blob),
+    guidance_uri: `${applyServiceUri}/guidance-for-farmers`,
+    claim_guidance_uri: `${applyServiceUri}/claim-guidance-for-farmers`,
+    claim_uri: claimServiceUri
+  }
+
+  const templateIdToUse = templateId ?? (userType === NEW_USER ? templateIdFarmerApplicationGenerationNewUser : templateIdFarmerApplicationGenerationExistingUser)
+
+  return { personalisation, reference, templateId: templateIdToUse }
+}
+
 function prepareUpload (blob) {
   // Temporarily introducing this function to return the file ready to use with notify.
   // Previously the notify client itself provided this. Inside the notify client it does
@@ -100,3 +107,8 @@ function prepareUpload (blob) {
     retention_period: null
   }
 }
+
+const customisedEmailRequestMap = new Map([
+  ['default', generateDefaultRequestParams],
+  ['ahwr', generateDefaultRequestParams]
+])

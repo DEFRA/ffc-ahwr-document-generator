@@ -9,7 +9,9 @@ const eventSchema = joi.object({
   email: joi.string().email({ tlds: false }).optional(),
   orgEmail: joi.string().email({ tlds: false }).optional(),
   name: joi.string().optional(),
-  farmerName: joi.string().optional()
+  farmerName: joi.string().optional(),
+  scheme: joi.string().valid('ahwr').optional(),
+  templateId: joi.string().optional()
 })
 
 export const validateDocumentRequest = (logger, event) => {

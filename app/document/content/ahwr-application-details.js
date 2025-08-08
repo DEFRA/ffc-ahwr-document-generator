@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { appConfig } from '../../config/index.js'
 
-export const applicationDetails = (data) => {
+export const ahwrApplicationDetails = (data) => {
   return {
     stack: [
       { text: 'You have applied for funding for:', margin: [0, 10, 0, 6] },
@@ -27,7 +27,7 @@ export const applicationDetails = (data) => {
           hLineWidth: function (i, node) {
             return (i === 0 || i === node.table.body.length) ? 0 : 1
           },
-          vLineWidth: function (i, node) {
+          vLineWidth: function (_i, _node) {
             return 0
           }
         }

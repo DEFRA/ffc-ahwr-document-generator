@@ -1,4 +1,4 @@
-import { millimetresToPoints } from '../../../../app/document/conversion'
+import { millimetresToPoints } from '../../../app/document/conversion.js'
 
 describe('conversion test', () => {
   test('millimetresToPoints', () => {

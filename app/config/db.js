@@ -1,5 +1,5 @@
 import { DefaultAzureCredential, getBearerTokenProvider } from '@azure/identity'
-
+const DEFAULT_POSTGRES_PORT = 5432
 const isProd = () => process.env.NODE_ENV === 'production'
 
 const hooks = {
@@ -33,7 +33,7 @@ export const dbConfig = {
   hooks,
   host: process.env.POSTGRES_HOST || 'ffc-ahwr-document-generator-postgres',
   password: process.env.POSTGRES_PASSWORD,
-  port: process.env.POSTGRES_PORT || 5432,
+  port: process.env.POSTGRES_PORT || DEFAULT_POSTGRES_PORT,
   logging: process.env.POSTGRES_LOGGING || false,
   retry,
   schema: process.env.POSTGRES_SCHEMA_NAME || 'public',

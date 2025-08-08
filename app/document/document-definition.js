@@ -7,8 +7,9 @@ export const createDocumentDefinition = (data) => {
   return {
     pageSize: pageSizes.A4,
     content: createContent(data),
-    footer: footer(data.reference),
+    footer: footer(data.reference, data.scheme),
     styles,
-    defaultStyle: styles.default
+    defaultStyle: styles.default,
+    maxPagesNumber: -1
   }
 }
