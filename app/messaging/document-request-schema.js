@@ -1,4 +1,5 @@
 import joi from 'joi'
+import { SUPPORTED_SCHEMES } from 'ffc-ahwr-common-library'
 
 const eventSchema = joi.object({
   reference: joi.string().required(),
@@ -10,7 +11,7 @@ const eventSchema = joi.object({
   orgEmail: joi.string().email({ tlds: false }).optional(),
   name: joi.string().optional(),
   farmerName: joi.string().optional(),
-  scheme: joi.string().valid('ahwr').optional(),
+  scheme: joi.string().valid(...SUPPORTED_SCHEMES).optional(),
   templateId: joi.string().optional()
 })
 
