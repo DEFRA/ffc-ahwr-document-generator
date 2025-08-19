@@ -1,5 +1,6 @@
 import { title } from './title.js'
 import { ahwrApplicationDetails } from './ahwr-application-details.js'
+import { AHWR_SCHEME } from 'ffc-ahwr-common-library'
 
 export const createContent = (data) => {
   return [
@@ -14,5 +15,5 @@ const generateDefaultContent = (data) => {
 
 const mainContentMap = new Map([
   ['default', generateDefaultContent],
-  ['ahwr', generateDefaultContent]
+  [AHWR_SCHEME, generateDefaultContent]
 ])

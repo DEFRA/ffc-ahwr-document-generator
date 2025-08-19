@@ -3,6 +3,7 @@ import { DOCUMENT_STATUSES, NEW_USER } from '../constants.js'
 import { update } from '../repositories/document-log-repository.js'
 import appInsights from 'applicationinsights'
 import { sendSFDEmailMessage } from './sfd-client.js'
+import { AHWR_SCHEME } from 'ffc-ahwr-common-library'
 
 const {
   applyServiceUri, claimServiceUri, templateIdFarmerApplicationGenerationNewUser,
@@ -110,5 +111,5 @@ function prepareUpload (blob) {
 
 const customisedEmailRequestMap = new Map([
   ['default', generateDefaultRequestParams],
-  ['ahwr', generateDefaultRequestParams]
+  [AHWR_SCHEME, generateDefaultRequestParams]
 ])

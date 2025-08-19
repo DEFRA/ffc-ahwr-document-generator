@@ -1,13 +1,9 @@
 import appInsights from 'applicationinsights'
-import * as insights from '../../app/insights.js'
+import { setup } from '../../app/insights.js'
 
 jest.mock('applicationinsights', () => ({
   setup: jest.fn()
 }))
-
-const mockLogger = {
-  info: jest.fn()
-}
 
 describe('App Insights', () => {
   const startMock = jest.fn()
@@ -46,8 +42,9 @@ describe('App Insights', () => {
     process.env.APPINSIGHTS_CLOUDROLE = appName
     process.env.APPLICATIONINSIGHTS_CONNECTION_STRING = 'something'
 
-    insights.setup(mockLogger)
+    const result = setup()
 
+    expect(result).toBeTruthy()
     expect(setupMock).toHaveBeenCalledTimes(1)
     expect(startMock).toHaveBeenCalledTimes(1)
     expect(tags[cloudRoleTag]).toEqual(appName)
@@ -56,8 +53,9 @@ describe('App Insights', () => {
   test('when started and no cloudrole set, then app name is blank', () => {
     process.env.APPLICATIONINSIGHTS_CONNECTION_STRING = 'something'
 
-    insights.setup(mockLogger)
+    const result = setup()
 
+    expect(result).toBeTruthy()
     expect(setupMock).toHaveBeenCalledTimes(1)
     expect(startMock).toHaveBeenCalledTimes(1)
     expect(tags[cloudRoleTag]).toEqual('')
@@ -66,8 +64,9 @@ describe('App Insights', () => {
   test('not started when no connection string', () => {
     delete process.env.APPLICATIONINSIGHTS_CONNECTION_STRING
 
-    insights.setup(mockLogger)
+    const result = setup()
 
+    expect(result).toBeFalsy()
     expect(setupMock).toHaveBeenCalledTimes(0)
     expect(startMock).toHaveBeenCalledTimes(0)
   })
