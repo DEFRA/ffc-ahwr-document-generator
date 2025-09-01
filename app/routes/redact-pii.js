@@ -12,7 +12,7 @@ export const redactPiiRequestHandlers = [
       await Promise.all(
         request.payload.agreementsToRedact.map(async (agreementToRedact) => {
           await deleteBlob(`${agreementToRedact.sbi}/${agreementToRedact.reference}.pdf`, request.logger)
-          await redactPII(agreementToRedact.reference, request.logger)
+          await redactPII(agreementToRedact.reference, agreementToRedact.redactedSbi, request.logger)
         }))
 
       return h.response().code(HttpStatus.OK)
