@@ -6,7 +6,7 @@ import { deleteBlob } from '../../../../app/storage/deleteBlob'
 jest.mock('../../../../app/repositories/document-log-repository')
 jest.mock('../../../../app/storage/deleteBlob')
 
-const mockAgreementsToRedact = [{ reference: 'FAKE-REF-1', sbi: 'FAKE-SBI-1' }]
+const mockAgreementsToRedact = [{ reference: 'FAKE-REF-1', sbi: 'FAKE-SBI-1', redactedSbi: '1035349431' }]
 
 describe('redact-pii', () => {
   let server
@@ -22,7 +22,7 @@ describe('redact-pii', () => {
       const res = await server.inject({ method: 'POST', url: '/api/redact/pii', payload: { agreementsToRedact: mockAgreementsToRedact } })
 
       expect(deleteBlob).toHaveBeenCalledWith('FAKE-SBI-1/FAKE-REF-1.pdf', expect.any(Object))
-      expect(redactPII).toHaveBeenCalledWith('FAKE-REF-1', expect.any(Object))
+      expect(redactPII).toHaveBeenCalledWith('FAKE-REF-1', '1035349431', expect.any(Object))
       expect(res.statusCode).toBe(HttpStatus.OK)
     })
   })
