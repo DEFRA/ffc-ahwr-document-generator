@@ -14,13 +14,12 @@ export const update = async (reference, data) => {
     { where: { reference } })
 }
 
-export const redactPII = async (agreementReference, redactedSbi, logger) => {
+export const redactPII = async (agreementReference, logger) => {
   const redactedValueByField = {
     name: REDACT_PII_VALUES.REDACTED_NAME,
     email: REDACT_PII_VALUES.REDACTED_EMAIL,
     orgEmail: REDACT_PII_VALUES.REDACTED_ORG_EMAIL,
-    farmerName: REDACT_PII_VALUES.REDACTED_FARMER_NAME,
-    sbi: redactedSbi
+    farmerName: REDACT_PII_VALUES.REDACTED_FARMER_NAME
   }
 
   let totalUpdates = 0
@@ -28,7 +27,6 @@ export const redactPII = async (agreementReference, redactedSbi, logger) => {
   for (const [field, redactedValue] of Object.entries(redactedValueByField)) {
     const [affectedCount] = await models.documentLog.update(
       {
-        sbi: redactedSbi,
         filename: REDACT_PII_VALUES.REDACTED_FILENAME,
         data: Sequelize.fn(
           'jsonb_set',
