@@ -1,15 +1,12 @@
 import joi from 'joi'
 import util from 'util'
-const MAX_EMAIL_CHAR_LENGTH = 320
 const MAX_CLAIMREF_CHAR_LENGTH = 14
 
 const nineDigitId = joi.string().pattern(/^\d{9}$/)
 const tenDigitId = joi.string().pattern(/^\d{10}$/)
 const email = joi
   .string()
-  .pattern(/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,4}$/)
-  .min(1)
-  .max(MAX_EMAIL_CHAR_LENGTH)
+  .email({ tlds: false })
 
 const submitSFDSchema = joi.object({
   crn: tenDigitId,
