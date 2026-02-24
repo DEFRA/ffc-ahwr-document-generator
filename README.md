@@ -1,3 +1,5 @@
+# ⚠️ Note this repository is being archived, and is replaced by the backend service at https://github.com/DEFRA/ahwr-document-generator-backend/ ⚠️
+
 # FFC Template Node
 
 Template to support rapid delivery of microservices for FFC Platform. It contains the configuration needed to deploy a simple Hapi Node server to the Azure Kubernetes Platform.
